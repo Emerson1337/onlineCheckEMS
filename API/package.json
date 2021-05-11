@@ -1,15 +1,35 @@
 {
-  "dependencies": {
-    "@types/express": "^4.17.11",
-    "@types/typescript": "^2.0.0",
-    "express": "^4.17.1",
-    "tsconfig": "^7.0.0",
-    "typescript": "^4.2.4"
-  },
-  "scripts": {
-    "dev": "ts-node-dev --inspect --transpile-only --ignore-watch node_modules src/server.ts"
-  },
-  "devDependencies": {
-    "ts-node-dev": "^1.1.6"
-  }
+   "dependencies": {
+      "@types/bcrypt": "^5.0.0",
+      "@types/express": "^4.17.11",
+      "@types/typescript": "^2.0.0",
+      "@types/uuid": "^8.3.0",
+      "bcrypt": "^5.0.1",
+      "cors": "^2.8.5",
+      "express": "^4.17.1",
+      "express-async-errors": "^3.1.1",
+      "install": "^0.13.0",
+      "jsonwebtoken": "^8.5.1",
+      "pg": "^8.6.0",
+      "reflect-metadata": "^0.1.10",
+      "tsconfig": "^7.0.0",
+      "typeorm": "0.2.32",
+      "typescript": "^4.2.4",
+      "uuid": "^8.3.2"
+   },
+   "name": "pizzaria_ems",
+   "version": "1.0.0",
+   "main": "index.js",
+   "license": "MIT",
+   "scripts": {
+      "dev": "ts-node-dev  --inspect --transpile-only --ignore-watch node_modules src/server.ts",
+      "start": "ts-node src/server.ts",
+      "typeorm": "ts-node-dev -r tsconfig-paths/register ./node_modules/typeorm/cli.js"
+   },
+   "devDependencies": {
+      "@types/node": "^8.0.29",
+      "ts-node": "3.3.0",
+      "ts-node-dev": "^1.1.6",
+      "typescript": "3.3.3333"
+   }
 }
