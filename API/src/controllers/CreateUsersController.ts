@@ -6,9 +6,17 @@ class CreateUsersController {
     const { name, email, password } = request.body;
     const createUser = new CreateUserService();
 
-    const user = await createUser.execute({ name, email, password });
+    const user = await createUser.create({ name, email, password });
 
     return response.json(user);
+  }
+
+  async login(request: Request, response: Response) {
+    const { email, password } = request.body;
+    const createUser = new CreateUserService();
+
+    const token = await createUser.login(email, password);
+    return response.json(token);
   }
 }
 
