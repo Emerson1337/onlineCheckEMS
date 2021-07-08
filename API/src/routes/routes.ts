@@ -3,6 +3,11 @@ import CreateFoodController from '../controllers/CreateFoodController';
 import { CreateFoodTypeController } from '../controllers/CreateFoodTypeController';
 import CreateUsersController from '../controllers/CreateUsersController';
 import { Auth } from '../middlewares/auth';
+import verifyCreateUserValidator from '../middlewares/verifyCreateUserValidator';
+
+import i from '../middlewares/verifyCreateUserValidator'
+
+
 
 const createUsersController = new CreateUsersController();
 const createFoodController = new CreateFoodController();
@@ -14,7 +19,7 @@ const router = Router();
 
 //ROTAS DA API
 //TRATATIVAS DE USUÁRIO
-router.post('/api/signup', createUsersController.createUser);
+router.post('/api/signup', verifyCreateUserValidator,  createUsersController.createUser);
 router.post('/api/login', createUsersController.login);
 
 //CRUD COMIDAS
