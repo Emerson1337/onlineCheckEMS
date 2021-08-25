@@ -116,3 +116,16 @@
   display: flex;
   justify-content: center;
 }
+
+@media(max-width: 768px){
+  #aboutUs {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  #contactUs {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: center;
+  }
+}

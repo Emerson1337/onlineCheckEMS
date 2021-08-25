@@ -2,7 +2,6 @@ import React from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
 import Main from './pages/main';
-import About from './pages/check';
 
 
 function Routes() {
