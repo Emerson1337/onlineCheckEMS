@@ -1,0 +1,34 @@
+footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.socialMediaFooter, .logoFooter,
+.copyright {
+  width: 33%;
+  text-align: center;
+}
+
+.logoFooter img {
+  width: 40%;
+  margin-bottom: 20px;
+}
+.iconInsta, .iconFace, .iconWhats {
+  margin: 0 10px;
+  color: #FA4A0C;
+  transition: all ease .2s;
+}
+.iconInsta:hover, .iconFace:hover, .iconWhats:hover {
+  color: #a03007;
+}
+.socialMediaFooter {
+  padding: 0 40px;
+  font-size: 2rem;
+}
+.strongLink {
+  font-weight: bold;
+}
+.copyright {
+  font-size: 14px;
+}
