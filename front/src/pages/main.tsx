@@ -15,7 +15,7 @@ export default function Main() {
         <h1 className="invite">Faça o seu pedido online!</h1>
         <p className="explain">Clique em fazer pedido e escolha seus deliciosos produtos.</p>
 
-        <button className="order btn btn-outline-light" type="button">Fazer Pedido 🛒 </button>
+        <a href="/check"><button className="order btn btn-outline-light" type="button">Fazer Pedido 🛒 </button></a>
       </section>
 
       <hr id="divisionLine" className="division"></hr>
@@ -38,7 +38,6 @@ export default function Main() {
 
       <section id="contactUsSection" className="customContainer">
         <div id="contactUs">
-
           <div>
             <img className="imagePhone" src={phoneInstagram} alt="pizza" />
           </div>

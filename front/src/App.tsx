@@ -6,10 +6,9 @@ import Routes from './routes';
 
 function App() {
   const [blackHeader, setBlackHeader] = useState(false);
-
   useEffect(() => {
     const scrollListener = () => {
-      if (window.scrollY > 500) {
+      if (window.scrollY >= 500) {
         setBlackHeader(true);
       } else {
         setBlackHeader(false);

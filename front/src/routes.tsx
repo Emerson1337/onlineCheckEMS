@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
 import Main from './pages/main';
+import Check from './pages/check/index';
 
 
 function Routes() {
@@ -9,7 +10,7 @@ function Routes() {
     <BrowserRouter>
       <Switch>
         <Route path="/" exact component={Main} />
-        {/* <Route path="/about" component={About} /> */}
+        <Route path="/check" component={Check} />
       </Switch>
     </BrowserRouter>
   )
