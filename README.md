@@ -41,7 +41,6 @@ So, after builded, i would like to sell for someone, because i really want money
 ![image](https://user-images.githubusercontent.com/58860863/131188665-efb63d1c-3473-4ec3-840c-ec771f75e53d.png)
 ![image](https://user-images.githubusercontent.com/58860863/131188709-8ca86e61-69b2-48bc-84eb-f4f33a3853a5.png)
 ![image](https://user-images.githubusercontent.com/58860863/131188721-eca3cbe1-4455-4f78-aa5a-53e937d18bb3.png)
-![image](https://user-images.githubusercontent.com/58860863/131188731-31f425e8-3c78-41b5-8907-d4be23f2998a.png)
 ![image](https://user-images.githubusercontent.com/58860863/131188831-c943758e-2acc-481d-8625-47e6c99e79de.png)
 
 
