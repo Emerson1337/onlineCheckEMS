@@ -10,7 +10,7 @@ Cool, right there we have the abstract about the connections used:
 
 Well, we gonna start with Node.
 
-**NODE:** Node is a technology widely used in nowadays, because he is oriented to events and input process no-blocking, and for these things he are very fast with very much data, light and efficient with communication in real time. But the real reason for to use node is because i want to learn how to use this tech 😌.
+**NODE:** Node is a technology widely used in nowadays, because he is oriented to events and input process no-blocking, and for these things he are very fast with very much data, light and efficient with communication in real time. But the real reason to use node is because i want to learn how to use this tech 😌.
 
 ## **And... why React?**
 
@@ -26,7 +26,7 @@ Well, so now we need to realize what's this application.
 
 # What is Online Check EMS 🤨?
 
-Right, this project its exactly what his name is, LOL. EMS is mean just some letters of my name, no worry. Basically, this project have the objective to abstract ALL dialog when you make a order on a commerce, for example. The WebSite, only made for that restaurant, i.e the restaurant have their own WebSite, with their design and their features, will connect with the API with all tables of database containing the foods, their prices and their description, like a ingredients used, and will list the products based on what he would like. Before that, he informs his data, like name, address, what value for remaining money. How we gonna to do this? Just using the WhatsApp API, generating a link for to open the chat with all orders already typed.
+Right, this project its exactly what his name is, LOL. EMS is mean just some letters of my name, no worry. Basically, this project have the objective to abstract ALL dialog when you make a order on a commerce, for example. The WebSite, only made for that restaurant, i.e the restaurant have their own WebSite, with their design and their features, will connect with the API with all tables of database containing the foods, their prices and their description, like a ingredients used, and will list the products based on what he would like. Before that, he informs his data, like name, address, what remaining money value. How we gonna to do this? Just using the WhatsApp API, generating a link to open the chat with all orders already typed.
 
 Like that: 
 
