@@ -26,7 +26,7 @@ Well, so now we need to realize what's this application.
 
 # What is Online Check EMS 🤨?
 
-Right, this project its exactly what your name is, LOL. EMS is mean just some letters of my name, no worry. Basically, this project have the objective to abstract ALL dialog when you make a order on a commerce, for example. The WebSite, only made for that restaurant, i.e the restaurant have your own WebSite, with your design and your features, will connect with the API with all tables of database containing the foods, your prices and your description, like a ingredients used, and will list the products based on what he would like. Before that, he informs your data, like name, address, what value for remaining money. How we gonna to do this? Just using the WhatsApp API, generating a link for to open the chat with all orders already typed.
+Right, this project its exactly what his name is, LOL. EMS is mean just some letters of my name, no worry. Basically, this project have the objective to abstract ALL dialog when you make a order on a commerce, for example. The WebSite, only made for that restaurant, i.e the restaurant have their own WebSite, with their design and their features, will connect with the API with all tables of database containing the foods, their prices and their description, like a ingredients used, and will list the products based on what he would like. Before that, he informs his data, like name, address, what value for remaining money. How we gonna to do this? Just using the WhatsApp API, generating a link for to open the chat with all orders already typed.
 
 Like that: 
 
