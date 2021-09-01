@@ -22,11 +22,11 @@ function App() {
 
 
   return (
-    <div>
+    <>
       <Navbar colorNav={blackHeader} />
       <Routes />
       <Footer />
-    </div>
+    </>
   );
 }
 
