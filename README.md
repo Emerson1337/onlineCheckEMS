@@ -1,7 +1,7 @@
 # Documentation Online check EMS ☑️
 
 What you should to know before all, is how the application works. So, for this, we need to realize which abstraction was implemented.
-
+a
 Cool, right there we have the abstract about the connections used:
 
 ![image](https://user-images.githubusercontent.com/58860863/124693523-fbce9a00-deb5-11eb-981d-55e3a5f57db8.png)
