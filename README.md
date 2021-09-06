@@ -8,7 +8,7 @@ Cool, right there we have the abstract about the connections used:
 
 ## All right. So you must to ask yourself, why Node and React to solve this problem?
 
-Well, we gonna start with Node.
+Well, we gonna start with Node.s
 
 **NODE:** Node is a technology widely used in nowadays, because he is oriented to events and input process no-blocking, and for these things he are very fast with very much data, light and efficient with communication in real time. But the real reason to use node is because i want to learn how to use this tech 😌.
 
