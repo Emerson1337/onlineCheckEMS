@@ -2,8 +2,6 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable import/no-anonymous-default-export */
 import React from 'react';
-import { useState } from 'react';
-import { useEffect } from 'react';
 import styled from 'styled-components';
 // import { FaShoppingCart } from 'react-icons/fa'
 
@@ -20,11 +18,11 @@ export default function CardFood({ name, price, description }: cardProps) {
   return (
     <>
       <CardGlobal>
-        <h5 className="title">Pizza de chocolate</h5>
+        <h5 className="title">{name}</h5>
         <div className="cardBody">
           <img src={pizzaImage} />
 
-          <h5>Preço: R$ 29,90</h5>
+          <h5>Preço: R$ {price}</h5>
           <p className="ingredients">Ingredientes</p>
           <p>{description.length === 80 ? description : description.substr(0, 78) + '...'}</p>
 

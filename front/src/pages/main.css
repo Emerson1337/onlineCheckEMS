@@ -117,6 +117,14 @@
   justify-content: center;
 }
 
+.orangeColor {
+  color: #FA4A0C;
+}
+.orangeColor:hover {
+  color: #af360a;
+  text-decoration: none;
+}
+
 @media(max-width: 768px){
   #aboutUs {
     display: flex;
