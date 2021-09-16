@@ -1,18 +1,34 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from "styled-components";
 import BtnCategory from "../../components/BtnCategory/BtnCategory";
 import CardFood from '../../components/CardFood/CardFood';
 
 import { FiShoppingCart } from 'react-icons/fi';
-import TransitionsModal from '../modals/modalFinishOrder';
+import FinishOrderModal from '../../components/modals/modalFinishOrder';
 
 export default function Check() {
 
+  const [isVisibleModal, SetIsVisibleModal] = useState(false);
+
+  useEffect(() => {
+    function removeMainScroll(isVisibleModal: boolean) {
+      isVisibleModal ?
+        $('body').css('overflow-y', 'hidden')
+        : $('body').css('overflow-y', 'scroll');
+    }
+
+    removeMainScroll(isVisibleModal);
+  }, [isVisibleModal])
+
+
   return (
     <>
+      {isVisibleModal &&
+        <FinishOrderModal onClose={() => { SetIsVisibleModal(false) }} />
+      }
       <LinkFinishOrder href="#">
-        <FinishOrder>
-          <TransitionsModal />
+        <FinishOrder onClick={() => (SetIsVisibleModal(true))}>
+          <FiShoppingCart />
         </FinishOrder>
       </LinkFinishOrder>
       <BannerCategory>
@@ -98,9 +114,21 @@ const Products = styled.section`
 `;
 
 const FinishOrder = styled.div`
+  background-color: #FA4A0C;
+  display: flex;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
   position: fixed;
+  font-size: 25px;
   bottom: 20px;
   right: 40px;
+
+  FiShoppingCart {
+
+  }
 `;
 
 const LinkFinishOrder = styled.a`
