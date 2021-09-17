@@ -63,7 +63,6 @@ const FooterStyle = styled.footer`
     }
 
     @media(max-width: 768px){
-        display: none;
         flex-direction: column;
     }
   `;

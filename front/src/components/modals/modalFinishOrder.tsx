@@ -1,20 +1,37 @@
 import React, { useState } from 'react';
 import { IoMdClose } from 'react-icons/io';
 import styled from 'styled-components';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 export default function FinishOrderModal({ onClose = () => { }, children }: any) {
 
   const [toDelivery, SetToDelivery] = useState(false);
   const [cashPayment, SetcashPayment] = useState(false);
+  const [rest, SetRest] = useState(false);
 
   function switchDelivery() {
     toDelivery ? SetToDelivery(false) : SetToDelivery(true);
   }
 
+  function switchPayment() {
+    rest ? SetRest(false) : SetRest(true);
+  }
+
   function checkPaymentMethod() {
     if (!$('#creditCard').prop('checked') && !$('#cash').prop('checked')) {
       alert('Selecione o método de pagamento.');
+    }
+
+    if ($('#rest').val()! >= 2) {
+
+    }
+  }
+
+  function checkFields() {
+    if (!$('#address').val() ||
+      !$('#refference').val() ||
+      !$('#rest').val() ||
+      !$('#name').val()) {
+      alert('Preencha todos os campos!');
     }
   }
 
@@ -22,24 +39,26 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
     <>
       <UIModalOverlay>
         <div>
-          <ButtonClose className="btn" onClick={onClose} type="button">
-            <IoMdClose size={18} />
-          </ButtonClose>
+          <div id="buttonToClose">
+            <ButtonClose className="btn" onClick={onClose} type="button">
+              <IoMdClose size={18} />
+            </ButtonClose>
+          </div>
           <InfoBuy>
             <h5 id="transition-modal-title">Finalizando Pedidos</h5>
             <h1>Valor Total:</h1>
             <h1>R$ 58,60</h1>
             <div id="transition-modal-description">
-              <p>Pedidos:</p>
+              <p>Pedidos</p>
               <p>Pizza Chocolate, qtd: 1: R$ 20,50</p>
               <p>Pizza Calabresa, qtd: 1: R$ 22,90</p>
             </div>
+            <h2>Preencha as informações para finalizar o pedido.</h2>
           </InfoBuy>
           <div className="formClient">
-            <h2>Preencha as informações para finalizar o pedido.</h2>
             <form>
               <div className="form-group">
-                <label htmlFor="name">Nome:</label>
+                <label htmlFor="name"><strong>Nome:</strong></label>
                 <input type="text" className="form-control" id="name" placeholder="Ex: João Paulo" />
               </div>
               <div className="form-check">
@@ -48,26 +67,19 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
                   Desejo para entrega (Taxa: R$2,00)
                 </label>
               </div>
-              {/* <TransitionGroup className="todo-list">
-                <CSSTransition
-                  timeout={500}
-                  classNames="form-control"
-                > */}
               {toDelivery &&
                 <>
                   <div className="form-group">
-                    <label htmlFor="address">Endereço:</label>
+                    <label htmlFor="address"><strong>Endereço:</strong></label>
                     <input type="text" className="form-control" id="address" placeholder="Ex: Rua Verde, 340" />
                   </div>
                   <div className="form-group">
-                    <label htmlFor="refference">Ponto de Referência:</label>
+                    <label htmlFor="refference"><strong>Ponto de Referência:</strong></label>
                     <input type="text" className="form-control" id="refference" placeholder="Ex: Apto; Altos..." />
                   </div>
                 </>
               }
-              {/* </CSSTransition>
-              </TransitionGroup> */}
-              <p>Forma de pagamento:</p>
+              <p><strong>Forma de pagamento:</strong></p>
               <div className="form-check">
                 <input className="form-check-input" onClick={() => { SetcashPayment(false) }} type="radio" name="exampleRadios" id="creditCard" value="option1" />
                 <label className="form-check-label" htmlFor="creditCard">
@@ -80,11 +92,17 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
                   Dinheiro
                 </label>
               </div>
+              <div className="form-check">
+                <input className="form-check-input" onClick={() => { SetcashPayment(false) }} type="radio" name="exampleRadios" id="creditCard" value="option1" />
+                <label className="form-check-label" htmlFor="creditCard">
+                  PIX
+                </label>
+              </div>
               {
-                cashPayment &&
-                <>
+                cashPayment && !rest &&
+                <div id="cashRest">
                   <label className="number" htmlFor="rest">Quantia p/ troco:</label>
-                  <div className="col-auto">
+                  <div id="inputRest" className="col-auto">
                     <div className="input-group mb-2">
                       <div className="input-group-prepend">
                         <div className="input-group-text">R$</div>
@@ -92,7 +110,16 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
                       <input type="number" className="form-control" id="rest" placeholder="Ex: 50,00" />
                     </div>
                   </div>
-                </>
+                </div>
+              }
+              {
+                cashPayment &&
+                <div id="notCashRest">
+                  <input className="form-check-input" onClick={() => switchPayment()} type="checkbox" value="" id="paymentMethod" />
+                  <label className="form-check-label mb-4" htmlFor="paymentMethod">
+                    Não preciso de troco.
+                  </label>
+                </div>
               }
             </form>
           </div>
@@ -114,12 +141,69 @@ const UIModalOverlay = styled.div`
   bottom: 0;
   right: 0;
   color: #FFF;
-  padding: 5% 15% 5% 15%;
+  padding: 2% 25% 5% 25%;
   background-color: #FA4A0C;
+
+  input {
+    border-radius: 20px;
+  }
+
+  #inputRest {
+    width: 40%;
+  }
+
+  .input-group-text {
+    border-radius: 20px 0 0 20px !important;
+  }
+
+  #notCashRest {
+    margin-top: 10px;
+    text-align: center;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #cashRest {
+    display: flex;
+    margin-top: 10px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  #buttonToClose {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+  }
+
+  @media(max-width: 768px){
+    padding: 5% 15% 5% 15%;
+
+    #inputRest {
+      width: 70%;
+    }
+  }
 `;
 
 const InfoBuy = styled.div`
   text-align: center;
+
+  #transition-modal-description p{
+    line-height: 1rem;
+  }
+
+  h2 {
+    font-size: 2rem;
+    margin: 10% 5% 5% 5%;
+  }
+
+  @media(max-width: 768px){
+    h2 {
+      font-size: 1rem;
+    }
+  }
 `;
 
 const FinishBuy = styled.div`
@@ -131,7 +215,6 @@ const ButtonClose = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  float: right;
   width: 40px;
   height: 40px;
   margin-bottom: 20px;
@@ -147,6 +230,11 @@ const ButtonFinishOrder = styled.button`
   color: #FA4A0C;
   font-weight: bold;
   font-size: 18px;
+  width: 200px;
+  
+  @media(max-width: 768px){
+    width: 80%;
+  }
 
   :hover {
     background: #d3cece;
