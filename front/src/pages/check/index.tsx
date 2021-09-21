@@ -26,7 +26,7 @@ export default function Check() {
       {isVisibleModal &&
         <FinishOrderModal onClose={() => { SetIsVisibleModal(false) }} />
       }
-      <LinkFinishOrder href="#">
+      <LinkFinishOrder>
         <FinishOrder onClick={() => (SetIsVisibleModal(true))}>
           <FiShoppingCart />
         </FinishOrder>

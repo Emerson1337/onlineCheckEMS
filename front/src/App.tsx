@@ -20,12 +20,20 @@ function App() {
     }
   });
 
-
   return (
     <>
-      <Navbar colorNav={blackHeader} />
-      <Routes />
-      <Footer />
+      {
+        window.location.pathname === '/check' ||
+          window.location.pathname === '/'
+          ?
+          <>
+            <Navbar colorNav={blackHeader} />
+            <Routes />
+            <Footer />
+          </>
+          :
+          <Routes />
+      }
     </>
   );
 }
