@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { IoMdClose } from 'react-icons/io';
 import styled from 'styled-components';
+import { Switch } from 'antd';
+import { CloseOutlined, CheckOutlined } from '@ant-design/icons';
 
 export default function FinishOrderModal({ onClose = () => { }, children }: any) {
 
@@ -26,14 +28,14 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
     }
   }
 
-  function checkFields() {
-    if (!$('#address').val() ||
-      !$('#refference').val() ||
-      !$('#rest').val() ||
-      !$('#name').val()) {
-      alert('Preencha todos os campos!');
-    }
-  }
+  // function checkFields() {
+  //   if (!$('#address').val() ||
+  //     !$('#refference').val() ||
+  //     !$('#rest').val() ||
+  //     !$('#name').val()) {
+  //     alert('Preencha todos os campos!');
+  //   }
+  // }
 
   return (
     <>
@@ -41,7 +43,7 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
         <div>
           <div id="buttonToClose">
             <ButtonClose className="btn" onClick={onClose} type="button">
-              <IoMdClose size={18} />
+              <IoMdClose color={'black'} size={18} />
             </ButtonClose>
           </div>
           <InfoBuy>
@@ -61,11 +63,11 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
                 <label htmlFor="name"><strong>Nome:</strong></label>
                 <input type="text" className="form-control" id="name" placeholder="Ex: João Paulo" />
               </div>
-              <div className="form-check">
-                <input className="form-check-input" onClick={() => switchDelivery()} type="checkbox" value="" id="toDelivery" />
-                <label className="form-check-label mb-4" htmlFor="toDelivery">
-                  Desejo para entrega (Taxa: R$2,00)
-                </label>
+              <div className="switch form-check">
+                <Switch
+                  checkedChildren={<CheckOutlined />}
+                  unCheckedChildren={<CloseOutlined />}
+                  onChange={() => switchDelivery()} /> Desejo para entrega (Taxa: R$2,00)
               </div>
               {toDelivery &&
                 <>
@@ -115,10 +117,10 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
               {
                 cashPayment &&
                 <div id="notCashRest">
-                  <input className="form-check-input" onClick={() => switchPayment()} type="checkbox" value="" id="paymentMethod" />
-                  <label className="form-check-label mb-4" htmlFor="paymentMethod">
-                    Não preciso de troco.
-                  </label>
+                  <Switch
+                    checkedChildren={<CheckOutlined />}
+                    unCheckedChildren={<CloseOutlined />}
+                    onChange={() => switchPayment()} /> Não preciso de troco.
                 </div>
               }
             </form>
@@ -150,6 +152,11 @@ const UIModalOverlay = styled.div`
 
   #inputRest {
     width: 40%;
+  }
+
+  .switch {
+    margin-bottom: 10px;
+    padding-left: 0;
   }
 
   .input-group-text {
@@ -189,9 +196,14 @@ const UIModalOverlay = styled.div`
 
 const InfoBuy = styled.div`
   text-align: center;
+  
 
   #transition-modal-description p{
     line-height: 1rem;
+  }
+
+  h1, h2, h3, h5 {
+    color: #fff;
   }
 
   h2 {

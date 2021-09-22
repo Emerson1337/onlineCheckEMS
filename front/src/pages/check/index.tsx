@@ -4,7 +4,7 @@ import BtnCategory from "../../components/BtnCategory/BtnCategory";
 import CardFood from '../../components/CardFood/CardFood';
 
 import { FiShoppingCart } from 'react-icons/fi';
-import FinishOrderModal from '../../components/modals/modalFinishOrder';
+import FinishOrderModal from '../../components/Modals/modalFinishOrder';
 
 export default function Check() {
 
@@ -125,16 +125,13 @@ const FinishOrder = styled.div`
   font-size: 25px;
   bottom: 20px;
   right: 40px;
+  color: #fff;
 
-  FiShoppingCart {
-
+  :hover{
+    color: #F4F4F4;
   }
 `;
 
 const LinkFinishOrder = styled.a`
-  color: #fff;
 
-  :hover{
-    color: #fff;
-  }
 `;
