@@ -3,8 +3,7 @@ import { List, Avatar } from 'antd';
 
 const data = [
   {
-    title: 'Pizza de chocolate',
-    subtitle: 'pizza'
+    title: 'Pizza',
   },
   {
     title: 'Pizza de calabresa',
@@ -17,14 +16,14 @@ const data = [
   },
 ];
 
-export default function IndexFoods() {
+export default function IndexCategories() {
 
   return (
     <>
-      <h2>🍲 Aqui estão todas as comidas de sua loja</h2>
+      <h2>🍲 Aqui estão todas as categorias de sua loja</h2>
       <hr />
       <List
-        itemLayout="vertical"
+        itemLayout="horizontal"
         dataSource={data}
         renderItem={item => (
           <List.Item
@@ -33,11 +32,7 @@ export default function IndexFoods() {
             <List.Item.Meta
               avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
               title={<a href="https://ant.design">{item.title}</a>}
-              description="Pizza composta por massa, queijo, tomate..."
             />
-            <h5>
-              R$ 20,00
-            </h5>
           </List.Item>
         )}
       />,

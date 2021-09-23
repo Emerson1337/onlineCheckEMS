@@ -16,6 +16,7 @@ import IndexFoods from '../../components/IndexFoods/IndexFoods';
 import GraphPieDashboard from '../../components/Graphs/GraphsDashboard';
 import GraphColumnDashboard from '../../components/Graphs/GraphColumnDashboard';
 import GraphLineDashboard from '../../components/Graphs/GraphLineDashboard';
+import IndexCategories from '../../components/IndexCategories/IndexCategories';
 
 const { SubMenu } = Menu;
 
@@ -50,22 +51,25 @@ export default class Dashboard extends React.Component {
             </div>
             <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
               <Menu.Item key="1" onClick={() => this.changeMenu(1)} icon={<PlusSquareFilled />}>
-                Criar categoria
+                Criar Categoria
               </Menu.Item>
               <Menu.Item key="2" onClick={() => this.changeMenu(2)} icon={<PlusCircleFilled />}>
-                Adicionar comida
+                Adicionar Comida
               </Menu.Item>
               <Menu.Item key="3" onClick={() => this.changeMenu(3)} icon={<ContactsOutlined />}>
-                Listagem
+                Listar Categorias
               </Menu.Item>
-              <SubMenu key="4" icon={<AreaChartOutlined />} title="Estatísticas">
-                <Menu.Item key="4" onClick={() => this.changeMenu(4)}>
+              <Menu.Item key="4" onClick={() => this.changeMenu(4)} icon={<ContactsOutlined />}>
+                Listar Comidas
+              </Menu.Item>
+              <SubMenu key="5" icon={<AreaChartOutlined />} title="Estatísticas">
+                <Menu.Item key="5" onClick={() => this.changeMenu(5)}>
                   Vendas Produtos
                 </Menu.Item>
-                <Menu.Item key="5" onClick={() => this.changeMenu(5)}>
+                <Menu.Item key="6" onClick={() => this.changeMenu(6)}>
                   Saídas Prod. Mensais
                 </Menu.Item>
-                <Menu.Item key="6" onClick={() => this.changeMenu(6)}>
+                <Menu.Item key="7" onClick={() => this.changeMenu(7)}>
                   Vendas Mensais (R$)
                 </Menu.Item>
               </SubMenu>
@@ -94,18 +98,21 @@ export default class Dashboard extends React.Component {
                     <CreateFood />
                     :
                     this.state.menu === 3 ?
-                      <IndexFoods />
+                      <IndexCategories />
                       :
                       this.state.menu === 4 ?
-                        <GraphPieDashboard />
+                        <IndexFoods />
                         :
                         this.state.menu === 5 ?
-                          <GraphColumnDashboard />
+                          <GraphPieDashboard />
                           :
                           this.state.menu === 6 ?
-                            <GraphLineDashboard />
+                            <GraphColumnDashboard />
                             :
-                            ''
+                            this.state.menu === 7 ?
+                              <GraphLineDashboard />
+                              :
+                              ''
               }
             </Content>
           </Layout>
