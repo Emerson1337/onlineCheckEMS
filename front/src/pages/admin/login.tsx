@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import logo from '../../assets/logo-login.png';
+import logo from '../../assets/logo.png';
 
 export default function Login() {
 
@@ -39,7 +39,7 @@ export const Form = styled.form`
   flex-direction: column;
   align-items: center;
   img {
-    width: 100px;
+    width: 200px;
     margin: 10px 0 40px;
   }
   p {

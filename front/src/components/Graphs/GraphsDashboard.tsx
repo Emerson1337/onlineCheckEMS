@@ -50,7 +50,7 @@ const GraphPieDashboard: React.FC = () => {
   };
   return (
     <>
-      <h2>Produtos vendidos neste mês (Setembro)</h2>
+      <h2>Produtos vendidos neste mês (Setembro) 💸</h2>
       <hr />
       <Pie {...config} />
     </>

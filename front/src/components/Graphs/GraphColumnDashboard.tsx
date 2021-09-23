@@ -38,7 +38,7 @@ const GraphColumnDashboard: React.FC = () => {
   };
   return (
     <>
-      <h2 className="mt-4">Vendas nos últimos meses 📉 </h2>
+      <h2>Vendas nos últimos meses 📉 </h2>
       <hr />
       <Column {...config} />
     </>

@@ -9,13 +9,13 @@ const layout = {
 
 /* eslint-disable no-template-curly-in-string */
 const validateMessages = {
-  required: '${label} is required!',
+  required: '${label} é obrigatório!',
   types: {
     email: '${label} is not a valid email!',
     number: '${label} is not a valid number!',
   },
   number: {
-    range: '${label} must be between ${min} and ${max}',
+    range: '${label} deve ser maior que 0',
   },
 };
 /* eslint-enable no-template-curly-in-string */
@@ -36,7 +36,7 @@ export default function CreateFood() {
         <Form.Item name={['food', 'description']} label="Descrição/ingredientes" rules={[{ required: true }]}>
           <Input />
         </Form.Item>
-        <Form.Item name={['food', 'price']} label="Preço" rules={[{ type: 'number' }]}>
+        <Form.Item name={['food', 'price']} label="Preço" rules={[{ type: 'number', required: true }]}>
           <InputNumber />
         </Form.Item>
         <Form.Item name={['food', 'image']} label="Imagem" rules={[{ required: true }]}>

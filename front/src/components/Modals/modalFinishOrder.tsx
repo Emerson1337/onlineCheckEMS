@@ -3,7 +3,7 @@ import { IoMdClose } from 'react-icons/io';
 import styled from 'styled-components';
 import { Switch } from 'antd';
 import { CloseOutlined, CheckOutlined } from '@ant-design/icons';
-
+import Animate from 'rc-animate';
 export default function FinishOrderModal({ onClose = () => { }, children }: any) {
 
   const [toDelivery, SetToDelivery] = useState(false);
@@ -69,18 +69,25 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
                   unCheckedChildren={<CloseOutlined />}
                   onChange={() => switchDelivery()} /> Desejo para entrega (Taxa: R$2,00)
               </div>
-              {toDelivery &&
-                <>
-                  <div className="form-group">
-                    <label htmlFor="address"><strong>Endereço:</strong></label>
-                    <input type="text" className="form-control" id="address" placeholder="Ex: Rua Verde, 340" />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="refference"><strong>Ponto de Referência:</strong></label>
-                    <input type="text" className="form-control" id="refference" placeholder="Ex: Apto; Altos..." />
-                  </div>
-                </>
-              }
+              <Animate
+                component=""
+                transitionName="fade"
+              >
+                {toDelivery ?
+                  <>
+                    <div className="form-group">
+                      <label htmlFor="address"><strong>Endereço:</strong></label>
+                      <input type="text" className="form-control" id="address" placeholder="Ex: Rua Verde, 340" />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="refference"><strong>Ponto de Referência:</strong></label>
+                      <input type="text" className="form-control" id="refference" placeholder="Ex: Apto; Altos..." />
+                    </div>
+                  </>
+                  :
+                  null
+                }
+              </Animate>
               <p><strong>Forma de pagamento:</strong></p>
               <div className="form-check">
                 <input className="form-check-input" onClick={() => { SetcashPayment(false) }} type="radio" name="exampleRadios" id="creditCard" value="option1" />
