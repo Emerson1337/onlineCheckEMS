@@ -21,6 +21,10 @@ export class CreateBestFoodSellingTable1632360710674 implements MigrationInterfa
                         type: 'varchar'
                     },
                     {
+                        name: 'frequency',
+                        type: 'int'
+                    },
+                    {
                         name: 'created_at',
                         type: 'timestamp',
                         default: 'now()',

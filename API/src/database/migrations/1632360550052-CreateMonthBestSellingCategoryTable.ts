@@ -21,6 +21,10 @@ export class CreateMonthBestSellingCategoryTable1632360550052 implements Migrati
                         type: 'varchar'
                     },
                     {
+                        name: 'frequency',
+                        type: 'int'
+                    },
+                    {
                         name: 'created_at',
                         type: 'timestamp',
                         default: 'now()',

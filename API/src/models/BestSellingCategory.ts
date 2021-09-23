@@ -19,6 +19,9 @@ class BestSellingCategory {
   @Column()
   tagFood: number;
 
+  @Column()
+  frequency: number;
+
   @CreateDateColumn()
   created_at: Date;
 

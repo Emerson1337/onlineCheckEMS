@@ -19,6 +19,9 @@ class BestSellingFood {
   @Column()
   nameFood: number;
 
+  @Column()
+  frequency: number;
+
   @CreateDateColumn()
   created_at: Date;
 
