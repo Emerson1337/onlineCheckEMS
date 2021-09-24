@@ -17,7 +17,7 @@ class BestSellingFood {
   month: string;
 
   @Column()
-  nameFood: number;
+  nameFood: string;
 
   @Column()
   frequency: number;

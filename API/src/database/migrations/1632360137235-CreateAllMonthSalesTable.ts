@@ -25,6 +25,10 @@ export class CreateAllMonthSalesTable1632360137235 implements MigrationInterface
                         type: 'float'
                     },
                     {
+                        name: 'frequency',
+                        type: 'int'
+                    },
+                    {
                         name: 'created_at',
                         type: 'timestamp',
                         default: 'now()',

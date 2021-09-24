@@ -22,6 +22,9 @@ class MonthSales {
   @Column()
   priceFood: number;
 
+  @Column()
+  frequency: number;
+
   @CreateDateColumn()
   created_at: Date;
 

@@ -1,17 +1,19 @@
 import { Router } from 'express';
+import BestSellingCategoryController from '../controllers/BestSellingCategoryController';
+import BestSellingFoodController from '../controllers/BestSellingFoodController';
 import CreateFoodController from '../controllers/CreateFoodController';
 import { CreateFoodTypeController } from '../controllers/CreateFoodTypeController';
 import CreateUsersController from '../controllers/CreateUsersController';
+import MoneyMonthlyController from '../controllers/MoneyMonthlyController';
 import { Auth } from '../middlewares/auth';
 import verifyCreateUserValidator from '../middlewares/verifyCreateUserValidator';
-
-import i from '../middlewares/verifyCreateUserValidator'
-
+import BestSellingCategory from '../models/BestSellingCategory';
 
 
 const createUsersController = new CreateUsersController();
 const createFoodController = new CreateFoodController();
 const createFoodTypeController = new CreateFoodTypeController();
+const moneyMonthlyController = new MoneyMonthlyController();
 
 const auth = new Auth();
 
@@ -19,7 +21,7 @@ const router = Router();
 
 //ROTAS DA API
 //TRATATIVAS DE USUÁRIO
-router.post('/api/signup', verifyCreateUserValidator,  createUsersController.createUser);
+router.post('/api/signup', verifyCreateUserValidator, createUsersController.createUser);
 router.post('/api/login', createUsersController.login);
 
 //CRUD COMIDAS
@@ -33,6 +35,9 @@ router.post('/api/create-tag-food', auth.authMiddleware, createFoodTypeControlle
 router.get('/api/list-tags', auth.authMiddleware, createFoodTypeController.handleListAllTags);
 router.delete('/api/remove-tag/:name', auth.authMiddleware, createFoodTypeController.handleRemoveTag);
 router.patch('/api/update-tag/:tagToEdit', auth.authMiddleware, createFoodTypeController.handleEditTag);
+
+//ROTAS DE TESTE
+router.get('/api/bestfood', moneyMonthlyController.calculateMoneyMonthly);
 
 
 export default router;
