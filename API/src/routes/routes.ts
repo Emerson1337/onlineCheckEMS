@@ -5,6 +5,7 @@ import CreateFoodController from '../controllers/CreateFoodController';
 import { CreateFoodTypeController } from '../controllers/CreateFoodTypeController';
 import CreateUsersController from '../controllers/CreateUsersController';
 import MoneyMonthlyController from '../controllers/MoneyMonthlyController';
+import MonthSalesController from '../controllers/MonthSalesController';
 import { Auth } from '../middlewares/auth';
 import verifyCreateUserValidator from '../middlewares/verifyCreateUserValidator';
 import BestSellingCategory from '../models/BestSellingCategory';
@@ -13,7 +14,8 @@ import BestSellingCategory from '../models/BestSellingCategory';
 const createUsersController = new CreateUsersController();
 const createFoodController = new CreateFoodController();
 const createFoodTypeController = new CreateFoodTypeController();
-const moneyMonthlyController = new MoneyMonthlyController();
+const monthSalesController = new MonthSalesController();
+const bestSellingCategoryController = new BestSellingCategoryController();
 
 const auth = new Auth();
 
@@ -37,7 +39,7 @@ router.delete('/api/remove-tag/:name', auth.authMiddleware, createFoodTypeContro
 router.patch('/api/update-tag/:tagToEdit', auth.authMiddleware, createFoodTypeController.handleEditTag);
 
 //ROTAS DE TESTE
-router.get('/api/bestfood', moneyMonthlyController.calculateMoneyMonthly);
+router.get('/api/bestfood', monthSalesController.insertNewSale);
 
 
 export default router;

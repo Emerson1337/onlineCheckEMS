@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { FoodTypeService } from "../services/FoodTypeService";
+import FoodTypeService from "../services/FoodTypeService";
 
 class CreateFoodTypeController {
   async handleCreate(request: Request, response: Response) {

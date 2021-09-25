@@ -13,7 +13,6 @@ class BestSellingCategoryController {
     const bestSellingCategoryService = new BestSellingCategoryService();
 
     await bestSellingCategoryService.storeBestCategory();
-
     return response.json({ "success": "success!" });
   }
 
