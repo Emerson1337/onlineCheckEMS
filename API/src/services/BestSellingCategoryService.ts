@@ -45,6 +45,7 @@ class BestSellingCategoryService {
 
     var higghestFrequency = 0;
     var tagFood;
+
     for (let i = 0; i < sizeObject; i++) {
       var value = mostFrequentlyCategories[i].frequency;
       if (higghestFrequency < value) {

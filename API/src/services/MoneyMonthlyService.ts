@@ -30,7 +30,7 @@ class MoneyMonthlyService {
       throw new Error(error.message);
     }
 
-    return;
+    return ({ 'Success': 'sucesso!' });
   }
 }
 

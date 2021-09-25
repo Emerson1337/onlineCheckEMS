@@ -1,6 +1,8 @@
 import { json } from "express";
 import { getCustomRepository } from "typeorm";
+import FoodTypesRepository from "../repositories/FoodTypesRepository";
 import MonthSalesRespository from "../repositories/MonthSalesRepository";
+import * as yup from 'yup';
 
 interface MonthSaleData {
   nameFood: string,
@@ -11,6 +13,44 @@ interface MonthSaleData {
 class MonthSalesService {
 
   async addNewMonthSale({ nameFood, tagFood, priceFood }: MonthSaleData) {
+
+    const foodTypeRepository = getCustomRepository(FoodTypesRepository);
+
+    let schema = yup.object().shape({
+      name: yup.string().required(),
+      price: yup.number().required(),
+      description: yup.string().required(),
+      createdOn: yup.date().default(function () {
+        return new Date();
+      }),
+    });
+
+    const credentialsTrue = await schema.isValid({ nameFood, tagFood, priceFood });
+    const specialCharacters = "/([~!@#$%^&*+=-[],,/{}|:<>?])";
+
+    if (!credentialsTrue) {
+      throw new Error("Não é permitido caracteres especiais em nenhum dos campos!");
+    }
+
+    for (let i = 0; i < specialCharacters.length; i++) {
+      if (nameFood.indexOf(specialCharacters[i]) != -1) {
+        throw new Error("Nome inválido!");
+      }
+      if (tagFood.indexOf(specialCharacters[i]) != -1) {
+        throw new Error("Descrição inválida!");
+      }
+    }
+
+    if (priceFood <= 0) {
+      throw new Error("Preço inválido!");
+    }
+
+    const foodTypeExists = foodTypeRepository.findOne(tagFood);
+
+    if (!foodTypeExists) {
+      throw new Error("Essa categoria não existe!");
+    }
+
     const monthSalesRepository = getCustomRepository(MonthSalesRespository);
 
     const foodAlreadyExists = await monthSalesRepository.findOne({ nameFood });
