@@ -1,5 +1,5 @@
 import express from 'express';
-import router from './routes/routes';
+import routes from './routes/routes';
 
 import './database';
 
@@ -9,6 +9,6 @@ if (process.env.NODE_ENV !== 'production') {
 
 const app = express();
 app.use(express.json());
-app.use(router);
+app.use(routes);
 
 export { app };

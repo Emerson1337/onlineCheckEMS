@@ -2,7 +2,6 @@ import { getCustomRepository } from 'typeorm';
 import FoodsRepository from '../repositories/FoodsRepository';
 import FoodTypesRepository from '../repositories/FoodTypesRepository';
 import * as yup from 'yup';
-import { json } from 'express';
 
 interface Request {
   name: string;
@@ -29,30 +28,36 @@ class FoodService {
     const specialCharacters = "/([~!@#$%^&*+=-[],,/{}|:<>?])";
 
     if (!credentialsTrue) {
-      throw new Error("Some value is invalid!");
+      throw new Error("Não é permitido caracteres especiais em nenhum dos campos!");
     }
 
     for (let i = 0; i < specialCharacters.length; i++) {
       if (name.indexOf(specialCharacters[i]) != -1) {
-        throw new Error("Name is invalid!");
+        throw new Error("Nome inválido!");
       }
       if (description.indexOf(specialCharacters[i]) != -1) {
-        throw new Error("Description is invalid!");
+        throw new Error("Descrição inválida!");
       }
     }
 
     if (price <= 0) {
-      throw new Error("Price is invalid!");
+      throw new Error("Preço inválido!");
     }
 
     const foodTypeExists = foodsTypeRepository.findOne(foodType);
 
     if (!foodTypeExists) {
-      throw new Error("This type food doesn't exists!");
+      throw new Error("Essa categoria não existe!");
     }
 
     const food = foodsRepository.create({ name, price, foodType, description });
-    await foodsRepository.save(food);
+
+    try {
+      await foodsRepository.save(food);
+    } catch (err: any) {
+      const error = new Error(err);
+      throw new Error(error.message);
+    }
 
     return food;
   }
@@ -63,7 +68,7 @@ class FoodService {
     let food = await foodRepository.findOne({ where: { name: nameEdit } });
 
     if (!food) {
-      throw new Error("This food doesn't exists!");
+      throw new Error("Essa comida não existe!");
     }
 
     await foodRepository.update({ name: nameEdit }, {
@@ -75,7 +80,7 @@ class FoodService {
 
     food = await foodRepository.findOne({ name });
     if (!food) {
-      throw new Error("Something is wrong!");
+      throw new Error("Comida não encontrada!");
     }
     return food;
   }
@@ -86,13 +91,16 @@ class FoodService {
     const foods = await foodsRepository.findOne({ name });
 
     if (!foods) {
-      throw new Error("This food doesn't exists!");
+      throw new Error("Essa comida não existe!");
     }
-
-    await foodsRepository.remove(foods);
-
+    try {
+      await foodsRepository.remove(foods);
+    } catch (err: any) {
+      const error = new Error(err);
+      throw new Error(error.message);
+    }
     return {
-      message: "Success!"
+      message: "Comida removida com sucesso!"
     };
   }
 

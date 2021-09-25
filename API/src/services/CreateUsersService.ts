@@ -31,30 +31,30 @@ class CreateUserService {
     const credentialsTrue = await schema.isValid({ name, email, password });
 
     if (!credentialsTrue) {
-      throw new Error("Email/Name invalid!")
+      throw new Error("Email/Nome inválido!")
     }
 
 
     if (name.length <= 0) {
-      throw new Error("Name is too small!")
+      throw new Error("Nome curto demais!")
     }
 
     for (let i = 0; i < specialCharacters.length; i++) {
       if (name.indexOf(specialCharacters[i]) != -1) {
-        throw new Error("Name is invalid!")
+        throw new Error("Nome inválido!")
       }
     }
 
     if (password.length < 8) {
-      throw new Error("Password is too small!")
+      throw new Error("Senha curta demais!")
     }
 
     if (!regex.test(password)) {
-      throw new Error("Password is invalid! Please insert at least one number.")
+      throw new Error("Senha inválida! Insira pelo menos um número.")
     }
 
     if (userAlreadyExists) {
-      throw new Error('Email adress already exists!');
+      throw new Error('Esse endereço de e-mail já foi cadastrado!');
     }
 
     const passwordEncrypted = await hash(password, 8);
@@ -65,7 +65,12 @@ class CreateUserService {
       password: passwordEncrypted,
     });
 
-    await userRepository.save(user);
+    try {
+      await userRepository.save(user);
+    } catch (err: any) {
+      const error = new Error(err);
+      throw new Error(error.message);
+    }
 
     return user;
   }
@@ -82,20 +87,20 @@ class CreateUserService {
 
     const credentialsTrue = await schema.isValid({ email, password });
     if (!credentialsTrue) {
-      throw new Error("Email invalid!")
+      throw new Error("E-mail inválido!")
     }
 
     const usersRepository = getCustomRepository(UsersRepository);
     const userExists = await usersRepository.findOne({ email });
 
     if (!userExists) {
-      throw new Error("Email/password incorrect!")
+      throw new Error("E-mail/senha incorreto!")
     }
 
     const passwordMatch = await compare(password, userExists.password);
 
     if (!passwordMatch) {
-      throw new Error("Email/password incorrect!")
+      throw new Error("E-mail/senha incorreto!")
     }
 
     const TOKEN_ASSIGN = String(process.env.TOKEN_ASSIGN);

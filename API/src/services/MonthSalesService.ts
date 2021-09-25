@@ -18,9 +18,12 @@ class MonthSalesService {
     if (foodAlreadyExists) {
       foodAlreadyExists.frequency++;
       const updateSale = monthSalesRepository.create(foodAlreadyExists);
-
-      await monthSalesRepository.save(updateSale);
-
+      try {
+        await monthSalesRepository.save(updateSale);
+      } catch (err: any) {
+        const error = new Error(err);
+        throw new Error(error.message);
+      }
       return { Success: "Venda efetuada com sucesso!" };
     }
 
@@ -38,6 +41,7 @@ class MonthSalesService {
   async deleteAllData() {
     const monthSalesRepository = getCustomRepository(MonthSalesRespository);
     const allSales = await monthSalesRepository.find();
+
     const deleted = allSales.forEach(async sale => {
       await monthSalesRepository.delete(sale.id);
     });
@@ -45,7 +49,7 @@ class MonthSalesService {
     if (deleted!) {
       return { Success: "Tabela limpa com sucesso!" };
     } else {
-      return { error: "Erro interno." };
+      return { error: "Alguma coisa deu errada!" };
     }
   }
 }

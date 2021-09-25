@@ -2,28 +2,38 @@ import { Request, Response } from 'express';
 import MonthSalesService from '../services/MonthSalesService';
 
 class MonthSalesController {
-
-  // constructor() {
-  //   setInterval(() => {
-  //     this.clearTable();
-  //   }, 5000);
-  // }
+  constructor() {
+    setInterval(async () => {
+      this.clearTable();
+    }, 2592000);
+  }
 
   async insertNewSale(request: Request, response: Response) {
-    const { nameFood, tagFood, priceFood } = request.body;
+    try {
+      const { nameFood, tagFood, priceFood } = request.body;
 
-    const monthSalesService = new MonthSalesService();
+      const monthSalesService = new MonthSalesService();
+      const monthSale = await monthSalesService.addNewMonthSale({ nameFood, tagFood, priceFood });
 
-    const monthSale = await monthSalesService.addNewMonthSale({ nameFood, tagFood, priceFood });
+      return response.status(200).json(monthSale);
+    } catch (err: any) {
+      const error = new Error(err);
 
-    return response.status(200).json(monthSale);
+      return response.status(500).json(error.message);
+    }
   }
 
   async clearTable() {
-    const monthSalesService = new MonthSalesService();
+    try {
+      const monthSalesService = new MonthSalesService();
 
-    const deleted = await monthSalesService.deleteAllData();
-    return deleted;
+      const deleted = await monthSalesService.deleteAllData();
+      return deleted;
+    } catch (err: any) {
+      const error = new Error(err);
+
+      return console.log(error.message);
+    }
   }
 
 }

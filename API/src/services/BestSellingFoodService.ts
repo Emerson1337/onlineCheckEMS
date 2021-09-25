@@ -26,7 +26,12 @@ class BestSellingFoodService {
       frequency: mostFrequentlySale.frequency,
     });
 
-    await bestSellingFoodRepository.save(bestFood);
+    try {
+      await bestSellingFoodRepository.save(bestFood);
+    } catch (err: any) {
+      const error = new Error(err);
+      throw new Error(error.message);
+    }
 
     return;
   }

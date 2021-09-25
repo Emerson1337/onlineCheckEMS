@@ -17,22 +17,22 @@ class FoodTypeService {
     const specialCharacters = "/([~!@#$%^&*+=-[],,/{}|:<>?])";
 
     if (!credentialsTrue) {
-      throw new Error("Name of food type is invalid!")
+      throw new Error("O nome da categoria é inválido!")
     }
 
     if (name.length <= 0) {
-      throw new Error("Password is too small!");
+      throw new Error("Senha curta demais!");
     }
 
     for (let i = 0; i < specialCharacters.length; i++) {
       if (name.indexOf(specialCharacters[i]) != -1) {
-        throw new Error("Name is invalid!");
+        throw new Error("Nome inválido!");
       }
     }
     const foodAlreadyExists = await foodTypesRepository.findOne({ name });
 
     if (foodAlreadyExists) {
-      throw new Error("Food Type already exists!");
+      throw new Error("Essa categoria já existe!");
     }
 
     const foodType = foodTypesRepository.create({ name });
@@ -54,13 +54,13 @@ class FoodTypeService {
     const tag = await foodTypeRepository.findOne({ name });
 
     if (!tag) {
-      throw new Error("This tag doesn't exists!");
+      throw new Error("Essa categoria não existe!");
     }
 
     await foodTypeRepository.remove(tag);
 
     return {
-      message: "Success!"
+      message: "Sucesso!"
     }
   }
 
@@ -70,7 +70,7 @@ class FoodTypeService {
     let tag = await foodTypesRepository.findOne({ name: tagToEdit });
 
     if (!tag) {
-      throw new Error("This tag doens't exists!");
+      throw new Error("Essa categoria não existe!");
     }
 
     await foodTypesRepository.update(
@@ -81,7 +81,7 @@ class FoodTypeService {
     tag = await foodTypesRepository.findOne({ name })
 
     if (!tag) {
-      throw new Error("Something is wrong!");
+      throw new Error("Nada encontrado!");
     }
 
     return tag;

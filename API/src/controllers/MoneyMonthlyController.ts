@@ -3,18 +3,23 @@ import MoneyMonthlyService from '../services/MoneyMonthlyService';
 
 class MoneyMonthlyController {
 
-  // constructor() {
-  //   setInterval(() => {
-  //     this.calculateBestSellingFood();
-  //   }, 3000);
-  // }
+  constructor() {
+    setInterval(() => {
+      this.calculateMoneyMonthly();
+    }, 2592000);
+  }
 
-  async calculateMoneyMonthly(request: Request, response: Response) {
-    const moneyMonthlyService = new MoneyMonthlyService();
+  async calculateMoneyMonthly() {
+    try {
+      const moneyMonthlyService = new MoneyMonthlyService();
+      await moneyMonthlyService.storeMoneyMonthly();
 
-    await moneyMonthlyService.storeMoneyMonthly();
+      return ({ "success": "success!" });
+    } catch (err: any) {
+      const error = new Error(err);
 
-    return response.json({ "success": "success!" });
+      return (error.message);
+    }
   }
 
 }

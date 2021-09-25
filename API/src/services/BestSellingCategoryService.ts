@@ -18,6 +18,11 @@ class BestSellingCategoryService {
     var mostFrequentlyCategories: any = [];
 
     var aux = await monthSalesRepository.find();
+
+    if (!aux.length) {
+      throw new Error('Nenhuma venda registrada neste mês!');
+    }
+
     allCategories.forEach(async category => {
       var aux2 = aux.filter((obj) => {
         return obj.tagFood == category.name;
@@ -51,15 +56,20 @@ class BestSellingCategoryService {
     var date = new Date();
     var month = date.getMonth().toString();
 
-    const bestFood = bestSellingCategoryRepository.create({
+    const bestCategory = bestSellingCategoryRepository.create({
       month: months[month],
       tagFood: tagFood,
       frequency: higghestFrequency,
     });
 
-    await bestSellingCategoryRepository.save(bestFood);
+    try {
+      await bestSellingCategoryRepository.save(bestCategory);
+    } catch (err: any) {
+      const error = new Error(err);
+      throw new Error(error.message);
+    }
 
-    return;
+    return bestCategory;
   }
 }
 

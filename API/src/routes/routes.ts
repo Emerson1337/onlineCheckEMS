@@ -39,7 +39,7 @@ router.delete('/api/remove-tag/:name', auth.authMiddleware, createFoodTypeContro
 router.patch('/api/update-tag/:tagToEdit', auth.authMiddleware, createFoodTypeController.handleEditTag);
 
 //ROTAS DE TESTE
-router.get('/api/bestfood', monthSalesController.insertNewSale);
+router.get('/api/bestfood', bestSellingCategoryController.calculateBestSellingCategory);
 
 
 export default router;

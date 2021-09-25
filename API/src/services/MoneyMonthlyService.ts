@@ -23,8 +23,12 @@ class MoneyMonthlyService {
       month: months[month],
       price: totalCash,
     });
-
-    await moneyMonthlyRepository.save(monthlyCash);
+    try {
+      await moneyMonthlyRepository.save(monthlyCash);
+    } catch (err: any) {
+      const error = new Error(err);
+      throw new Error(error.message);
+    }
 
     return;
   }

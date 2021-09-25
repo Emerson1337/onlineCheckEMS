@@ -3,18 +3,24 @@ import BestSellingFoodService from '../services/BestSellingFoodService';
 
 class BestSellingFoodController {
 
-  // constructor() {
-  //   setInterval(() => {
-  //     this.calculateBestSellingFood();
-  //   }, 3000);
-  // }
+  constructor() {
+    setInterval(() => {
+      this.calculateBestSellingFood();
+    }, 2592000);
+  }
 
-  async calculateBestSellingFood(request: Request, response: Response) {
-    const bestSellingFoodService = new BestSellingFoodService();
+  async calculateBestSellingFood() {
+    try {
+      const bestSellingFoodService = new BestSellingFoodService();
 
-    await bestSellingFoodService.storeBestFood();
+      await bestSellingFoodService.storeBestFood();
 
-    return response.json({ "success": "success!" });;
+      return ({ "success": "success!" });
+    } catch (err: any) {
+      const error = new Error(err);
+
+      return (error.message);
+    }
   }
 
 }
