@@ -3,12 +3,6 @@ import MoneyMonthlyService from '../services/MoneyMonthlyService';
 
 class MoneyMonthlyController {
 
-  constructor() {
-    setInterval(() => {
-      this.calculateMoneyMonthly();
-    }, 2592000);
-  }
-
   async calculateMoneyMonthly() {
     try {
       const moneyMonthlyService = new MoneyMonthlyService();

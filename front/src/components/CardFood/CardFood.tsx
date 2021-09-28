@@ -50,6 +50,7 @@ const CardGlobal = styled.div`
   .cardBody {
     background: #fff;
     border-radius: 20px;
+    padding: 0 8px;
     height: 350px;
     width: 250px;
   }

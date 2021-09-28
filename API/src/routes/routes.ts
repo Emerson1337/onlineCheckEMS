@@ -28,13 +28,13 @@ router.post('/api/login', createUsersController.login);
 
 //CRUD COMIDAS
 router.post('/api/create-food', auth.authMiddleware, createFoodController.handleCreateFood);
-router.get('/api/list-foods', auth.authMiddleware, createFoodController.handleListAllFoods);
+router.get('/api/list-foods', createFoodController.handleListAllFoods);
 router.delete('/api/remove-food/:name', auth.authMiddleware, createFoodController.handleRemoveFood);
 router.patch('/api/update-food/:nameToEdit', auth.authMiddleware, createFoodController.handleEditFood);
 
 //CRIAÇÃO E LISTAGEM DE TAGS DE COMIDAS
 router.post('/api/create-tag-food', auth.authMiddleware, createFoodTypeController.handleCreate);
-router.get('/api/list-tags', auth.authMiddleware, createFoodTypeController.handleListAllTags);
+router.get('/api/list-tags', createFoodTypeController.handleListAllTags);
 router.delete('/api/remove-tag/:name', auth.authMiddleware, createFoodTypeController.handleRemoveTag);
 router.patch('/api/update-tag/:tagToEdit', auth.authMiddleware, createFoodTypeController.handleEditTag);
 

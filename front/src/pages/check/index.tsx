@@ -1,13 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import styled from "styled-components";
-import BtnCategory from "../../components/BtnCategory/BtnCategory";
 import CardFood from '../../components/CardFood/CardFood';
 
 import { FiShoppingCart } from 'react-icons/fi';
 import FinishOrderModal from '../../components/Modals/modalFinishOrder';
+import api from '../../services/api';
+import BtnCategory from '../../components/BtnCategory/BtnCategory';
 
 export default function Check() {
 
+  //LISTING CATEGORIES
+  const [allCategories, SetAllCategories] = useState([]);
+
+  useEffect(() => {
+    api.get('/api/list-tags').then((categories: any) => {
+      SetAllCategories(categories.data);
+    }).catch((error) => {
+      console.log("Ops! " + error);
+    })
+
+  }, [])
+
+  //LISTING FOODS
+
+
+  //MODAL CONFIG
   const [isVisibleModal, SetIsVisibleModal] = useState(false);
 
   useEffect(() => {
@@ -37,10 +54,12 @@ export default function Check() {
         <p className="explain">Escolha o tipo de comida abaixo para checar o cardápio!</p>
       </BannerCategory>
       <SelectCategory className="container">
-        <BtnCategory category="Pães" />
-        <BtnCategory category="Pizzas" />
-        <BtnCategory category="Pastéis" />
-        <BtnCategory category="Salgados" />
+        {
+          allCategories &&
+          allCategories.map((category, key) => {
+            return <BtnCategory key={category['id']} category={category['name']} />
+          })
+        }
       </SelectCategory>
       <Products>
         <CardFood name="Pizza de chocolate" price={32} description="

@@ -2,11 +2,6 @@ import { Request, Response } from 'express';
 import MonthSalesService from '../services/MonthSalesService';
 
 class MonthSalesController {
-  constructor() {
-    setInterval(async () => {
-      this.clearTable();
-    }, 2592000);
-  }
 
   async insertNewSale(request: Request, response: Response) {
     try {

@@ -4,6 +4,7 @@ import { getCustomRepository } from 'typeorm';
 import * as months from '../assets/months.json';
 
 class MoneyMonthlyService {
+
   async storeMoneyMonthly() {
     const moneyMonthlyRepository = getCustomRepository(MoneyMonthlyRepository);
     const monthSalesRepository = getCustomRepository(MonthSalesRespository);
