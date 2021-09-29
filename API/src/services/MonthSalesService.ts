@@ -7,48 +7,48 @@ import * as yup from 'yup';
 interface MonthSaleData {
   nameFood: string,
   tagFood: string,
+  description: string,
   priceFood: number,
 }
 
 class MonthSalesService {
 
-  async addNewMonthSale({ nameFood, tagFood, priceFood }: MonthSaleData) {
+  async addNewMonthSale({ nameFood, tagFood, description, priceFood }: MonthSaleData) {
 
     const foodTypeRepository = getCustomRepository(FoodTypesRepository);
 
     let schema = yup.object().shape({
-      name: yup.string().required(),
-      price: yup.number().required(),
-      description: yup.string().required(),
-      createdOn: yup.date().default(function () {
-        return new Date();
-      }),
+      nameFood: yup.string().required(),
+      tagFood: yup.string().required(),
     });
 
-    const credentialsTrue = await schema.isValid({ nameFood, tagFood, priceFood });
+    const credentialsTrue = await schema.isValid({ nameFood, tagFood });
     const specialCharacters = "/([~!@#$%^&*+=-[],,/{}|:<>?])";
 
     if (!credentialsTrue) {
-      throw new Error("Não é permitido caracteres especiais em nenhum dos campos!");
+      return new Error("Não é permitido caracteres especiais em nenhum dos campos!");
     }
 
     for (let i = 0; i < specialCharacters.length; i++) {
       if (nameFood.indexOf(specialCharacters[i]) != -1) {
-        throw new Error("Nome inválido!");
+        return new Error("Nome inválido!");
       }
       if (tagFood.indexOf(specialCharacters[i]) != -1) {
-        throw new Error("Descrição inválida!");
+        return new Error("Categoria inválida!");
+      }
+      if (description.indexOf(specialCharacters[i]) != -1) {
+        return new Error("Descrição inválida!");
       }
     }
 
     if (priceFood <= 0) {
-      throw new Error("Preço inválido!");
+      return new Error("Preço inválido!");
     }
 
-    const foodTypeExists = foodTypeRepository.findOne(tagFood);
+    const foodTypeExists = await foodTypeRepository.findOne({ where: { name: tagFood } });
 
     if (!foodTypeExists) {
-      throw new Error("Essa categoria não existe!");
+      return new Error("Essa categoria não existe!");
     }
 
     const monthSalesRepository = getCustomRepository(MonthSalesRespository);
@@ -62,7 +62,7 @@ class MonthSalesService {
         await monthSalesRepository.save(updateSale);
       } catch (err: any) {
         const error = new Error(err);
-        throw new Error(error.message);
+        return new Error(error.message);
       }
       return { Success: "Venda efetuada com sucesso!" };
     }
@@ -70,6 +70,7 @@ class MonthSalesService {
     const newSale = monthSalesRepository.create({
       nameFood,
       tagFood,
+      description,
       priceFood,
       frequency: 1
     })

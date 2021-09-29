@@ -13,7 +13,7 @@ export class CreateAllMonthSalesTable1632360137235 implements MigrationInterface
                         isPrimary: true
                     },
                     {
-                        name: 'nameFood',
+                        name: 'name',
                         type: 'varchar',
                     },
                     {
@@ -21,7 +21,7 @@ export class CreateAllMonthSalesTable1632360137235 implements MigrationInterface
                         type: 'varchar'
                     },
                     {
-                        name: 'priceFood',
+                        name: 'price',
                         type: 'float'
                     },
                     {

@@ -1,6 +1,7 @@
 import { getCustomRepository } from "typeorm";
 import FoodTypesRepository from "../repositories/FoodTypesRepository";
 import * as yup from 'yup';
+import FoodsRepository from "../repositories/FoodsRepository";
 
 class FoodTypeService {
   async create(name: string) {
@@ -17,22 +18,23 @@ class FoodTypeService {
     const specialCharacters = "/([~!@#$%^&*+=-[],,/{}|:<>?])";
 
     if (!credentialsTrue) {
-      throw new Error("O nome da categoria é inválido!")
+      return new Error("O nome da categoria é inválido!")
     }
 
     if (name.length <= 0) {
-      throw new Error("Senha curta demais!");
+      return new Error("Senha curta demais!");
     }
 
     for (let i = 0; i < specialCharacters.length; i++) {
       if (name.indexOf(specialCharacters[i]) != -1) {
-        throw new Error("Nome inválido!");
+        return new Error("Nome inválido!");
       }
     }
+
     const foodAlreadyExists = await foodTypesRepository.findOne({ name });
 
     if (foodAlreadyExists) {
-      throw new Error("Essa categoria já existe!");
+      return new Error("Essa categoria já existe!");
     }
 
     const foodType = foodTypesRepository.create({ name });
@@ -54,7 +56,7 @@ class FoodTypeService {
     const tag = await foodTypeRepository.findOne({ name });
 
     if (!tag) {
-      throw new Error("Essa categoria não existe!");
+      return new Error("Essa categoria não existe!");
     }
 
     await foodTypeRepository.remove(tag);
@@ -70,7 +72,7 @@ class FoodTypeService {
     let tag = await foodTypesRepository.findOne({ name: tagToEdit });
 
     if (!tag) {
-      throw new Error("Essa categoria não existe!");
+      return new Error("Essa categoria não existe!");
     }
 
     await foodTypesRepository.update(
@@ -81,7 +83,7 @@ class FoodTypeService {
     tag = await foodTypesRepository.findOne({ name })
 
     if (!tag) {
-      throw new Error("Nada encontrado!");
+      return new Error("Nada encontrado!");
     }
 
     return tag;

@@ -31,30 +31,30 @@ class CreateUserService {
     const credentialsTrue = await schema.isValid({ name, email, password });
 
     if (!credentialsTrue) {
-      throw new Error("Email/Nome inválido!")
+      return new Error("Email/Nome inválido!")
     }
 
 
     if (name.length <= 0) {
-      throw new Error("Nome curto demais!")
+      return new Error("Nome curto demais!")
     }
 
     for (let i = 0; i < specialCharacters.length; i++) {
       if (name.indexOf(specialCharacters[i]) != -1) {
-        throw new Error("Nome inválido!")
+        return new Error("Nome inválido!")
       }
     }
 
     if (password.length < 8) {
-      throw new Error("Senha curta demais!")
+      return new Error("Senha curta demais!")
     }
 
     if (!regex.test(password)) {
-      throw new Error("Senha inválida! Insira pelo menos um número.")
+      return new Error("Senha inválida! Insira pelo menos um número.")
     }
 
     if (userAlreadyExists) {
-      throw new Error('Esse endereço de e-mail já foi cadastrado!');
+      return new Error('Esse endereço de e-mail já foi cadastrado!');
     }
 
     const passwordEncrypted = await hash(password, 8);
@@ -69,7 +69,7 @@ class CreateUserService {
       await userRepository.save(user);
     } catch (err: any) {
       const error = new Error(err);
-      throw new Error(error.message);
+      return new Error(error.message);
     }
 
     return user;
@@ -87,20 +87,20 @@ class CreateUserService {
 
     const credentialsTrue = await schema.isValid({ email, password });
     if (!credentialsTrue) {
-      throw new Error("E-mail inválido!")
+      return new Error("E-mail inválido!")
     }
 
     const usersRepository = getCustomRepository(UsersRepository);
     const userExists = await usersRepository.findOne({ email });
 
     if (!userExists) {
-      throw new Error("E-mail/senha incorreto!")
+      return new Error("E-mail/senha incorreto!")
     }
 
     const passwordMatch = await compare(password, userExists.password);
 
     if (!passwordMatch) {
-      throw new Error("E-mail/senha incorreto!")
+      return new Error("E-mail/senha incorreto!")
     }
 
     const TOKEN_ASSIGN = String(process.env.TOKEN_ASSIGN);

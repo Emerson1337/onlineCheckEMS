@@ -28,7 +28,7 @@ class MoneyMonthlyService {
       await moneyMonthlyRepository.save(monthlyCash);
     } catch (err: any) {
       const error = new Error(err);
-      throw new Error(error.message);
+      return new Error(error.message);
     }
 
     return ({ 'Success': 'sucesso!' });

@@ -20,6 +20,9 @@ class MonthSales {
   tagFood: string;
 
   @Column()
+  description: string;
+
+  @Column()
   priceFood: number;
 
   @Column()

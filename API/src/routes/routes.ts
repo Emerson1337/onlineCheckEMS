@@ -22,7 +22,7 @@ const auth = new Auth();
 const router = Router();
 
 //ROTAS DA API
-//TRATATIVAS DE USUÁRIO
+//TRATATIVAS DE USUARIO
 router.post('/api/signup', verifyCreateUserValidator, createUsersController.createUser);
 router.post('/api/login', createUsersController.login);
 
@@ -31,15 +31,19 @@ router.post('/api/create-food', auth.authMiddleware, createFoodController.handle
 router.get('/api/list-foods', createFoodController.handleListAllFoods);
 router.delete('/api/remove-food/:name', auth.authMiddleware, createFoodController.handleRemoveFood);
 router.patch('/api/update-food/:nameToEdit', auth.authMiddleware, createFoodController.handleEditFood);
+router.get('/api/list-by-tag/:id', createFoodController.listByTag);
+router.get('/api/list-top-foods', createFoodController.listBestMonthSellingFoods);
 
-//CRIAÇÃO E LISTAGEM DE TAGS DE COMIDAS
+//CRIACAO E LISTAGEM DE TAGS DE COMIDAS
 router.post('/api/create-tag-food', auth.authMiddleware, createFoodTypeController.handleCreate);
 router.get('/api/list-tags', createFoodTypeController.handleListAllTags);
 router.delete('/api/remove-tag/:name', auth.authMiddleware, createFoodTypeController.handleRemoveTag);
 router.patch('/api/update-tag/:tagToEdit', auth.authMiddleware, createFoodTypeController.handleEditTag);
 
-//ROTAS DE TESTE
-router.get('/api/bestfood', bestSellingCategoryController.calculateBestSellingCategory);
+//REGISTOR DE NOVA VENDA
+router.get('/api/sale', monthSalesController.insertNewSale);
 
+//ROTAS DE TESTE
+router.get('/api/sale', monthSalesController.insertNewSale);
 
 export default router;

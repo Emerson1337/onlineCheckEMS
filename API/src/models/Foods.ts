@@ -26,7 +26,7 @@ class Foods {
   description: string;
 
   @Column()
-  foodType: string;
+  tagFood: string;
 
   @CreateDateColumn()
   created_at: Date;

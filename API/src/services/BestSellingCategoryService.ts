@@ -2,8 +2,6 @@ import BestSellingCategoryRepository from '../repositories/BestSellingCategoryRe
 import MonthSalesRespository from '../repositories/MonthSalesRepository';
 import { getCustomRepository } from 'typeorm';
 import * as months from '../assets/months.json';
-import FoodTypesRepository from '../repositories/FoodTypesRepository';
-import FoodTypes from '../models/FoodTypes';
 import FoodTypeService from '../services/FoodTypeService';
 
 
@@ -20,7 +18,7 @@ class BestSellingCategoryService {
     var aux = await monthSalesRepository.find();
 
     if (!aux.length) {
-      throw new Error('Nenhuma venda registrada neste mês!');
+      return new Error('Nenhuma venda registrada neste mês!');
     }
 
     allCategories.forEach(async category => {
@@ -67,7 +65,7 @@ class BestSellingCategoryService {
       await bestSellingCategoryRepository.save(bestCategory);
     } catch (err: any) {
       const error = new Error(err);
-      throw new Error(error.message);
+      return new Error(error.message);
     }
 
     return bestCategory;
