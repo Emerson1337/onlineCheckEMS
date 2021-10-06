@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 export class Auth {
   async authMiddleware(request: Request, response: Response, next: NextFunction) {
     const token = request.headers.authorization;
+
     if (!token) {
       return response.status(403).send({
         error: "no token provide"

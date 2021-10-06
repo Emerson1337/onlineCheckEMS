@@ -17,6 +17,19 @@ class BestSellingFoodController {
     }
   }
 
+  async topTenFoods() {
+    try {
+      const bestSellingFoodService = new BestSellingFoodService();
+
+      const foods = bestSellingFoodService.topTenFoods();
+
+      return foods;
+    } catch (err: any) {
+      const error = new Error(err);
+
+      return (error.message);
+    }
+  }
 }
 
 export default BestSellingFoodController;

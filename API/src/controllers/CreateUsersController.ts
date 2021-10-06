@@ -27,7 +27,7 @@ class CreateUsersController {
     } catch (err: any) {
       const error = new Error(err);
 
-      return response.status(500).json(error.message);
+      return response.status(403).json(err.message);
     }
   }
 }

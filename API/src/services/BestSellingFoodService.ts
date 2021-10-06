@@ -35,6 +35,19 @@ class BestSellingFoodService {
 
     return;
   }
+
+  async topTenFoods() {
+    const monthSalesRepository = getCustomRepository(MonthSalesRespository);
+
+    const topTenFoods = await monthSalesRepository.find({
+      order: {
+        frequency: "DESC",
+      },
+      take: 10
+    });
+
+    return topTenFoods;
+  }
 }
 
 export default BestSellingFoodService;

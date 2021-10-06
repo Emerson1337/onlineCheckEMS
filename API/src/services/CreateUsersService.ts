@@ -87,20 +87,20 @@ class CreateUserService {
 
     const credentialsTrue = await schema.isValid({ email, password });
     if (!credentialsTrue) {
-      return new Error("E-mail inválido!")
+      throw new Error("E-mail inválido!")
     }
 
     const usersRepository = getCustomRepository(UsersRepository);
     const userExists = await usersRepository.findOne({ email });
 
     if (!userExists) {
-      return new Error("E-mail/senha incorreto!")
+      throw new Error("E-mail/senha incorreto!")
     }
 
     const passwordMatch = await compare(password, userExists.password);
 
     if (!passwordMatch) {
-      return new Error("E-mail/senha incorreto!")
+      throw new Error("E-mail/senha incorreto!")
     }
 
     const TOKEN_ASSIGN = String(process.env.TOKEN_ASSIGN);

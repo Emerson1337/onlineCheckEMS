@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import AuthController from '../controllers/AuthController';
 import BestSellingCategoryController from '../controllers/BestSellingCategoryController';
 import BestSellingFoodController from '../controllers/BestSellingFoodController';
 import CreateFoodController from '../controllers/CreateFoodController';
@@ -15,7 +16,8 @@ const createUsersController = new CreateUsersController();
 const createFoodController = new CreateFoodController();
 const createFoodTypeController = new CreateFoodTypeController();
 const monthSalesController = new MonthSalesController();
-const bestSellingCategoryController = new BestSellingCategoryController();
+const bestSellingFoodController = new BestSellingFoodController();
+const authController = new AuthController();
 
 const auth = new Auth();
 
@@ -25,6 +27,7 @@ const router = Router();
 //TRATATIVAS DE USUARIO
 router.post('/api/signup', verifyCreateUserValidator, createUsersController.createUser);
 router.post('/api/login', createUsersController.login);
+router.post('/api/authenticated', auth.authMiddleware, authController.auth);
 
 //CRUD COMIDAS
 router.post('/api/create-food', auth.authMiddleware, createFoodController.handleCreateFood);
