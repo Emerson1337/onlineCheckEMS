@@ -2,15 +2,20 @@ import React, { useEffect, useState } from 'react';
 import styled from "styled-components";
 import CardFood from '../../components/CardFood/CardFood';
 
+import notfound from '../../assets/notfound.png';
+import ReactLoading from "react-loading";
+
 import { FiShoppingCart } from 'react-icons/fi';
 import FinishOrderModal from '../../components/Modals/modalFinishOrder';
 import api from '../../services/api';
 import BtnCategory from '../../components/BtnCategory/BtnCategory';
+import FadeIn from 'react-fade-in/lib/FadeIn';
 
 export default function Check() {
 
   //LISTING CATEGORIES
   const [allCategories, SetAllCategories] = useState([]);
+  const [loading, SetLoading] = useState(true);
 
   useEffect(() => {
     api.get('/api/list-tags').then((categories: any) => {
@@ -22,7 +27,53 @@ export default function Check() {
   }, [])
 
   //LISTING FOODS
+  const [allFoods, SetAllFoods] = useState([]);
 
+  useEffect(() => {
+    api.get('/api/list-top-foods').then((foods: any) => {
+      SetAllFoods([]);
+
+      SetLoading(false);
+      SetAllFoods(foods.data);
+    }).catch((error) => {
+      SetAllFoods([]);
+
+      SetLoading(false);
+      console.log("Ops! " + error);
+    })
+  }, []);
+
+  function getFoodsByTag(tagId: any) {
+
+    if (tagId.length) {
+      SetLoading(true);
+
+      api.get(`/api/list-by-tag/${tagId}`).then((foods: any) => {
+        SetAllFoods([]);
+
+        SetLoading(false);
+        SetAllFoods(foods.data);
+      }).catch((error) => {
+        SetAllFoods([]);
+
+        SetLoading(false);
+        console.log("Ops! " + error);
+      })
+    } else {
+      SetLoading(true);
+      api.get('/api/list-top-foods').then((foods: any) => {
+        SetAllFoods([]);
+
+        SetLoading(false);
+        SetAllFoods(foods.data);
+      }).catch((error) => {
+        SetAllFoods([]);
+
+        SetLoading(false);
+        console.log("Ops! " + error);
+      })
+    }
+  }
 
   //MODAL CONFIG
   const [isVisibleModal, SetIsVisibleModal] = useState(false);
@@ -54,30 +105,39 @@ export default function Check() {
         <p className="explain">Escolha o tipo de comida abaixo para checar o cardápio!</p>
       </BannerCategory>
       <SelectCategory className="container">
+        <div onClick={() => (getFoodsByTag([]))}>
+          <BtnCategory key={0} category={'Top do mês'} />
+        </div>
         {
           allCategories &&
           allCategories.map((category, key) => {
-            return <BtnCategory key={category['id']} category={category['name']} />
+            return (
+              <div onClick={() => (getFoodsByTag(category['id']))}>
+                <BtnCategory key={category['id']} category={category['name']} />
+              </div>
+            );
           })
         }
       </SelectCategory>
-      <Products>
-        <CardFood name="Pizza de chocolate" price={32} description="
-          Ingredientes: Banana, chocolate, molho de tomate e pizza.Ingredientes:
-          Banana, 
-        " />
-        <CardFood name="Pizza de chocolate" price={32} description="
-          Ingredientes: Banana, chocolate, molho de tomate e pizza.Ingredientes:
-          Banana, 
-        " />
-        <CardFood name="Pizza de chocolate" price={32} description="
-          Ingredientes: Banana, chocolate, molho de tomate e pizza.Ingredientes:
-          Banana, 
-        " />
-        <CardFood name="Pizza de chocolate" price={32} description="
-          Ingredientes: Banana, chocolate, molho de tomate e pizza.Ingredientes:
-          Banana, 
-        " />
+      <Products id="cardFoods">
+        {
+          loading ? <ReactLoading type={'cylon'} color={'#FA4A0C'} /> : null
+        }
+        {
+          !loading ?
+            (
+              allFoods.length ?
+                allFoods.map((food, key) => {
+                  return <FadeIn>
+                    <CardFood key={food['id']} name={food['name'] || food['nameFood']} price={food['price'] || food['priceFood']} description={food['description']} />
+                  </FadeIn>
+                })
+                :
+                <h2>
+                  <img src={notfound} alt="Nada encontrado." />
+                </h2>
+            ) : null
+        }
       </Products>
     </>
   )
@@ -121,14 +181,18 @@ const SelectCategory = styled.section`
 
 const Products = styled.section`
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   flex-wrap: wrap;
   padding: 0 10%;
   padding-bottom: 100px;
 
   @media(max-width: 768px) {
     justify-content: center;
-    
+  }
+
+  h2 img {
+    width: 300px;
+    height: 200px;
   }
 `;
 

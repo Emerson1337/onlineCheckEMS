@@ -34,6 +34,9 @@ export default function CardFood({ name, price, description }: cardProps) {
 }
 
 const CardGlobal = styled.div`
+  transition: opacity 0.5s;
+  opacity: 1;
+  
   margin-top: 40px;
   background: #FF4200;
   padding: 10px 0 0 0;

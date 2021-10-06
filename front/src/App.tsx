@@ -3,9 +3,16 @@ import './App.css';
 import Footer from './components/Footer/Footer';
 import Navbar from './components/Navbar/Navbar';
 import Routes from './routes';
+import FadeIn from 'react-fade-in';
 
 function App() {
   const [blackHeader, setBlackHeader] = useState(false);
+  const [spin, setSpin] = useState(true);
+
+  useEffect(() => {
+    setSpin(false);
+  }, []);
+
   useEffect(() => {
     const scrollListener = () => {
       if (window.scrollY >= 500) {
@@ -23,16 +30,23 @@ function App() {
   return (
     <>
       {
-        window.location.pathname === '/check' ||
-          window.location.pathname === '/'
-          ?
-          <>
-            <Navbar colorNav={blackHeader} />
-            <Routes />
-            <Footer />
-          </>
-          :
-          <Routes />
+        !spin &&
+        <>
+          {
+            window.location.pathname === '/check' ||
+              window.location.pathname === '/'
+              ?
+              <>
+                <Navbar colorNav={blackHeader} />
+                <FadeIn>
+                  <Routes />
+                  <Footer />
+                </FadeIn>
+              </>
+              :
+              <Routes />
+          }
+        </>
       }
     </>
   );

@@ -1,38 +1,78 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import logo from '../../assets/logo.png';
+import api from '../../services/api';
+import { Alert } from 'antd';
 
 export default function Login() {
+
+  const [hasError, setHasError] = useState(false);
+  const [messageError, setMessageError] = useState([]);
+
+  function login() {
+    const email = $('#email').val();
+    const password = $('#password').val();
+
+    api.post('/api/login', { email, password }).then((response) => {
+
+      setHasError(false);
+      localStorage.setItem('Authorization', `${response.data}`);
+
+      window.location.href = "/dashboard";
+
+    }).catch((error) => {
+
+      setHasError(true);
+      setMessageError(error.response.data);
+      console.log("oops " + error.response.data);
+
+    })
+  }
 
   return (
     <Container>
       <Form>
         <img src={logo} alt="Airbnb logo" />
-        {/* {this.state.error && <p>{this.state.error}</p>} */}
+        <Errors>
+          {
+            hasError ? <Alert message={messageError} type="error" showIcon /> : null
+          }
+        </Errors>
         <input
+          id="email"
           type="email"
           placeholder="Endereço de e-mail"
         />
         <input
+          id="password"
           type="password"
           placeholder="Senha"
         />
-        <button type="submit">Entrar</button>
+        <button onClick={() => login()} type="button">Entrar</button>
       </Form>
     </Container>
   );
 }
 
+export const Errors = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  height: 20px;
+`;
+
 export const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
   height: 100vh;
 `;
 
 export const Form = styled.form`
   width: 400px;
-  height: 380px;
+  height: 450px;
   background: #fff;
   padding: 20px;
   display: flex;

@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Layout, Menu } from 'antd';
 import {
   MenuUnfoldOutlined,
@@ -17,109 +17,129 @@ import GraphPieDashboard from '../../components/Graphs/GraphsDashboard';
 import GraphColumnDashboard from '../../components/Graphs/GraphColumnDashboard';
 import GraphLineDashboard from '../../components/Graphs/GraphLineDashboard';
 import IndexCategories from '../../components/IndexCategories/IndexCategories';
+import FadeIn from 'react-fade-in/lib/FadeIn';
+import api from '../../services/api';
 
 const { SubMenu } = Menu;
 
 const { Header, Sider, Content } = Layout;
 
-export default class Dashboard extends React.Component {
+export default function Dashboard() {
 
-  state = {
-    collapsed: false,
-    menu: 1,
+  const [collapsed, setCollapsed] = useState(false);
+  const [menu, setMenu] = useState(1);
+  const [isAuth, setIsAuth] = useState(false);
+
+  const toggle = () => {
+    setCollapsed(!collapsed);
   };
 
-  toggle = () => {
-    this.setState({
-      collapsed: !this.state.collapsed,
-    });
+  const changeMenu = (value: any) => {
+    setMenu(value);
   };
 
-  changeMenu = (value: any) => {
-    this.setState({
-      menu: value,
-    });
-  };
-
-  render() {
-    return (
-      <Styles>
-        <Layout>
-          <Sider trigger={null} collapsible collapsed={this.state.collapsed}>
-            <div className="logo">
-              <h5>GESTÃO</h5>
-            </div>
-            <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
-              <Menu.Item key="1" onClick={() => this.changeMenu(1)} icon={<PlusSquareFilled />}>
-                Criar Categoria
-              </Menu.Item>
-              <Menu.Item key="2" onClick={() => this.changeMenu(2)} icon={<PlusCircleFilled />}>
-                Adicionar Comida
-              </Menu.Item>
-              <Menu.Item key="3" onClick={() => this.changeMenu(3)} icon={<ContactsOutlined />}>
-                Listar Categorias
-              </Menu.Item>
-              <Menu.Item key="4" onClick={() => this.changeMenu(4)} icon={<ContactsOutlined />}>
-                Listar Comidas
-              </Menu.Item>
-              <SubMenu key="5" icon={<AreaChartOutlined />} title="Estatísticas">
-                <Menu.Item key="5" onClick={() => this.changeMenu(5)}>
-                  Vendas Produtos
-                </Menu.Item>
-                <Menu.Item key="6" onClick={() => this.changeMenu(6)}>
-                  Saídas Prod. Mensais
-                </Menu.Item>
-                <Menu.Item key="7" onClick={() => this.changeMenu(7)}>
-                  Vendas Mensais (R$)
-                </Menu.Item>
-              </SubMenu>
-            </Menu>
-          </Sider>
-          <Layout className="site-layout">
-            <Header className="site-layout-background" style={{ fontSize: 25 }}>
-              {React.createElement(this.state.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
-                className: 'trigger',
-                onClick: this.toggle,
-              })}
-            </Header>
-            <Content
-              className="site-layout-background"
-              style={{
-                margin: '24px 16px',
-                padding: 24,
-                minHeight: '100vh',
-              }}
-            >
-              {
-                this.state.menu === 1 ?
-                  <CreateCategory />
-                  :
-                  this.state.menu === 2 ?
-                    <CreateFood />
-                    :
-                    this.state.menu === 3 ?
-                      <IndexCategories />
-                      :
-                      this.state.menu === 4 ?
-                        <IndexFoods />
-                        :
-                        this.state.menu === 5 ?
-                          <GraphPieDashboard />
-                          :
-                          this.state.menu === 6 ?
-                            <GraphColumnDashboard />
-                            :
-                            this.state.menu === 7 ?
-                              <GraphLineDashboard />
-                              :
-                              ''
-              }
-            </Content>
-          </Layout>
-        </Layout>
-      </Styles >
-    );
+  const auth = (value: any) => {
+    setIsAuth(value);
   }
+
+  useEffect(() => {
+    const token = localStorage.getItem('Authorization');
+    api.post('/api/authenticated', api.defaults.headers.authorization = `Bearer ${token}`).then((response) => {
+      auth(true);
+    }).catch((error) => {
+      auth(false);
+      return window.location.replace('/admin');
+    });
+  }, [])
+
+
+  return (
+    <Styles>
+      {
+        isAuth ?
+          <Layout>
+            <Sider trigger={null} collapsible collapsed={collapsed}>
+              <div className="logo">
+                <h5>GESTÃO</h5>
+              </div>
+              <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
+                <Menu.Item key="1" onClick={() => changeMenu(1)} icon={<PlusSquareFilled />}>
+                  Criar Categoria
+                </Menu.Item>
+                <Menu.Item key="2" onClick={() => changeMenu(2)} icon={<PlusCircleFilled />}>
+                  Adicionar Comida
+                </Menu.Item>
+                <Menu.Item key="3" onClick={() => changeMenu(3)} icon={<ContactsOutlined />}>
+                  Listar Categorias
+                </Menu.Item>
+                <Menu.Item key="4" onClick={() => changeMenu(4)} icon={<ContactsOutlined />}>
+                  Listar Comidas
+                </Menu.Item>
+                <SubMenu key="5" icon={<AreaChartOutlined />} title="Estatísticas">
+                  <Menu.Item key="5" onClick={() => changeMenu(5)}>
+                    Vendas Produtos
+                  </Menu.Item>
+                  <Menu.Item key="6" onClick={() => changeMenu(6)}>
+                    Saídas Prod. Mensais
+                  </Menu.Item>
+                  <Menu.Item key="7" onClick={() => changeMenu(7)}>
+                    Vendas Mensais (R$)
+                  </Menu.Item>
+                </SubMenu>
+              </Menu>
+            </Sider>
+            <Layout className="site-layout">
+              <Header className="site-layout-background" style={{ fontSize: 25 }}>
+                {
+                  collapsed ?
+                    <MenuUnfoldOutlined onClick={() => toggle()} />
+                    :
+                    <MenuFoldOutlined onClick={() => toggle()} />
+                }
+              </Header>
+              <Content
+                className="site-layout-background"
+                style={{
+                  margin: '24px 16px',
+                  padding: 24,
+                  minHeight: '100vh',
+                }}
+              >
+                <FadeIn>
+                  {
+                    menu === 1 ?
+                      <CreateCategory />
+                      :
+                      menu === 2 ?
+                        <CreateFood />
+                        :
+                        menu === 3 ?
+                          <IndexCategories />
+                          :
+                          menu === 4 ?
+                            <IndexFoods />
+                            :
+                            menu === 5 ?
+                              <GraphPieDashboard />
+                              :
+                              menu === 6 ?
+                                <GraphColumnDashboard />
+                                :
+                                menu === 7 ?
+                                  <GraphLineDashboard />
+                                  :
+                                  ''
+                  }
+                </FadeIn>
+              </Content>
+            </Layout>
+          </Layout>
+          :
+          null
+      }
+
+    </Styles >
+  );
 }
 
 const Styles = styled.div`

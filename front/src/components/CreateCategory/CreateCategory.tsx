@@ -1,21 +1,28 @@
+/* eslint-disable no-template-curly-in-string */
 import React from 'react';
 import { Form, Input, Button } from 'antd';
 import styled from 'styled-components';
+import api from '../../services/api';
+import { Alert } from 'antd';
 
 const layout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 16 },
 };
 
-/* eslint-disable no-template-curly-in-string */
 const validateMessages = {
   required: '${label} é obrigatório!',
 };
-/* eslint-enable no-template-curly-in-string */
 
 export default function CreateCategory() {
   const onFinish = (values: any) => {
-    console.log(values);
+    // const name = values.name;
+    // const userJWT = localStorage.getItem("Authorization");
+    // api.post('/api/create-tag-food', { name, userJWT }).then((response) => {
+    //   $('#teste').val(`<Alert message="Adicionado com sucesso!" type="success" showIcon />`)
+    // }).catch((error) => {
+    //   $('#teste').val(`<Alert message="${error}!" type="error" showIcon />`)
+    // })
   };
 
   return (
@@ -23,7 +30,7 @@ export default function CreateCategory() {
       <h2>🥘 Criar Categorias para comidas</h2>
       <hr />
       <Form {...layout} name="nest-messages" onFinish={onFinish} validateMessages={validateMessages}>
-        <Form.Item name={['user', 'name']} label="Nome" rules={[{ required: true }]}>
+        <Form.Item name={['name']} label="Nome" rules={[{ required: true }]}>
           <Input />
         </Form.Item>
         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>

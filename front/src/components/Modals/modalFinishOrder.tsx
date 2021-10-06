@@ -3,19 +3,21 @@ import { IoMdClose } from 'react-icons/io';
 import styled from 'styled-components';
 import { Switch } from 'antd';
 import { CloseOutlined, CheckOutlined } from '@ant-design/icons';
-import Animate from 'rc-animate';
+import FadeIn from 'react-fade-in/lib/FadeIn';
+import { Fade } from '@material-ui/core';
+
 export default function FinishOrderModal({ onClose = () => { }, children }: any) {
 
-  const [toDelivery, SetToDelivery] = useState(false);
-  const [cashPayment, SetcashPayment] = useState(false);
-  const [rest, SetRest] = useState(false);
+  const [toDelivery, setToDelivery] = useState(false);
+  const [cashPayment, setcashPayment] = useState(false);
+  const [rest, setRest] = useState(false);
 
   function switchDelivery() {
-    toDelivery ? SetToDelivery(false) : SetToDelivery(true);
+    toDelivery ? setToDelivery(false) : setToDelivery(true);
   }
 
   function switchPayment() {
-    rest ? SetRest(false) : SetRest(true);
+    rest ? setRest(false) : setRest(true);
   }
 
   function checkPaymentMethod() {
@@ -40,102 +42,117 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
   return (
     <>
       <UIModalOverlay>
-        <div>
-          <div id="buttonToClose">
-            <ButtonClose className="btn" onClick={onClose} type="button">
-              <IoMdClose color={'black'} size={18} />
-            </ButtonClose>
-          </div>
-          <InfoBuy>
-            <h5 id="transition-modal-title">Finalizando Pedidos</h5>
-            <h1>Valor Total:</h1>
-            <h1>R$ 58,60</h1>
-            <div id="transition-modal-description">
-              <p>Pedidos</p>
-              <p>Pizza Chocolate, qtd: 1: R$ 20,50</p>
-              <p>Pizza Calabresa, qtd: 1: R$ 22,90</p>
+        <FadeIn>
+          <div>
+            <div id="buttonToClose">
+              <ButtonClose className="btn" onClick={onClose} type="button">
+                <IoMdClose color={'black'} size={18} />
+              </ButtonClose>
             </div>
-            <h2>Preencha as informações para finalizar o pedido.</h2>
-          </InfoBuy>
-          <div className="formClient">
-            <form>
-              <div className="form-group">
-                <label htmlFor="name"><strong>Nome:</strong></label>
-                <input type="text" className="form-control" id="name" placeholder="Ex: João Paulo" />
+            <InfoBuy>
+              <h5 id="transition-modal-title">Finalizando Pedidos</h5>
+              <h1>Valor Total: </h1>
+              <h1>R$ 58,60</h1>
+              <div id="transition-modal-description">
+                <p>Pedidos</p>
+                <p>Pizza Chocolate, qtd: 1: R$ 20,50</p>
+                <p>Pizza Calabresa, qtd: 1: R$ 22,90</p>
               </div>
-              <div className="switch form-check">
-                <Switch
-                  checkedChildren={<CheckOutlined />}
-                  unCheckedChildren={<CloseOutlined />}
-                  onChange={() => switchDelivery()} /> Desejo para entrega (Taxa: R$2,00)
-              </div>
-              <Animate
-                component=""
-                transitionName="fade"
-              >
-                {toDelivery ?
-                  <>
-                    <div className="form-group">
-                      <label htmlFor="address"><strong>Endereço:</strong></label>
-                      <input type="text" className="form-control" id="address" placeholder="Ex: Rua Verde, 340" />
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="refference"><strong>Ponto de Referência:</strong></label>
-                      <input type="text" className="form-control" id="refference" placeholder="Ex: Apto; Altos..." />
-                    </div>
-                  </>
-                  :
-                  null
-                }
-              </Animate>
-              <p><strong>Forma de pagamento:</strong></p>
-              <div className="form-check">
-                <input className="form-check-input" onClick={() => { SetcashPayment(false) }} type="radio" name="exampleRadios" id="creditCard" value="option1" />
-                <label className="form-check-label" htmlFor="creditCard">
-                  Cartão (Crédito/Débito)
-                </label>
-              </div>
-              <div className="form-check">
-                <input className="form-check-input" type="radio" onClick={() => { SetcashPayment(true) }} name="exampleRadios" id="cash" value="option2" />
-                <label className="form-check-label" htmlFor="cash">
-                  Dinheiro
-                </label>
-              </div>
-              <div className="form-check">
-                <input className="form-check-input" onClick={() => { SetcashPayment(false) }} type="radio" name="exampleRadios" id="creditCard" value="option1" />
-                <label className="form-check-label" htmlFor="creditCard">
-                  PIX
-                </label>
-              </div>
-              {
-                cashPayment && !rest &&
-                <div id="cashRest">
-                  <label className="number" htmlFor="rest">Quantia p/ troco:</label>
-                  <div id="inputRest" className="col-auto">
-                    <div className="input-group mb-2">
-                      <div className="input-group-prepend">
-                        <div className="input-group-text">R$</div>
-                      </div>
-                      <input type="number" className="form-control" id="rest" placeholder="Ex: 50,00" />
-                    </div>
-                  </div>
+              <h2>Preencha as informações para finalizar o pedido.</h2>
+            </InfoBuy>
+            <div className="formClient">
+              <form>
+                <div className="form-group">
+                  <label htmlFor="name"><strong>Nome: </strong></label>
+                  <input type="text" className="form-control" id="name" placeholder="Ex: João Paulo" />
                 </div>
-              }
-              {
-                cashPayment &&
-                <div id="notCashRest">
+                <div className="switch form-check">
                   <Switch
                     checkedChildren={<CheckOutlined />}
                     unCheckedChildren={<CloseOutlined />}
-                    onChange={() => switchPayment()} /> Não preciso de troco.
+                    onChange={() => switchDelivery()} /> Desejo para entrega (Taxa: R$2,00)
                 </div>
-              }
-            </form>
+                {
+                  toDelivery ?
+                    <Fade in={toDelivery}
+                      style={{ transitionDelay: '100ms' }}>
+                      <div id="adressDelivery">
+                        <div className="form-group">
+                          <label htmlFor="address"><strong>Endereço: </strong></label>
+                          <input type="text" className="form-control" id="address" placeholder="Ex: Rua Verde, 340" />
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="refference"><strong>Ponto de Referência: </strong></label>
+                          <input type="text" className="form-control" id="refference" placeholder="Ex: Apto; Altos..." />
+                        </div>
+                      </div>
+                    </Fade>
+                    :
+                    <Fade in={toDelivery}
+                      style={{ transitionDelay: '100ms' }}>
+                      <div>
+                      </div>
+                    </Fade>
+                }
+                <p><strong>Forma de pagamento: </strong></p>
+                <div className="form-check">
+                  <input className="form-check-input" onClick={() => { setcashPayment(false) }} type="radio" name="exampleRadios" id="creditCard" value="option1" />
+                  <label className="form-check-label" htmlFor="creditCard">
+                    Cartão (Crédito/Débito)
+                  </label>
+                </div>
+                <div className="form-check">
+                  <input className="form-check-input" type="radio" onClick={() => { setcashPayment(true) }} name="exampleRadios" id="cash" value="option2" />
+                  <label className="form-check-label" htmlFor="cash">
+                    Dinheiro
+                  </label>
+                </div>
+                <div className="form-check">
+                  <input className="form-check-input" onClick={() => { setcashPayment(false) }} type="radio" name="exampleRadios" id="creditCard" value="option1" />
+                  <label className="form-check-label" htmlFor="creditCard">
+                    PIX
+                  </label>
+                </div>
+                {
+                  cashPayment && !rest ?
+                    <Fade in={cashPayment}
+                      style={{ transitionDelay: '100ms' }}>
+                      <div id="cashRest">
+                        <label className="number" htmlFor="rest">Quantia p/ troco: </label>
+                        <div id="inputRest" className="col-auto">
+                          <div className="input-group mb-2">
+                            <div className="input-group-prepend">
+                              <div className="input-group-text">R$</div>
+                            </div>
+                            <input type="number" className="form-control" id="rest" placeholder="Ex: 50,00" />
+                          </div>
+                        </div>
+                      </div>
+                    </Fade>
+                    :
+                    <Fade in={cashPayment}
+                      style={{ transitionDelay: '100ms' }}>
+                      <div>
+
+                      </div>
+                    </Fade>
+                }
+                {
+                  cashPayment &&
+                  <div id="notCashRest">
+                    <Switch
+                      checkedChildren={<CheckOutlined />}
+                      unCheckedChildren={<CloseOutlined />}
+                      onChange={() => switchPayment()} /> Não preciso de troco.
+                  </div>
+                }
+              </form>
+            </div>
+            <FinishBuy>
+              <ButtonFinishOrder onClick={() => { checkPaymentMethod() }} className="btn">Finalizar Pedido</ButtonFinishOrder>
+            </FinishBuy>
           </div>
-          <FinishBuy>
-            <ButtonFinishOrder onClick={() => { checkPaymentMethod() }} className="btn">Finalizar Pedido</ButtonFinishOrder>
-          </FinishBuy>
-        </div>
+        </FadeIn>
       </UIModalOverlay >
     </>
   );
