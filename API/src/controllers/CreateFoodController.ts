@@ -8,11 +8,13 @@ class createFoodController {
       const foodService = new FoodService();
 
       const food = await foodService.create({ name, price, tagFood, description });
-
-      return response.json(food);
+      if (food) {
+        return response.status(200).json("Comida criada com sucesso!");
+      } else {
+        throw new Error("Erro inesperado.");
+      }
     } catch (err: any) {
-      const error = new Error(err);
-      return response.status(500).json(error.message);
+      return response.status(500).json(err.message);
     }
   }
 
@@ -21,23 +23,28 @@ class createFoodController {
       const foodService = new FoodService();
 
       const foods = await foodService.listAllFoods();
-
-      return response.status(200).json(foods);
+      if (foods) {
+        return response.status(200).json("Listagem feita com sucesso!");
+      } else {
+        throw new Error("Erro inesperado.");
+      }
     } catch (err: any) {
-      const error = new Error(err);
-      return response.status(500).json(error.message);
+      return response.status(500).json(err.message);
     }
   }
 
   async handleRemoveFood(request: Request, response: Response) {
     try {
-      const { name } = request.params;
+      const { id } = request.params;
       const foodService = new FoodService();
-      const result = await foodService.removeFood(name)
-      return response.status(200).json(result);
+      const result = await foodService.removeFood(id)
+      if (result) {
+        return response.status(200).json(`A comida 🍕 ${result.name} foi deletada com sucesso!`);
+      } else {
+        throw new Error("Erro inesperado.")
+      }
     } catch (err: any) {
-      const error = new Error(err);
-      return response.status(500).json(error.message);
+      return response.status(500).json(err.message);
     }
   }
 
@@ -48,12 +55,11 @@ class createFoodController {
       const foodService = new FoodService();
       const food = await foodService.editFood(nameToEdit, { name, price, tagFood, description });
       if (!food) {
-        return new Error("This food doesn't exist!");
+        throw new Error("Essa comida não existe!");
       }
-      return response.status(200).json(food);
+      return response.status(200).json("Comida editada com sucesso!");
     } catch (err: any) {
-      const error = new Error(err);
-      return response.status(500).json(error.message);
+      return response.status(500).json(err.message);
     }
   }
 
@@ -65,9 +71,7 @@ class createFoodController {
 
       return response.status(200).json(foods);
     } catch (err: any) {
-      const error = new Error(err);
-
-      return response.status(500).json(error.message);
+      return response.status(500).json(err.message);
     }
   }
 
@@ -78,9 +82,7 @@ class createFoodController {
 
       return response.status(200).json(foods);
     } catch (err: any) {
-      const error = new Error(err);
-
-      return response.status(500).json(error.message);
+      return response.status(500).json(err.message);
     }
   }
 }

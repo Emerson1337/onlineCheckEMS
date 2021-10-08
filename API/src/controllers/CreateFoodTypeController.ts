@@ -7,12 +7,13 @@ class CreateFoodTypeController {
       const { name } = request.body;
       const foodTypeService = new FoodTypeService();
       const food = await foodTypeService.create(name);
-
-      return response.status(200).json(food);
+      if (food) {
+        return response.status(200).json("Categoria criada com sucesso!");
+      } else {
+        throw new Error("Erro inesperado.");
+      }
     } catch (err: any) {
-      const error = new Error(err);
-
-      return response.status(500).json(error.message);
+      return response.status(500).json(err.message);
     }
   }
 
@@ -31,15 +32,16 @@ class CreateFoodTypeController {
 
   async handleRemoveTag(request: Request, response: Response) {
     try {
-      const { name } = request.params;
+      const { id } = request.params;
       const foodTypeService = new FoodTypeService();
-      const result = await foodTypeService.removeTag(name);
-
-      return response.status(200).json(result);
+      const result = await foodTypeService.removeTag(id);
+      if (result) {
+        return response.status(200).json(`A categoria 🍕 ${result.name} foi deletada com sucesso!`);
+      } else {
+        throw new Error("Erro inesperado.")
+      }
     } catch (err: any) {
-      const error = new Error(err);
-
-      return response.status(500).json(error.message);
+      return response.status(500).json(err.message);
     }
 
   }

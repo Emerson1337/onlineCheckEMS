@@ -40,8 +40,8 @@ router.get('/api/list-top-foods', createFoodController.listBestMonthSellingFoods
 //CRIACAO E LISTAGEM DE TAGS DE COMIDAS
 router.post('/api/create-tag-food', auth.authMiddleware, createFoodTypeController.handleCreate);
 router.get('/api/list-tags', createFoodTypeController.handleListAllTags);
-router.delete('/api/remove-tag/:name', auth.authMiddleware, createFoodTypeController.handleRemoveTag);
-router.patch('/api/update-tag/:tagToEdit', auth.authMiddleware, createFoodTypeController.handleEditTag);
+router.delete('/api/remove-tag/:id', auth.authMiddleware, createFoodTypeController.handleRemoveTag);
+router.patch('/api/update-tag/:id', auth.authMiddleware, createFoodTypeController.handleEditTag);
 
 //REGISTOR DE NOVA VENDA
 router.get('/api/sale', monthSalesController.insertNewSale);

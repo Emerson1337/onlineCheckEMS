@@ -19,36 +19,33 @@ class FoodService {
     let schema = yup.object().shape({
       name: yup.string().required(),
       price: yup.number().required(),
-      description: yup.string().required(),
-      createdOn: yup.date().default(function () {
-        return new Date();
-      }),
+      description: yup.string().required()
     });
 
-    const credentialsTrue = await schema.isValid({ name, price, tagFood, description });
-    const specialCharacters = "/([~!@#$%^&*+=-[],,/{}|:<>?])";
+    // const credentialsTrue = await schema.isValid({ price, tagFood });
+    const specialCharacters = "/([!@#$%^&*+=-[],,/{}|:<>?])";
 
-    if (!credentialsTrue) {
-      return new Error("Não é permitido caracteres especiais em nenhum dos campos!");
-    }
+    // if (!credentialsTrue) {
+    //   throw new Error("Não é permitido caracteres especiais em nenhum dos campos!");
+    // }
 
     for (let i = 0; i < specialCharacters.length; i++) {
       if (name.indexOf(specialCharacters[i]) != -1) {
-        return new Error("Nome inválido!");
+        throw new Error("Nome inválido!");
       }
       if (description.indexOf(specialCharacters[i]) != -1) {
-        return new Error("Descrição inválida!");
+        throw new Error("Descrição inválida!");
       }
     }
 
     if (price <= 0) {
-      return new Error("Preço inválido!");
+      throw new Error("Preço inválido!");
     }
 
     const foodTypeExists = foodsTypeRepository.findOne(tagFood);
 
     if (!foodTypeExists) {
-      return new Error("Essa categoria não existe!");
+      throw new Error("Essa categoria não existe!");
     }
 
     const food = foodsRepository.create({ name, price, tagFood, description });
@@ -57,7 +54,7 @@ class FoodService {
       await foodsRepository.save(food);
     } catch (err: any) {
       const error = new Error(err);
-      return new Error(error.message);
+      throw new Error(error.message);
     }
 
     return food;
@@ -86,23 +83,22 @@ class FoodService {
     return food;
   }
 
-  public async removeFood(name: string) {
+  public async removeFood(id: string) {
     const foodsRepository = getCustomRepository(FoodsRepository);
 
-    const foods = await foodsRepository.findOne({ name });
+    const foods = await foodsRepository.findOne(id);
 
     if (!foods) {
-      return new Error("Essa comida não existe!");
+      throw new Error("Essa comida não existe!");
     }
     try {
       await foodsRepository.remove(foods);
     } catch (err: any) {
       const error = new Error(err);
-      return new Error(error.message);
+      throw new Error(error.message);
     }
-    return {
-      message: "Comida removida com sucesso!"
-    };
+
+    return foods;
   }
 
   public async listAllFoods() {

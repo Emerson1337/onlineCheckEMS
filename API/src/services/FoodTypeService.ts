@@ -8,33 +8,30 @@ class FoodTypeService {
     const foodTypesRepository = getCustomRepository(FoodTypesRepository);
 
     let schema = yup.object().shape({
-      name: yup.string().required(),
-      createdOn: yup.date().default(function () {
-        return new Date();
-      }),
+      name: yup.string().required()
     });
 
     const credentialsTrue = await schema.isValid({ name });
     const specialCharacters = "/([~!@#$%^&*+=-[],,/{}|:<>?])";
 
     if (!credentialsTrue) {
-      return new Error("O nome da categoria é inválido!")
+      throw new Error("O nome da categoria é inválido!")
     }
 
     if (name.length <= 0) {
-      return new Error("Senha curta demais!");
+      throw new Error("Senha curta demais!");
     }
 
     for (let i = 0; i < specialCharacters.length; i++) {
       if (name.indexOf(specialCharacters[i]) != -1) {
-        return new Error("Nome inválido!");
+        throw new Error("Nome inválido!");
       }
     }
 
     const foodAlreadyExists = await foodTypesRepository.findOne({ name });
 
     if (foodAlreadyExists) {
-      return new Error("Essa categoria já existe!");
+      throw new Error("Essa categoria já existe!");
     }
 
     const foodType = foodTypesRepository.create({ name });
@@ -51,19 +48,22 @@ class FoodTypeService {
     return foodsTypes;
   }
 
-  async removeTag(name: string) {
+  async removeTag(id: string) {
     const foodTypeRepository = getCustomRepository(FoodTypesRepository);
-    const tag = await foodTypeRepository.findOne({ name });
+    const tag = await foodTypeRepository.findOne(id);
 
     if (!tag) {
-      return new Error("Essa categoria não existe!");
+      throw new Error("Essa categoria não existe!");
     }
 
-    await foodTypeRepository.remove(tag);
+    const success = await foodTypeRepository.remove(tag);
 
-    return {
-      message: "Sucesso!"
+    if (success) {
+      return tag
+    } else {
+      throw new Error("Erro ao salvar no banco de dados.")
     }
+
   }
 
   async editTag(tagToEdit: string, name: string) {
