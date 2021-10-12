@@ -4,7 +4,6 @@ import { Form, Input, Button } from 'antd';
 import styled from 'styled-components';
 import api from '../../services/api';
 import { Alert } from 'antd';
-import { clear } from 'console';
 
 const layout = {
   labelCol: { span: 8 },

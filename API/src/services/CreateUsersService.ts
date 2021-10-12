@@ -80,9 +80,6 @@ class CreateUserService {
     let schema = yup.object().shape({
       email: yup.string().email(),
       password: yup.string().required(),
-      createdOn: yup.date().default(function () {
-        return new Date();
-      }),
     });
 
     const credentialsTrue = await schema.isValid({ email, password });

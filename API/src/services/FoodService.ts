@@ -60,16 +60,16 @@ class FoodService {
     return food;
   }
 
-  public async editFood(nameEdit: string, { name, price, tagFood, description }: Request) {
+  public async editFood(id: string, { name, price, tagFood, description }: Request) {
     const foodRepository = getCustomRepository(FoodsRepository);
 
-    let food = await foodRepository.findOne({ where: { name: nameEdit } });
+    let food = await foodRepository.findOne({ where: { id } });
 
     if (!food) {
       return new Error("Essa comida não existe!");
     }
 
-    await foodRepository.update({ name: nameEdit }, {
+    await foodRepository.update({ id }, {
       name,
       price,
       description,

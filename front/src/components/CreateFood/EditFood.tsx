@@ -22,10 +22,12 @@ const validateMessages = {
 };
 /* eslint-enable no-template-curly-in-string */
 
-export default function CreateFood() {
+export default function EditFood({ props, food }: any) {
   const [hasError, setHasError] = useState(false);
   const [success, setSuccess] = useState(false);
   const [message, setMessage] = useState('');
+
+  const [defaultCategory, setDefaultCategory] = useState('');
 
   const [allCategories, setAllCategories] = useState([]);
 
@@ -40,7 +42,7 @@ export default function CreateFood() {
     });
   }, [])
 
-  const createFood = (values: any) => {
+  const updateFood = (values: any) => {
     const name = values.food.name;
     const description = values.food.description;
     const tagFood = values.food.tagFood;
@@ -48,7 +50,7 @@ export default function CreateFood() {
     const image = values.food.image;
     const userJWT = localStorage.getItem("Authorization");
 
-    api.post('/api/create-food', { name, tagFood, description, price, image, userJWT }).then((response) => {
+    api.post(`/api/update-food/${values.food.id}`, { name, tagFood, description, price, image, userJWT }).then((response) => {
       setHasError(false);
       setSuccess(true);
       setMessage(response.data);
@@ -70,9 +72,12 @@ export default function CreateFood() {
         hasError &&
         <Alert className="mb-4" message={message} type="error" showIcon />
       }
-      <h2>🥫  Adicionar novas comidas</h2>
+      <h2>Editar comida</h2>
       <hr />
-      <Form {...layout} name="nest-messages" onFinish={createFood} validateMessages={validateMessages}>
+      <Form {...layout} name="nest-messages" onFinish={updateFood} validateMessages={validateMessages}>
+        <Form.Item hidden name={['food', 'id']} label="Nome" rules={[{ required: true }]}>
+          <Input />
+        </Form.Item>
         <Form.Item name={['food', 'name']} label="Nome" rules={[{ required: true }]}>
           <Input />
         </Form.Item>
@@ -80,12 +85,15 @@ export default function CreateFood() {
           <Select defaultValue="Selecione uma categoria">
             {
               allCategories.map((category) => (
-                <Select.Option value={category['id']}>{category['name']}</Select.Option>
+                category['id'] === food.id ?
+                  <Select.Option selected="selected" value={category['id']}>{category['name']}</Select.Option>
+                  :
+                  <Select.Option value={category['id']}>{category['name']}</Select.Option>
               ))
             }
           </Select>
         </Form.Item>
-        <Form.Item name={['food', 'description']} label="Descrição/ingredientes" rules={[{ required: true }]}>
+        <Form.Item name={['food', 'description']} label="Ingredientes" rules={[{ required: true }]}>
           <Input />
         </Form.Item>
         <Form.Item name={['food', 'price']} label="Preço" rules={[{ type: 'number', required: true }]}>
@@ -103,7 +111,7 @@ export default function CreateFood() {
         </Form.Item>
         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
           <Button type="primary" htmlType="submit">
-            Adicionar
+            Editar
           </Button>
         </Form.Item>
       </Form>

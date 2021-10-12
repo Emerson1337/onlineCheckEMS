@@ -21,7 +21,7 @@ export default function IndexCategories() {
       setHasError(true);
       setMessage(error.response.data);
     })
-  }, [allCategories]);
+  }, []);
 
   function deleteTag(tagId: string) {
     api.delete(`/api/remove-tag/${tagId}`).then((response) => {

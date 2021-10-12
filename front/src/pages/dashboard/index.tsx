@@ -76,13 +76,13 @@ export default function Dashboard() {
                   Listar Comidas
                 </Menu.Item>
                 <SubMenu key="5" icon={<AreaChartOutlined />} title="Estatísticas">
-                  <Menu.Item key="5" onClick={() => changeMenu(5)}>
+                  <Menu.Item key="6" onClick={() => changeMenu(6)}>
                     Vendas Produtos
                   </Menu.Item>
-                  <Menu.Item key="6" onClick={() => changeMenu(6)}>
+                  <Menu.Item key="7" onClick={() => changeMenu(7)}>
                     Saídas Prod. Mensais
                   </Menu.Item>
-                  <Menu.Item key="7" onClick={() => changeMenu(7)}>
+                  <Menu.Item key="8" onClick={() => changeMenu(8)}>
                     Vendas Mensais (R$)
                   </Menu.Item>
                 </SubMenu>
@@ -119,13 +119,13 @@ export default function Dashboard() {
                           menu === 4 ?
                             <IndexFoods />
                             :
-                            menu === 5 ?
+                            menu === 6 ?
                               <GraphPieDashboard />
                               :
-                              menu === 6 ?
+                              menu === 7 ?
                                 <GraphColumnDashboard />
                                 :
-                                menu === 7 ?
+                                menu === 8 ?
                                   <GraphLineDashboard />
                                   :
                                   ''

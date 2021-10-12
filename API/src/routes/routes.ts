@@ -32,8 +32,8 @@ router.post('/api/authenticated', auth.authMiddleware, authController.auth);
 //CRUD COMIDAS
 router.post('/api/create-food', auth.authMiddleware, createFoodController.handleCreateFood);
 router.get('/api/list-foods', createFoodController.handleListAllFoods);
-router.delete('/api/remove-food/:name', auth.authMiddleware, createFoodController.handleRemoveFood);
-router.patch('/api/update-food/:nameToEdit', auth.authMiddleware, createFoodController.handleEditFood);
+router.delete('/api/remove-food/:id', auth.authMiddleware, createFoodController.handleRemoveFood);
+router.patch('/api/update-food/:id', auth.authMiddleware, createFoodController.handleEditFood);
 router.get('/api/list-by-tag/:id', createFoodController.listByTag);
 router.get('/api/list-top-foods', createFoodController.listBestMonthSellingFoods);
 
