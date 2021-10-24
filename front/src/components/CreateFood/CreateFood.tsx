@@ -1,3 +1,4 @@
+import React from 'react';
 import { Form, Input, InputNumber, Button, Upload, Space, Select } from 'antd';
 import {
   UploadOutlined,
