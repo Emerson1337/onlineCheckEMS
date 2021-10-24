@@ -33,8 +33,8 @@ class FoodService {
       if (name.indexOf(specialCharacters[i]) != -1) {
         throw new Error("Nome inválido!");
       }
-      if (description.indexOf(specialCharacters[i]) != -1) {
-        throw new Error("Descrição inválida!");
+      if (description.length < 3) {
+        throw new Error("A descrição pricesa ter entre 3 e 100 caracteres!");
       }
     }
 
@@ -66,21 +66,17 @@ class FoodService {
     let food = await foodRepository.findOne({ where: { id } });
 
     if (!food) {
-      return new Error("Essa comida não existe!");
+      return new Error("Comida não encontrada!");
     }
 
-    await foodRepository.update({ id }, {
+    const foodUpdated = await foodRepository.update({ id }, {
       name,
       price,
       description,
       tagFood
     });
 
-    food = await foodRepository.findOne({ name });
-    if (!food) {
-      return new Error("Comida não encontrada!");
-    }
-    return food;
+    return foodUpdated;
   }
 
   public async removeFood(id: string) {

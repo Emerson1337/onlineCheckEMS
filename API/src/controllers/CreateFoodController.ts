@@ -50,7 +50,7 @@ class createFoodController {
 
   async handleEditFood(request: Request, response: Response) {
     try {
-      const { name, price, tagFood, description } = request.body;
+      const { name, tagFood, description, price, image } = request.body;
       const { id } = request.params;
       const foodService = new FoodService();
       const food = await foodService.editFood(id, { name, price, tagFood, description });

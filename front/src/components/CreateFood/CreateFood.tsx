@@ -1,9 +1,10 @@
-import { Form, Input, InputNumber, Button, Upload, Space, Alert, Select } from 'antd';
+import { Form, Input, InputNumber, Button, Upload, Space, Select } from 'antd';
 import {
   UploadOutlined,
 } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import api from '../../services/api';
+import { toast } from 'react-toastify';
 const layout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 16 },
@@ -23,20 +24,14 @@ const validateMessages = {
 /* eslint-enable no-template-curly-in-string */
 
 export default function CreateFood() {
-  const [hasError, setHasError] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [message, setMessage] = useState('');
 
   const [allCategories, setAllCategories] = useState([]);
 
   useEffect(() => {
     api.get('/api/list-tags').then((response) => {
-      setHasError(false);
       setAllCategories(response.data);
     }).catch((error) => {
-      setSuccess(false);
-      setHasError(true);
-      setMessage(error.response.data);
+      toast.error(error.response.data);
     });
   }, [])
 
@@ -49,27 +44,14 @@ export default function CreateFood() {
     const userJWT = localStorage.getItem("Authorization");
 
     api.post('/api/create-food', { name, tagFood, description, price, image, userJWT }).then((response) => {
-      setHasError(false);
-      setSuccess(true);
-      setMessage(response.data);
-      $(':input').val('');
+      toast.success(response.data);
     }).catch((error) => {
-      setHasError(true);
-      setSuccess(false);
-      setMessage(error.response.data);
+      toast.error(error.response.data);
     })
   };
 
   return (
     <>
-      {
-        success &&
-        <Alert className="mb-4" message={message} type="success" showIcon />
-      }
-      {
-        hasError &&
-        <Alert className="mb-4" message={message} type="error" showIcon />
-      }
       <h2>🥫  Adicionar novas comidas</h2>
       <hr />
       <Form {...layout} name="nest-messages" onFinish={createFood} validateMessages={validateMessages}>

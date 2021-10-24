@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.min.css';
 import './App.css';
 import Footer from './components/Footer/Footer';
 import Navbar from './components/Navbar/Navbar';
-import Routes from './routes';
+import Routes from './routes/routes';
 import FadeIn from 'react-fade-in';
 
 function App() {
@@ -29,6 +31,7 @@ function App() {
 
   return (
     <>
+      <ToastContainer />
       {
         !spin &&
         <>

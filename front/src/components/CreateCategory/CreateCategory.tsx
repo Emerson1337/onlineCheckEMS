@@ -1,9 +1,9 @@
 /* eslint-disable no-template-curly-in-string */
-import React, { useState } from 'react';
+import React from 'react';
+import { toast } from 'react-toastify';
 import { Form, Input, Button } from 'antd';
 import styled from 'styled-components';
 import api from '../../services/api';
-import { Alert } from 'antd';
 
 const layout = {
   labelCol: { span: 8 },
@@ -16,35 +16,18 @@ const validateMessages = {
 
 export default function CreateCategory() {
 
-  const [hasError, setHasError] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [message, setMessage] = useState('');
-
   const createCategory = (values: any) => {
     const name = values.name;
     const userJWT = localStorage.getItem("Authorization");
     api.post('/api/create-tag-food', { name, userJWT }).then((response) => {
-      setHasError(false);
-      setSuccess(true);
-      setMessage(response.data);
-      $('.nameInput').val('');
+      toast.success(response.data);
     }).catch((error) => {
-      setHasError(true);
-      setSuccess(false);
-      setMessage(error.response.data);
+      toast.error(error.response.data);
     })
   };
 
   return (
     <Styles>
-      {
-        success &&
-        <Alert className="mb-4" message={message} type="success" showIcon />
-      }
-      {
-        hasError &&
-        <Alert className="mb-4" message={message} type="error" showIcon />
-      }
       <h2>🥘 Criar Categorias para comidas</h2>
       <hr />
       <Form {...layout} name="nest-messages" onFinish={createCategory} validateMessages={validateMessages}>

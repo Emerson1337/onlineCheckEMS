@@ -1,120 +1,91 @@
-import { Form, Input, InputNumber, Button, Upload, Space, Alert, Select } from 'antd';
-import {
-  UploadOutlined,
-} from '@ant-design/icons';
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import React from "react";
 import { useEffect, useState } from 'react';
 import api from '../../services/api';
-const layout = {
-  labelCol: { span: 8 },
-  wrapperCol: { span: 16 },
-};
-
-/* eslint-disable no-template-curly-in-string */
-const validateMessages = {
-  required: '${label} é obrigatório!',
-  types: {
-    email: '${label} is not a valid email!',
-    number: '${label} is not a valid number!',
-  },
-  number: {
-    range: '${label} deve ser maior que 0',
-  },
-};
-/* eslint-enable no-template-curly-in-string */
+import { toast } from 'react-toastify';
 
 export default function EditFood({ props, food }: any) {
-  const [hasError, setHasError] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [message, setMessage] = useState('');
-
-  const [defaultCategory, setDefaultCategory] = useState('');
 
   const [allCategories, setAllCategories] = useState([]);
+  const [nameFood, setName] = useState('');
+  const [categoryFood, setCategory] = useState('');
+  const [descriptionFood, setDescription] = useState('');
+  const [priceFood, setPrice] = useState('');
+  const [imageFood, setImage] = useState('');
+
+  useEffect(() => {
+    setName(food.name);
+    setCategory(food.tagFood);
+    setDescription(food.description);
+    setPrice(food.price);
+    setImage(food.image);
+  }, [])
 
   useEffect(() => {
     api.get('/api/list-tags').then((response) => {
-      setHasError(false);
-      setAllCategories(response.data);
+      toast.success(response.data);
+      setAllCategories(response.data)
     }).catch((error) => {
-      setSuccess(false);
-      setHasError(true);
-      setMessage(error.response.data);
+      toast.error(error.response.data);
     });
   }, [])
 
-  const updateFood = (values: any) => {
-    const name = values.food.name;
-    const description = values.food.description;
-    const tagFood = values.food.tagFood;
-    const price = values.food.price;
-    const image = values.food.image;
+  function updateFood() {
+    const name = nameFood;
+    const tagFood = categoryFood;
+    const description = descriptionFood;
+    const price = priceFood;
+    const image = imageFood;
     const userJWT = localStorage.getItem("Authorization");
-
-    api.post(`/api/update-food/${values.food.id}`, { name, tagFood, description, price, image, userJWT }).then((response) => {
-      setHasError(false);
-      setSuccess(true);
-      setMessage(response.data);
-      $(':input').val('');
+    console.log({ name, tagFood, description, price, image, userJWT });
+    api.put(`/api/update-food/${food.id}`, { name, tagFood, description, price, image, userJWT }).then((response) => {
+      toast.success(response.data);
     }).catch((error) => {
-      setHasError(true);
-      setSuccess(false);
-      setMessage(error.response.data);
+      toast.error(error.response.data);
     })
   };
 
   return (
     <>
-      {
-        success &&
-        <Alert className="mb-4" message={message} type="success" showIcon />
-      }
-      {
-        hasError &&
-        <Alert className="mb-4" message={message} type="error" showIcon />
-      }
-      <h2>Editar comida</h2>
+      <h2>{food.name}</h2>
       <hr />
-      <Form {...layout} name="nest-messages" onFinish={updateFood} validateMessages={validateMessages}>
-        <Form.Item hidden name={['food', 'id']} label="Nome" rules={[{ required: true }]}>
-          <Input />
-        </Form.Item>
-        <Form.Item name={['food', 'name']} label="Nome" rules={[{ required: true }]}>
-          <Input />
-        </Form.Item>
-        <Form.Item name={['food', 'tagFood']} label="Categoria" rules={[{ required: true }]}>
-          <Select defaultValue="Selecione uma categoria">
-            {
-              allCategories.map((category) => (
-                category['id'] === food.id ?
-                  <Select.Option selected="selected" value={category['id']}>{category['name']}</Select.Option>
-                  :
-                  <Select.Option value={category['id']}>{category['name']}</Select.Option>
-              ))
-            }
-          </Select>
-        </Form.Item>
-        <Form.Item name={['food', 'description']} label="Ingredientes" rules={[{ required: true }]}>
-          <Input />
-        </Form.Item>
-        <Form.Item name={['food', 'price']} label="Preço" rules={[{ type: 'number', required: true }]}>
-          <InputNumber />
-        </Form.Item>
-        <Form.Item name={['food', 'image']} label="Imagem" rules={[{ required: true }]}>
-          <Space direction="vertical" style={{ width: '100%' }} size="large">
-            <Upload
-              listType="picture"
-              maxCount={1}
-            >
-              <Button icon={<UploadOutlined />}>Enviar (Max: 1)</Button>
-            </Upload>
-          </Space>
-        </Form.Item>
-        <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
-          <Button type="primary" htmlType="submit">
-            Editar
-          </Button>
-        </Form.Item>
-      </Form>
+      <form>
+        <div className="form-row">
+          <div className="col-md-10 mb-3">
+            <label htmlFor="validationDefault01">Nome *</label>
+            <input onChange={(event) => setName(event.target.value)} defaultValue={food.name} type="text" className="form-control" id="validationDefault01" placeholder="Nome da comida" required />
+          </div>
+        </div>
+        <div className="form-row">
+          <div className="col-md-10 mb-3">
+            <label htmlFor="validationDefault03">Categoria *</label>
+            <select onChange={(event) => setCategory(event.target.value)} className="custom-select mr-sm-2" id="inlineFormCustomSelect">
+              {
+                allCategories.map((category) => (
+                  category['id'] === food.tagFood ?
+                    <option key={category['id']} value={category['id']} selected>{category['name']}</option>
+                    :
+                    <option key={category['id']} value={category['id']}>{category['name']}</option>
+                ))
+              }
+            </select>
+          </div>
+        </div>
+        <div className="form-row">
+          <div className="col-md-10 mb-3">
+            <label htmlFor="validationDefault04">Descrição *</label>
+            <textarea onChange={(event) => setDescription(event.target.value)} defaultValue={food.description} className="form-control" rows={2} id="validationDefault04" placeholder="Quais os ingredientes da comida?" required></textarea>
+          </div>
+        </div>
+        <div className="form-row">
+          <div className="col-md-6 mb-3">
+            <label htmlFor="validationDefault05">Preço *</label>
+            <input onChange={(event) => setPrice(event.target.value)} defaultValue={food.price} type="number" className="form-control" id="validationDefault05" placeholder="" required />
+          </div>
+        </div>
+        <button onClick={updateFood} className="btn btn-primary" type="button">Atualizar</button>
+      </form>
     </>
   );
 };
