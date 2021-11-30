@@ -38,6 +38,7 @@ export default function EditFood({ props, food }: any) {
     const price = priceFood;
     const image = imageFood;
     const userJWT = localStorage.getItem("Authorization");
+
     console.log({ name, tagFood, description, price, image, userJWT });
     api.put(`/api/update-food/${food.id}`, { name, tagFood, description, price, image, userJWT }).then((response) => {
       toast.success(response.data);

@@ -1,6 +1,6 @@
 import { Pie } from '@ant-design/charts';
 
-const GraphPieDashboard: React.FC = () => {
+export default function GraphPieDashboard() {
 
   var data = [
     {
@@ -56,5 +56,3 @@ const GraphPieDashboard: React.FC = () => {
     </>
   );
 };
-
-export default GraphPieDashboard;

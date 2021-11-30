@@ -63,7 +63,7 @@ export default function CreateFood() {
           <Select defaultValue="Selecione uma categoria">
             {
               allCategories.map((category) => (
-                <Select.Option value={category['id']}>{category['name']}</Select.Option>
+                <Select.Option key={category['id']} value={category['id']}>{category['name']}</Select.Option>
               ))
             }
           </Select>

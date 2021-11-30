@@ -21,6 +21,7 @@ class MoneyMonthlyService {
     var month = date.getMonth().toString();
 
     const monthlyCash = moneyMonthlyRepository.create({
+      // @ts-ignore
       month: months[month],
       price: totalCash,
     });

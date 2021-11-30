@@ -1,7 +1,7 @@
 import React from 'react';
 import { Column } from '@ant-design/charts';
 
-const GraphColumnDashboard: React.FC = () => {
+export default function GraphColumnDashboard() {
   var data = [
     {
       month: 'Outubro',
@@ -44,5 +44,3 @@ const GraphColumnDashboard: React.FC = () => {
     </>
   );
 };
-
-export default GraphColumnDashboard;

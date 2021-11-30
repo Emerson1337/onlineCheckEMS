@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Line } from '@ant-design/charts';
 import api from '../../services/api';
 
-const GraphLineDashboard: React.FC = () => {
+export default function GraphLineDashboard() {
 
   const [data, setData] = useState([{}])
 
@@ -57,5 +57,3 @@ const GraphLineDashboard: React.FC = () => {
     </>
   );
 };
-
-export default GraphLineDashboard;

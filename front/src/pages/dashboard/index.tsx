@@ -24,9 +24,9 @@ const { SubMenu } = Menu;
 const { Header, Sider, Content } = Layout;
 
 export default function Dashboard() {
-
+  const gui = localStorage.getItem('gui');
   const [collapsed, setCollapsed] = useState(false);
-  const [menu, setMenu] = useState(1);
+  const [menu, setMenu] = useState(gui || '1');
 
   const toggle = () => {
     setCollapsed(!collapsed);
@@ -39,31 +39,31 @@ export default function Dashboard() {
   return (
     <Styles>
       <Layout>
-        <Sider trigger={null} collapsible collapsed={collapsed}>
+        <Sider theme="light" trigger={null} collapsible collapsed={collapsed}>
           <div className="logo">
             <h5>GESTÃO</h5>
           </div>
-          <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
-            <Menu.Item key="1" onClick={() => changeMenu(1)} icon={<PlusSquareFilled />}>
+          <Menu theme="light" mode="inline" defaultSelectedKeys={[menu]}>
+            <Menu.Item key="1" onClick={() => { changeMenu('1'); localStorage.setItem('gui', '1') }} icon={<PlusSquareFilled />}>
               Criar Categoria
             </Menu.Item>
-            <Menu.Item key="2" onClick={() => changeMenu(2)} icon={<PlusCircleFilled />}>
+            <Menu.Item key="2" onClick={() => { changeMenu('2'); localStorage.setItem('gui', '2') }} icon={<PlusCircleFilled />}>
               Adicionar Comida
             </Menu.Item>
-            <Menu.Item key="3" onClick={() => changeMenu(3)} icon={<ContactsOutlined />}>
+            <Menu.Item key="3" onClick={() => { changeMenu('3'); localStorage.setItem('gui', '3') }} icon={<ContactsOutlined />}>
               Listar Categorias
             </Menu.Item>
-            <Menu.Item key="4" onClick={() => changeMenu(4)} icon={<ContactsOutlined />}>
+            <Menu.Item key="4" onClick={() => { changeMenu('4'); localStorage.setItem('gui', '4') }} icon={<ContactsOutlined />}>
               Listar Comidas
             </Menu.Item>
             <SubMenu key="5" icon={<AreaChartOutlined />} title="Estatísticas">
-              <Menu.Item key="6" onClick={() => changeMenu(6)}>
+              <Menu.Item key="6" onClick={() => { changeMenu('6'); localStorage.setItem('gui', '6') }}>
                 Vendas Produtos
               </Menu.Item>
-              <Menu.Item key="7" onClick={() => changeMenu(7)}>
+              <Menu.Item key="7" onClick={() => { changeMenu('7'); localStorage.setItem('gui', '7') }}>
                 Saídas Prod. Mensais
               </Menu.Item>
-              <Menu.Item key="8" onClick={() => changeMenu(8)}>
+              <Menu.Item key="8" onClick={() => { changeMenu('8'); localStorage.setItem('gui', '8') }}>
                 Vendas Mensais (R$)
               </Menu.Item>
             </SubMenu>
@@ -88,25 +88,25 @@ export default function Dashboard() {
           >
             <FadeIn>
               {
-                menu === 1 ?
+                menu === '1' ?
                   <CreateCategory />
                   :
-                  menu === 2 ?
+                  menu === '2' ?
                     <CreateFood />
                     :
-                    menu === 3 ?
+                    menu === '3' ?
                       <IndexCategories />
                       :
-                      menu === 4 ?
+                      menu === '4' ?
                         <IndexFoods />
                         :
-                        menu === 6 ?
+                        menu === '6' ?
                           <GraphPieDashboard />
                           :
-                          menu === 7 ?
+                          menu === '7' ?
                             <GraphColumnDashboard />
                             :
-                            menu === 8 ?
+                            menu === '8' ?
                               <GraphLineDashboard />
                               :
                               ''
