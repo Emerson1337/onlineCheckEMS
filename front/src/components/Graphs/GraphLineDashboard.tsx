@@ -1,48 +1,29 @@
-import React from 'react';
+/* eslint-disable array-callback-return */
+import React, { useEffect, useState } from 'react';
 import { Line } from '@ant-design/charts';
+import api from '../../services/api';
 
 const GraphLineDashboard: React.FC = () => {
-  var data = [
-    {
-      year: '1991',
-      value: 3,
-    },
-    {
-      year: '1992',
-      value: 4,
-    },
-    {
-      year: '1993',
-      value: 3.5,
-    },
-    {
-      year: '1994',
-      value: 5,
-    },
-    {
-      year: '1995',
-      value: 4.9,
-    },
-    {
-      year: '1996',
-      value: 6,
-    },
-    {
-      year: '1997',
-      value: 7,
-    },
-    {
-      year: '1998',
-      value: 9,
-    },
-    {
-      year: '1999',
-      value: 13,
-    },
-  ];
+
+  const [data, setData] = useState([{}])
+
+  //resgatando as informacoes
+  useEffect(() => {
+    api.get('/api/dashboard/money-monthly').then((response) => {
+      response.data.moneyMonthly.map((money: any) => {
+        setData(data => [...data, {
+          month: money.month,
+          value: money.price
+        }])
+      });
+    }).catch((error) => {
+      console.log(error)
+    });
+  }, [])
+
   var config = {
     data: data,
-    xField: 'year',
+    xField: 'month',
     yField: 'value',
     label: {},
     point: {
@@ -66,11 +47,13 @@ const GraphLineDashboard: React.FC = () => {
     },
     interactions: [{ type: 'marker-active' }],
   };
+
   return (
     <>
       <h2>Entradas Mensais 💰 </h2>
       <hr />
       <Line {...config} />
+
     </>
   );
 };

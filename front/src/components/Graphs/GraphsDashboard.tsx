@@ -1,7 +1,7 @@
-import React from 'react';
 import { Pie } from '@ant-design/charts';
 
 const GraphPieDashboard: React.FC = () => {
+
   var data = [
     {
       type: 'Pizza',

@@ -24,16 +24,21 @@ export default function IndexFoods() {
     open ? setReload(false) : setReload(true);
   }
 
-  useEffect(() => {
+  function getFoods() {
     api.get('/api/list-foods').then((response) => {
       setAllFoods(response.data);
     }).catch((error) => {
       toast.error(error.response.data);
     })
+  }
+
+  useEffect(() => {
+    getFoods();
   }, [reload]);
 
   function deleteFood(foodId: string) {
     api.delete(`/api/remove-food/${foodId}`).then((response) => {
+      getFoods();
       toast.success(response.data);
     }).catch((error) => {
       toast.error(error.response.data);

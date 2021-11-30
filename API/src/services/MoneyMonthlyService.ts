@@ -33,6 +33,22 @@ class MoneyMonthlyService {
 
     return ({ 'Success': 'sucesso!' });
   }
+
+  async getMoneyMonthly() {
+    try {
+      const moneyMonthlyRepository = getCustomRepository(MoneyMonthlyRepository);
+      const moneyMonthly = await moneyMonthlyRepository.find({
+        order: {
+          created_at: "ASC",
+        },
+        take: 10
+      });
+      return moneyMonthly;
+    } catch (err: any) {
+      const error = new Error(err);
+      return new Error(error.message);
+    }
+  }
 }
 
 export default MoneyMonthlyService;

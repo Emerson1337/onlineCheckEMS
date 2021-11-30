@@ -16,6 +16,7 @@ const createUsersController = new CreateUsersController();
 const createFoodController = new CreateFoodController();
 const createFoodTypeController = new CreateFoodTypeController();
 const monthSalesController = new MonthSalesController();
+const moneyMonthlyController = new MoneyMonthlyController();
 const bestSellingFoodController = new BestSellingFoodController();
 const authController = new AuthController();
 
@@ -36,6 +37,9 @@ router.delete('/api/remove-food/:id', auth.authMiddleware, createFoodController.
 router.put('/api/update-food/:id', auth.authMiddleware, createFoodController.handleEditFood);
 router.get('/api/list-by-tag/:id', createFoodController.listByTag);
 router.get('/api/list-top-foods', createFoodController.listBestMonthSellingFoods);
+
+//ROTAS DE ANALISES GRAFICAS
+router.get('/api/dashboard/money-monthly', moneyMonthlyController.getMoneyMonthly);
 
 //CRIACAO E LISTAGEM DE TAGS DE COMIDAS
 router.post('/api/create-tag-food', auth.authMiddleware, createFoodTypeController.handleCreate);
