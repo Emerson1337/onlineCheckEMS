@@ -1,5 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react';
-import { Form, Input, InputNumber, Button, Upload, Space, Select } from 'antd';
+import MaskedInput from 'react-text-mask';
+import createNumberMask from 'text-mask-addons/dist/createNumberMask';
+import { Form, Input, Button, Upload, Space, Select } from 'antd';
 import {
   UploadOutlined,
 } from '@ant-design/icons';
@@ -14,13 +17,6 @@ const layout = {
 /* eslint-disable no-template-curly-in-string */
 const validateMessages = {
   required: '${label} é obrigatório!',
-  types: {
-    email: '${label} is not a valid email!',
-    number: '${label} is not a valid number!',
-  },
-  number: {
-    range: '${label} deve ser maior que 0',
-  },
 };
 /* eslint-enable no-template-curly-in-string */
 
@@ -40,7 +36,7 @@ export default function CreateFood() {
     const name = values.food.name;
     const description = values.food.description;
     const tagFood = values.food.tagFood;
-    const price = values.food.price;
+    const price = values.food.price.split('R$').join('').replace(',', '.');
     const image = values.food.image;
     const userJWT = localStorage.getItem("Authorization");
 
@@ -50,6 +46,46 @@ export default function CreateFood() {
       toast.error(error.response.data);
     })
   };
+
+  const defaultMaskOptions = {
+    prefix: 'R$',
+    suffix: '',
+    includeThousandsSeparator: true,
+    thousandsSeparatorSymbol: '.',
+    allowDecimal: true,
+    decimalSymbol: ',',
+    decimalLimit: 2, // how many digits allowed after the decimal
+    integerLimit: 7, // limit length of integer numbers
+    allowNegative: false,
+    allowLeadingZeroes: false,
+  }
+
+  const CurrencyInput = ({ ...inputProps }) => {
+    const currencyMask = createNumberMask(defaultMaskOptions)
+
+    const styles: React.CSSProperties = {
+      boxSizing: 'border-box',
+      margin: '0',
+      fontVariant: 'tabular-nums',
+      listStyle: 'none',
+      fontFeatureSettings: 'tnum',
+      position: 'relative',
+      display: 'inline-block',
+      width: '100%',
+      minWidth: '0',
+      padding: '4px 11px',
+      color: 'rgba(0, 0, 0, 0.85)',
+      fontSize: '14px',
+      lineHeight: '1.5715',
+      backgroundColor: '#fff',
+      backgroundImage: 'none',
+      border: '1px solid #d9d9d9',
+      borderRadius: '2px',
+      transition: 'all 0.3s',
+    }
+
+    return <MaskedInput style={styles} mask={currencyMask} {...inputProps} />
+  }
 
   return (
     <>
@@ -71,8 +107,8 @@ export default function CreateFood() {
         <Form.Item name={['food', 'description']} label="Descrição/ingredientes" rules={[{ required: true }]}>
           <Input />
         </Form.Item>
-        <Form.Item name={['food', 'price']} label="Preço" rules={[{ type: 'number', required: true }]}>
-          <InputNumber />
+        <Form.Item name={['food', 'price']} label="Preço" rules={[{ required: true }]}>
+          <CurrencyInput />
         </Form.Item>
         <Form.Item name={['food', 'image']} label="Imagem" rules={[{ required: true }]}>
           <Space direction="vertical" style={{ width: '100%' }} size="large">

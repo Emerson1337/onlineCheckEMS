@@ -4,6 +4,8 @@ import React from "react";
 import { useEffect, useState } from 'react';
 import api from '../../services/api';
 import { toast } from 'react-toastify';
+import MaskedInput from 'react-text-mask';
+import createNumberMask from 'text-mask-addons/dist/createNumberMask';
 
 export default function EditFood({ props, food }: any) {
 
@@ -47,6 +49,47 @@ export default function EditFood({ props, food }: any) {
     })
   };
 
+
+  const defaultMaskOptions = {
+    prefix: 'R$',
+    suffix: '',
+    includeThousandsSeparator: true,
+    thousandsSeparatorSymbol: '.',
+    allowDecimal: true,
+    decimalSymbol: ',',
+    decimalLimit: 2, // how many digits allowed after the decimal
+    integerLimit: 7, // limit length of integer numbers
+    allowNegative: false,
+    allowLeadingZeroes: false,
+  }
+
+  const CurrencyInput = ({ ...inputProps }) => {
+    const currencyMask = createNumberMask(defaultMaskOptions)
+
+    const styles: React.CSSProperties = {
+      boxSizing: 'border-box',
+      margin: '0',
+      fontVariant: 'tabular-nums',
+      listStyle: 'none',
+      fontFeatureSettings: 'tnum',
+      position: 'relative',
+      display: 'inline-block',
+      width: '100%',
+      minWidth: '0',
+      padding: '4px 11px',
+      color: 'rgba(0, 0, 0, 0.85)',
+      fontSize: '14px',
+      lineHeight: '1.5715',
+      backgroundColor: '#fff',
+      backgroundImage: 'none',
+      border: '1px solid #d9d9d9',
+      borderRadius: '2px',
+      transition: 'all 0.3s',
+    }
+
+    return <MaskedInput style={styles} mask={currencyMask} {...inputProps} />
+  }
+
   return (
     <>
       <h2>{food.name}</h2>
@@ -82,7 +125,7 @@ export default function EditFood({ props, food }: any) {
         <div className="form-row">
           <div className="col-md-6 mb-3">
             <label htmlFor="validationDefault05">Preço *</label>
-            <input onChange={(event) => setPrice(event.target.value)} defaultValue={food.price} type="number" className="form-control" id="validationDefault05" placeholder="" required />
+            <CurrencyInput onChange={(event: any) => setPrice(event.target.value.split('R$').join('').replace(',', '.'))} defaultValue={food.price} required />
           </div>
         </div>
         <button onClick={updateFood} className="btn btn-primary" type="button">Atualizar</button>
