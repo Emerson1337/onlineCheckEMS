@@ -40,8 +40,11 @@ export default function CreateFood() {
     const image = values.food.image;
     const userJWT = localStorage.getItem("Authorization");
 
+    values.food.resetFields();
+
     api.post('/api/create-food', { name, tagFood, description, price, image, userJWT }).then((response) => {
       toast.success(response.data);
+
     }).catch((error) => {
       toast.error(error.response.data);
     })

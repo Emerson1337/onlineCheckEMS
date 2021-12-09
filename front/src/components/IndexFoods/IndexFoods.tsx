@@ -24,6 +24,11 @@ export default function IndexFoods() {
     open ? setReload(false) : setReload(true);
   }
 
+  const closeModal = () => {
+    setEditModal(false);
+    toggle();
+  }
+
   function getFoods() {
     api.get('/api/list-foods').then((response) => {
       setAllFoods(response.data);
@@ -65,7 +70,7 @@ export default function IndexFoods() {
                   description={food['description']}
                 />
                 <h5>
-                  R$ {food['price']}
+                  {Number(food['price']).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                 </h5>
               </List.Item>
 
@@ -84,7 +89,7 @@ export default function IndexFoods() {
               <span>
                 {
                   open &&
-                  <EditFood food={foodSelected} />
+                  <EditFood close={closeModal} food={foodSelected} />
                 }
               </span>
             </Drawer>
