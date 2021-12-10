@@ -11,44 +11,48 @@ class BestSellingCategoryService {
     const monthSalesRepository = getCustomRepository(MonthSalesRespository);
 
     const foodTypeService = new FoodTypeService();
-    const allCategories = await foodTypeService.listAllTags();
+    const allCategories = await foodTypeService.listAllTags(); //picking all categories
 
     var mostFrequentlyCategories: any = [];
 
-    var aux = await monthSalesRepository.find();
+    var allSales = await monthSalesRepository.find(); //all sales
 
-    if (!aux.length) {
+    if (!allSales.length) {
       return new Error('Nenhuma venda registrada neste mês!');
     }
 
     allCategories.forEach(async category => {
-      var aux2 = aux.filter((obj) => {
+      //picking all categories name
+      var allSalesCategoryName = allSales.filter((obj) => {
         return obj.tagFood == category.name;
       })
 
+      //counting total sold by category
       var sum = 0;
-      aux2.forEach(element => {
+      allSalesCategoryName.forEach(element => {
         sum += element.frequency;
       });
 
+      //creating a object with category name and your total sold
       var objectSum = {
         name: category.name,
         frequency: sum
       };
 
+      //array with all sum by category
       mostFrequentlyCategories.push(objectSum);
     });
 
     const sizeObject = mostFrequentlyCategories.length;
 
     var higghestFrequency = 0;
-    var tagFood;
+    var mostFrequentlyTagFood;
 
     for (let i = 0; i < sizeObject; i++) {
       var value = mostFrequentlyCategories[i].frequency;
       if (higghestFrequency < value) {
         higghestFrequency = value;
-        tagFood = mostFrequentlyCategories[i].name;
+        mostFrequentlyTagFood = mostFrequentlyCategories[i].name;
       }
     }
 
@@ -56,8 +60,9 @@ class BestSellingCategoryService {
     var month = date.getMonth().toString();
 
     const bestCategory = bestSellingCategoryRepository.create({
+      // @ts-ignore
       month: months[month],
-      tagFood: tagFood,
+      tagFood: mostFrequentlyTagFood,
       frequency: higghestFrequency,
     });
 

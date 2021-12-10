@@ -18,16 +18,17 @@ class MonthSalesService {
     const foodTypeRepository = getCustomRepository(FoodTypesRepository);
 
     let schema = yup.object().shape({
-      nameFood: yup.string().required(),
-      tagFood: yup.string().required(),
+      nameFood: yup.string().required('O nome da comida é obrigatório.'),
+      tagFood: yup.string().required('A categoria da comida é obrigatória.'),
+      price: yup.number().required('O campo preço é obrigatório'),
+      description: yup.string().required('O campo descrição é obrigatório')
     });
 
-    const credentialsTrue = await schema.isValid({ nameFood, tagFood });
-    const specialCharacters = "/([~!@#$%^&*+=-[],,/{}|:<>?])";
+    await schema.validate({ nameFood, tagFood, description, priceFood }).catch((err) => {
+      throw new Error(err.errors);
+    });
 
-    if (!credentialsTrue) {
-      return new Error("Não é permitido caracteres especiais em nenhum dos campos!");
-    }
+    const specialCharacters = "/([~!@#$%^&*+=-[],,/{}|:<>?])";
 
     for (let i = 0; i < specialCharacters.length; i++) {
       if (nameFood.indexOf(specialCharacters[i]) != -1) {

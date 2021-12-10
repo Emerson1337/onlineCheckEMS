@@ -21,6 +21,7 @@ class BestSellingFoodService {
     var month = date.getMonth().toString();
 
     const bestFood = bestSellingFoodRepository.create({
+      // @ts-ignore
       month: months[month],
       nameFood: mostFrequentlySale.nameFood,
       frequency: mostFrequentlySale.frequency,

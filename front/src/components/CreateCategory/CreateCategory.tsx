@@ -16,11 +16,15 @@ const validateMessages = {
 
 export default function CreateCategory() {
 
+  const [form] = Form.useForm();
+
   const createCategory = (values: any) => {
     const name = values.name;
     const userJWT = localStorage.getItem("Authorization");
+
     api.post('/api/create-tag-food', { name, userJWT }).then((response) => {
       toast.success(response.data);
+      form.resetFields();
     }).catch((error) => {
       toast.error(error.response.data);
     })
@@ -30,7 +34,7 @@ export default function CreateCategory() {
     <Styles>
       <h2>🥘 Criar Categorias para comidas</h2>
       <hr />
-      <Form {...layout} name="nest-messages" onFinish={createCategory} validateMessages={validateMessages}>
+      <Form form={form} {...layout} name="nest-messages" onFinish={createCategory} validateMessages={validateMessages}>
         <Form.Item name={['name']} label="Nome" rules={[{ required: true }]}>
           <Input className="nameInput" />
         </Form.Item>

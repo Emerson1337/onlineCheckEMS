@@ -6,7 +6,7 @@ import api from '../../services/api';
 
 import image from '../../assets/image-category.png';
 import { toast } from 'react-toastify';
-import EditFood from '../CreateFood/EditFood';
+import EditCategory from '../CreateCategory/EditCategory';
 
 export default function IndexCategories() {
 
@@ -18,17 +18,22 @@ export default function IndexCategories() {
   const [open, setOpen] = useState(false);
   const [reload, setReload] = useState(false);
 
-  useEffect(() => {
+  function getTags() {
     api.get('/api/list-tags').then((response) => {
       setAllCategories(response.data);
     }).catch((error) => {
       toast.error(error.response.data);
-    })
+    });
+  }
+
+  useEffect(() => {
+    getTags()
   }, [reload]);
 
   function deleteTag(tagId: string) {
     api.delete(`/api/remove-tag/${tagId}`).then((response) => {
       toast.success(response.data);
+      getTags();
     }).catch((error) => {
       toast.error(error.response.data);
     })
@@ -39,6 +44,11 @@ export default function IndexCategories() {
   const toggle = () => {
     open ? setOpen(false) : setOpen(true);
     open ? setReload(false) : setReload(true);
+  }
+
+  const closeModal = () => {
+    setEditModal(false);
+    toggle();
   }
 
   return (
@@ -52,7 +62,8 @@ export default function IndexCategories() {
             dataSource={allCategories}
             renderItem={item => (
               <List.Item
-                actions={[<a onClick={() => { setEditModal(true); toggle() }} className="btn btn-success text-white" key="list-loadmore-edit">Editar</a>, <a onClick={() => deleteTag(item['id'])} className="btn btn-danger text-white" key="list-loadmore-more">Deletar</a>]}
+                actions={[<a onClick={() => { setEditModal(true); toggle(); setCategorySelected(item) }} className="btn btn-success text-white" key="list-loadmore-edit">Editar</a>,
+                <a onClick={() => deleteTag(item['id'])} className="btn btn-danger text-white" key="list-loadmore-more">Deletar</a>]}
               >
                 <List.Item.Meta
                   avatar={<Avatar src={image} />}
@@ -74,7 +85,7 @@ export default function IndexCategories() {
               <span>
                 {
                   open &&
-                  <EditFood food={categorySelected} />
+                  <EditCategory close={closeModal} category={categorySelected} />
                 }
               </span>
             </Drawer>

@@ -17,17 +17,16 @@ class FoodService {
     const foodsTypeRepository = getCustomRepository(FoodTypesRepository)
 
     let schema = yup.object().shape({
-      name: yup.string().required(),
-      price: yup.number().required(),
-      description: yup.string().required()
+      name: yup.string().required('O campo nome é obrigatório'),
+      price: yup.number().required('O campo preço é obrigatório'),
+      description: yup.string().required('O campo descrição é obrigatório')
     });
 
-    // const credentialsTrue = await schema.isValid({ price, tagFood });
-    const specialCharacters = "/([!@#$%^&*+=-[],,/{}|:<>?])";
+    await schema.validate({ name, price, tagFood, description }).catch((err) => {
+      throw new Error(err.errors);
+    });
 
-    // if (!credentialsTrue) {
-    //   throw new Error("Não é permitido caracteres especiais em nenhum dos campos!");
-    // }
+    const specialCharacters = "/([!@#$%^&*+=-[],,/{}|:<>?])";
 
     for (let i = 0; i < specialCharacters.length; i++) {
       if (name.indexOf(specialCharacters[i]) != -1) {
@@ -62,11 +61,28 @@ class FoodService {
 
   public async editFood(id: string, { name, price, tagFood, description }: Request) {
     const foodRepository = getCustomRepository(FoodsRepository);
+    const foodTypesRepository = getCustomRepository(FoodTypesRepository);
+
+    let schema = yup.object().shape({
+      name: yup.string().required('O campo nome é obrigatório'),
+      price: yup.number().required('O campo preço é obrigatório'),
+      description: yup.string().required('O campo descrição é obrigatório')
+    });
+
+    await schema.validate({ name, price, tagFood, description }).catch((err) => {
+      throw new Error(err.errors);
+    });
 
     let food = await foodRepository.findOne({ where: { id } });
 
     if (!food) {
       return new Error("Comida não encontrada!");
+    }
+
+    let category = await foodTypesRepository.findOne({ where: { id: { tagFood } } });
+
+    if (!category) {
+      return new Error("Categoria não encontrada!");
     }
 
     const foodUpdated = await foodRepository.update({ id }, {

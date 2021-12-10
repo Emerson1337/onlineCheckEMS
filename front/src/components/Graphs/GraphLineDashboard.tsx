@@ -23,11 +23,12 @@ export default function GraphLineDashboard() {
 
   var config = {
     data: data,
+    height: 500,
     xField: 'month',
     yField: 'value',
     label: {},
     point: {
-      size: 5,
+      size: 2,
       shape: 'diamond',
       style: {
         fill: 'white',

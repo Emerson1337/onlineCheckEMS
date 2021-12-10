@@ -54,10 +54,12 @@ class createFoodController {
       const { id } = request.params;
       const foodService = new FoodService();
       const food = await foodService.editFood(id, { name, price, tagFood, description });
-      if (!food) {
-        throw new Error("Essa comida não existe!");
+
+      if (food) {
+        return response.status(200).json("Comida editada com sucesso!");
+      } else {
+        throw new Error("Erro inesperado.");
       }
-      return response.status(200).json("Comida editada com sucesso!");
     } catch (err: any) {
       return response.status(500).json(err.message);
     }

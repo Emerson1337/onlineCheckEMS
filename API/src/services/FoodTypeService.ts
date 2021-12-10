@@ -3,23 +3,27 @@ import FoodTypesRepository from "../repositories/FoodTypesRepository";
 import * as yup from 'yup';
 import FoodsRepository from "../repositories/FoodsRepository";
 
+interface Request {
+  id: string;
+  name: string;
+}
+
 class FoodTypeService {
-  async create(name: string) {
+  public async create(name: string) {
     const foodTypesRepository = getCustomRepository(FoodTypesRepository);
 
     let schema = yup.object().shape({
-      name: yup.string().required()
+      name: yup.string().required('O campo nome é obrigatório'),
     });
 
-    const credentialsTrue = await schema.isValid({ name });
+    await schema.validate({ name }).catch((err) => {
+      throw new Error(err.errors);
+    });
+
     const specialCharacters = "/([~!@#$%^&*+=-[],,/{}|:<>?])";
 
-    if (!credentialsTrue) {
-      throw new Error("O nome da categoria é inválido!")
-    }
-
     if (name.length <= 0) {
-      throw new Error("Senha curta demais!");
+      throw new Error("Nome curto demais!");
     }
 
     for (let i = 0; i < specialCharacters.length; i++) {
@@ -40,7 +44,7 @@ class FoodTypeService {
     return foodType;
   }
 
-  async listAllTags() {
+  public async listAllTags() {
     const foodTypesRepository = getCustomRepository(FoodTypesRepository);
 
     const foodsTypes = await foodTypesRepository.find();
@@ -48,7 +52,7 @@ class FoodTypeService {
     return foodsTypes;
   }
 
-  async removeTag(id: string) {
+  public async removeTag(id: string) {
     const foodTypeRepository = getCustomRepository(FoodTypesRepository);
     const tag = await foodTypeRepository.findOne(id);
 
@@ -66,27 +70,41 @@ class FoodTypeService {
 
   }
 
-  async editTag(tagToEdit: string, name: string) {
+  public async editTag({ id, name }: Request) {
     const foodTypesRepository = getCustomRepository(FoodTypesRepository);
 
-    let tag = await foodTypesRepository.findOne({ name: tagToEdit });
+    let schema = yup.object().shape({
+      name: yup.string().required('O campo nome é obrigatório'),
+    });
+
+    await schema.validate({ name }).catch((err) => {
+      throw new Error(err.errors);
+    });
+
+    const specialCharacters = "/([~!@#$%^&*+=-[],,/{}|:<>?])";
+
+    if (name.length <= 0) {
+      throw new Error("Nome curto demais!");
+    }
+
+    for (let i = 0; i < specialCharacters.length; i++) {
+      if (name.indexOf(specialCharacters[i]) != -1) {
+        throw new Error("Nome inválido!");
+      }
+    }
+
+    let tag = await foodTypesRepository.findOne({ where: { id } });
 
     if (!tag) {
       return new Error("Essa categoria não existe!");
     }
 
-    await foodTypesRepository.update(
-      { name: tagToEdit },
+    const tagUpdated = await foodTypesRepository.update(
+      { id },
       { name }
-    )
+    );
 
-    tag = await foodTypesRepository.findOne({ name })
-
-    if (!tag) {
-      return new Error("Nada encontrado!");
-    }
-
-    return tag;
+    return tagUpdated;
   }
 }
 

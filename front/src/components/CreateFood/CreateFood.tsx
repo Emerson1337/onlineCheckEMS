@@ -23,6 +23,7 @@ const validateMessages = {
 export default function CreateFood() {
 
   const [allCategories, setAllCategories] = useState([]);
+  const [form] = Form.useForm();
 
   useEffect(() => {
     api.get('/api/list-tags').then((response) => {
@@ -40,11 +41,10 @@ export default function CreateFood() {
     const image = values.food.image;
     const userJWT = localStorage.getItem("Authorization");
 
-    values.food.resetFields();
 
     api.post('/api/create-food', { name, tagFood, description, price, image, userJWT }).then((response) => {
       toast.success(response.data);
-
+      form.resetFields();
     }).catch((error) => {
       toast.error(error.response.data);
     })
@@ -94,12 +94,12 @@ export default function CreateFood() {
     <>
       <h2>🥫  Adicionar novas comidas</h2>
       <hr />
-      <Form {...layout} name="nest-messages" onFinish={createFood} validateMessages={validateMessages}>
+      <Form {...layout} form={form} name="nest-messages" onFinish={createFood} validateMessages={validateMessages}>
         <Form.Item name={['food', 'name']} label="Nome" rules={[{ required: true }]}>
           <Input />
         </Form.Item>
-        <Form.Item name={['food', 'tagFood']} label="Categoria" rules={[{ required: true }]}>
-          <Select defaultValue="Selecione uma categoria">
+        <Form.Item initialValue={'Selecione uma categoria'} name={['food', 'tagFood']} label="Categoria" rules={[{ required: true }]}>
+          <Select id="categoryInput">
             {
               allCategories.map((category) => (
                 <Select.Option key={category['id']} value={category['id']}>{category['name']}</Select.Option>
@@ -107,13 +107,13 @@ export default function CreateFood() {
             }
           </Select>
         </Form.Item>
-        <Form.Item name={['food', 'description']} label="Descrição/ingredientes" rules={[{ required: true }]}>
-          <Input />
+        <Form.Item initialValue={''} name={['food', 'description']} label="Descrição/ingredientes" rules={[{ required: true }]}>
+          <Input id="s" />
         </Form.Item>
         <Form.Item name={['food', 'price']} label="Preço" rules={[{ required: true }]}>
           <CurrencyInput />
         </Form.Item>
-        <Form.Item name={['food', 'image']} label="Imagem" rules={[{ required: true }]}>
+        <Form.Item initialValue={''} name={['food', 'image']} label="Imagem" rules={[{ required: true }]}>
           <Space direction="vertical" style={{ width: '100%' }} size="large">
             <Upload
               listType="picture"
@@ -123,7 +123,7 @@ export default function CreateFood() {
             </Upload>
           </Space>
         </Form.Item>
-        <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
+        <Form.Item initialValue={''} wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
           <Button type="primary" htmlType="submit">
             Adicionar
           </Button>

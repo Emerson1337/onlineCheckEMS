@@ -49,16 +49,17 @@ class CreateFoodTypeController {
   async handleEditTag(request: Request, response: Response) {
     try {
       const { name } = request.body;
-      const { tagToEdit } = request.params;
+      const { id } = request.params;
       const foodTypeService = new FoodTypeService();
+      const tagUpdated = await foodTypeService.editTag({ id, name });
 
-      const tag = await foodTypeService.editTag(tagToEdit, name);
-
-      return response.status(200).json(tag);
+      if (tagUpdated) {
+        return response.status(200).json('Categoria editada com sucesso!');
+      } else {
+        throw new Error("Erro inesperado.")
+      }
     } catch (err: any) {
-      const error = new Error(err);
-
-      return response.status(500).json(error.message);
+      return response.status(500).json(err.message);
     }
   }
 

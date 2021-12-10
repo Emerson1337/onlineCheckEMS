@@ -7,11 +7,9 @@ import { ConfigProvider } from 'antd';
 import 'antd/dist/antd.css';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <ConfigProvider>
-      <App />
-    </ConfigProvider>
-  </React.StrictMode>,
+  <ConfigProvider>
+    <App />
+  </ConfigProvider>,
   document.getElementById('root')
 );
 

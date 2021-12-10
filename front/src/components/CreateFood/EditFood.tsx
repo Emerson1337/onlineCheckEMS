@@ -4,8 +4,6 @@ import React from "react";
 import { useEffect, useState } from 'react';
 import api from '../../services/api';
 import { toast } from 'react-toastify';
-import MaskedInput from 'react-text-mask';
-import createNumberMask from 'text-mask-addons/dist/createNumberMask';
 import styled from 'styled-components';
 
 export default function EditFood({ props, close, food }: any) {
