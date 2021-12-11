@@ -88,7 +88,6 @@ export default function Check() {
     removeMainScroll(isVisibleModal);
   }, [isVisibleModal])
 
-  console.log('teste');
   return (
     <>
       {isVisibleModal &&

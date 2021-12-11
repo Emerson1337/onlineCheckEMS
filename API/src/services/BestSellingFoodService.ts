@@ -5,7 +5,7 @@ import * as months from '../assets/months.json';
 
 
 class BestSellingFoodService {
-  async storeBestFood() {
+  public async storeBestFood() {
     const bestSellingFoodRepository = getCustomRepository(BestSellingFoodRepository);
     const monthSalesRepository = getCustomRepository(MonthSalesRespository);
 
@@ -23,7 +23,7 @@ class BestSellingFoodService {
     const bestFood = bestSellingFoodRepository.create({
       // @ts-ignore
       month: months[month],
-      nameFood: mostFrequentlySale.nameFood,
+      nameFood: mostFrequentlySale.name,
       frequency: mostFrequentlySale.frequency,
     });
 
@@ -37,17 +37,16 @@ class BestSellingFoodService {
     return;
   }
 
-  async topTenFoods() {
-    const monthSalesRepository = getCustomRepository(MonthSalesRespository);
+  public async bestSoldFoods() {
+    const bestSellingFoodRepository = getCustomRepository(BestSellingFoodRepository);
 
-    const topTenFoods = await monthSalesRepository.find({
+    const allSoldFoods = await bestSellingFoodRepository.find({
       order: {
-        frequency: "DESC",
-      },
-      take: 10
+        created_at: 'DESC',
+      }
     });
 
-    return topTenFoods;
+    return allSoldFoods;
   }
 }
 

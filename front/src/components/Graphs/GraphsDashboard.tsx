@@ -1,37 +1,31 @@
+/* eslint-disable array-callback-return */
 import { Pie } from '@ant-design/charts';
+import { useEffect, useState } from 'react';
+import api from '../../services/api';
 
 export default function GraphPieDashboard() {
 
-  var data = [
-    {
-      type: 'Pizza',
-      value: 27,
-    },
-    {
-      type: 'Esfiha',
-      value: 25,
-    },
-    {
-      type: 'Pães',
-      value: 18,
-    },
-    {
-      type: 'Salgados',
-      value: 15,
-    },
-    {
-      type: 'Saladas',
-      value: 10,
-    },
-    {
-      type: 'Baião',
-      value: 5,
-    },
-  ];
+  const [data, setData] = useState([{}])
+
+  //resgatando as informacoes
+  useEffect(() => {
+    api.get('/api/list-top-foods').then((response) => {
+      response.data.map((food: any) => {
+        console.log(food)
+        setData(data => [...data, {
+          type: food.name[0].toUpperCase() + food.name.substr(1),
+          quantidade: food.frequency
+        }])
+      });
+    }).catch((error) => {
+      console.log(error)
+    });
+  }, [])
+
   var config = {
     appendPadding: 10,
     data: data,
-    angleField: 'value',
+    angleField: 'quantidade',
     colorField: 'type',
     radius: 0.9,
     label: {

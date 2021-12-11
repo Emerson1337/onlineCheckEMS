@@ -3,31 +3,27 @@ import BestSellingFoodService from '../services/BestSellingFoodService';
 
 class BestSellingFoodController {
 
-  async calculateBestSellingFood() {
+  public async calculateBestSellingFood(request: Request, response: Response) {
     try {
       const bestSellingFoodService = new BestSellingFoodService();
 
       await bestSellingFoodService.storeBestFood();
 
-      return ({ "success": "success!" });
+      return response.status(200).json('success!');
     } catch (err: any) {
-      const error = new Error(err);
-
-      return (error.message);
+      return response.status(500).json(err.message);
     }
   }
 
-  async topTenFoods() {
+  public async bestSoldFoods(request: Request, response: Response) {
     try {
       const bestSellingFoodService = new BestSellingFoodService();
 
-      const foods = bestSellingFoodService.topTenFoods();
+      const foods = await bestSellingFoodService.bestSoldFoods();
 
-      return foods;
+      return response.status(200).json(foods);
     } catch (err: any) {
-      const error = new Error(err);
-
-      return (error.message);
+      return response.status(500).json(err.message);
     }
   }
 }

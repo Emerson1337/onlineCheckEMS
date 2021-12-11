@@ -12,8 +12,8 @@ export default function GraphLineDashboard() {
     api.get('/api/dashboard/money-monthly').then((response) => {
       response.data.moneyMonthly.map((money: any) => {
         setData(data => [...data, {
-          month: money.month,
-          value: money.price
+          month: money.month[0].toUpperCase() + money.month.substr(1),
+          'valor (R$)': money.price
         }])
       });
     }).catch((error) => {
@@ -25,7 +25,7 @@ export default function GraphLineDashboard() {
     data: data,
     height: 500,
     xField: 'month',
-    yField: 'value',
+    yField: 'valor (R$)',
     label: {},
     point: {
       size: 2,

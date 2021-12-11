@@ -1,34 +1,30 @@
-import React from 'react';
+/* eslint-disable array-callback-return */
+import React, { useEffect, useState } from 'react';
 import { Column } from '@ant-design/charts';
+import api from '../../services/api';
 
 export default function GraphColumnDashboard() {
-  var data = [
-    {
-      month: 'Outubro',
-      vendas: 23,
-    },
-    {
-      month: 'Novembro',
-      vendas: 32,
-    },
-    {
-      month: 'Dezembro',
-      vendas: 41,
-    },
-    {
-      month: 'Janeiro',
-      vendas: 31,
-    },
-    {
-      month: 'Março',
-      vendas: 123,
-    },
-  ];
+
+  const [data, setData] = useState([{}])
+
+  //resgatando as informacoes
+  useEffect(() => {
+    api.get('/api/best-sold-foods').then((response) => {
+      response.data.map((food: any) => {
+        setData(data => [...data, {
+          month: `${food.month[0].toUpperCase() + food.month.substr(1)} - ${food.nameFood}`,
+          quantidade: food.frequency
+        }])
+      });
+    }).catch((error) => {
+      console.log(error)
+    });
+  }, [])
+
   var config = {
     data: data,
     xField: 'month',
-    yField: 'vendas',
-    conversionTag: {},
+    yField: 'quantidade',
     xAxis: {
       label: {
         autoHide: true,

@@ -14,7 +14,7 @@ class MonthSales {
   id: string;
 
   @Column()
-  nameFood: string;
+  name: string;
 
   @Column()
   tagFood: string;
@@ -23,7 +23,7 @@ class MonthSales {
   description: string;
 
   @Column()
-  priceFood: number;
+  price: number;
 
   @Column()
   frequency: number;

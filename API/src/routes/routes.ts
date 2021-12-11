@@ -37,6 +37,7 @@ router.delete('/api/remove-food/:id', auth.authMiddleware, createFoodController.
 router.put('/api/update-food/:id', auth.authMiddleware, createFoodController.handleEditFood);
 router.get('/api/list-by-tag/:id', createFoodController.listByTag);
 router.get('/api/list-top-foods', createFoodController.listBestMonthSellingFoods);
+router.get('/api/best-sold-foods', bestSellingFoodController.bestSoldFoods);
 
 //ROTAS DE ANALISES GRAFICAS
 router.get('/api/dashboard/money-monthly', moneyMonthlyController.getMoneyMonthly);

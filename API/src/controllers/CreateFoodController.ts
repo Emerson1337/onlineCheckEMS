@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import FoodService from '../services/FoodService';
 
 class createFoodController {
-  async handleCreateFood(request: Request, response: Response) {
+  public async handleCreateFood(request: Request, response: Response) {
     try {
       const { name, price, tagFood, description } = request.body;
       const foodService = new FoodService();
@@ -18,7 +18,7 @@ class createFoodController {
     }
   }
 
-  async handleListAllFoods(request: Request, response: Response) {
+  public async handleListAllFoods(request: Request, response: Response) {
     try {
       const foodService = new FoodService();
 
@@ -33,7 +33,7 @@ class createFoodController {
     }
   }
 
-  async handleRemoveFood(request: Request, response: Response) {
+  public async handleRemoveFood(request: Request, response: Response) {
     try {
       const { id } = request.params;
       const foodService = new FoodService();
@@ -48,7 +48,7 @@ class createFoodController {
     }
   }
 
-  async handleEditFood(request: Request, response: Response) {
+  public async handleEditFood(request: Request, response: Response) {
     try {
       const { name, tagFood, description, price, image } = request.body;
       const { id } = request.params;
@@ -77,7 +77,7 @@ class createFoodController {
     }
   }
 
-  async listBestMonthSellingFoods(request: Request, response: Response) {
+  public async listBestMonthSellingFoods(request: Request, response: Response) {
     try {
       const foodTypeService = new FoodService();
       const foods = await foodTypeService.listTop10Foods();
