@@ -10,9 +10,7 @@ class MoneyMonthlyController {
 
       return response.json({ "success": "success!" });
     } catch (err: any) {
-      const error = new Error(err);
-
-      return response.json(error.message);
+      return response.status(403).json(err.message);
     }
   }
 
@@ -23,9 +21,7 @@ class MoneyMonthlyController {
 
       return response.status(200).json({ "moneyMonthly": moneyMonthly });
     } catch (err: any) {
-      const error = new Error(err);
-
-      return response.status(500).json(error.message);
+      return response.status(403).json(err.message);
     }
   }
 }

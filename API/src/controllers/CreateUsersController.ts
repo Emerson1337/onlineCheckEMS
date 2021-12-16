@@ -11,9 +11,7 @@ class CreateUsersController {
 
       return response.json(user);
     } catch (err: any) {
-      const error = new Error(err);
-
-      return response.status(500).json(error.message);
+      return response.status(403).json(err.message);
     }
   }
 
@@ -25,8 +23,7 @@ class CreateUsersController {
       const token = await createUser.login(email, password);
       return response.json(token);
     } catch (err: any) {
-      const error = new Error(err);
-
+      console.log(err.message);
       return response.status(403).json(err.message);
     }
   }

@@ -11,8 +11,7 @@ class BestSellingCategoryController {
 
       return ({ "success": "success!" });
     } catch (err: any) {
-      const error = new Error(err);
-      return (error.message);
+      return (err.message);
     }
   }
 

@@ -14,7 +14,7 @@ class MoneyMonthlyService {
     var totalCash = 0;
 
     allSales.forEach(sale => {
-      totalCash += (sale.priceFood * sale.frequency);
+      totalCash += (sale.price * sale.frequency);
     });
 
     var date = new Date();

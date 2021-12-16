@@ -24,9 +24,7 @@ class CreateFoodTypeController {
 
       return response.status(200).json(tags);
     } catch (err: any) {
-      const error = new Error(err);
-
-      return response.status(500).json(error.message);
+      return response.status(403).json(err.message);
     }
   }
 
