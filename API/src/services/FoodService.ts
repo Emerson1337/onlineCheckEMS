@@ -69,7 +69,7 @@ class FoodService {
       description: yup.string().required('O campo descrição é obrigatório')
     });
 
-    await schema.validate({ name, price, tagFood, description }).catch((err) => {
+    await schema.validate({ name, price, description }).catch((err) => {
       throw new Error(err.errors);
     });
 
@@ -79,7 +79,7 @@ class FoodService {
       return new Error("Comida não encontrada!");
     }
 
-    let category = await foodTypesRepository.findOne({ where: { id: { tagFood } } });
+    let category = await foodTypesRepository.findOne({ where: { id: tagFood } });
 
     if (!category) {
       return new Error("Categoria não encontrada!");
@@ -115,7 +115,11 @@ class FoodService {
 
   public async listAllFoods() {
     const foodsRepository = getCustomRepository(FoodsRepository);
-    const foods = await foodsRepository.find();
+    const foods = await foodsRepository.find({
+      order: {
+        created_at: 'DESC',
+      }
+    });
 
     return foods;
   }

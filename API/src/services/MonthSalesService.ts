@@ -5,33 +5,33 @@ import MonthSalesRespository from "../repositories/MonthSalesRepository";
 import * as yup from 'yup';
 
 interface MonthSaleData {
-  nameFood: string,
+  name: string,
   tagFood: string,
   description: string,
-  priceFood: number,
+  price: number,
 }
 
 class MonthSalesService {
 
-  async addNewMonthSale({ nameFood, tagFood, description, priceFood }: MonthSaleData) {
+  async addNewMonthSale({ name, tagFood, description, price }: MonthSaleData) {
 
     const foodTypeRepository = getCustomRepository(FoodTypesRepository);
 
     let schema = yup.object().shape({
-      nameFood: yup.string().required('O nome da comida é obrigatório.'),
+      name: yup.string().required('O nome da comida é obrigatório.'),
       tagFood: yup.string().required('A categoria da comida é obrigatória.'),
       price: yup.number().required('O campo preço é obrigatório'),
       description: yup.string().required('O campo descrição é obrigatório')
     });
 
-    await schema.validate({ nameFood, tagFood, description, priceFood }).catch((err) => {
+    await schema.validate({ name, tagFood, description, price }).catch((err) => {
       throw new Error(err.errors);
     });
 
     const specialCharacters = "/([~!@#$%^&*+=-[],,/{}|:<>?])";
 
     for (let i = 0; i < specialCharacters.length; i++) {
-      if (nameFood.indexOf(specialCharacters[i]) != -1) {
+      if (name.indexOf(specialCharacters[i]) != -1) {
         return new Error("Nome inválido!");
       }
       if (tagFood.indexOf(specialCharacters[i]) != -1) {
@@ -42,7 +42,7 @@ class MonthSalesService {
       }
     }
 
-    if (priceFood <= 0) {
+    if (price <= 0) {
       return new Error("Preço inválido!");
     }
 
@@ -54,7 +54,7 @@ class MonthSalesService {
 
     const monthSalesRepository = getCustomRepository(MonthSalesRespository);
 
-    const foodAlreadyExists = await monthSalesRepository.findOne({ nameFood });
+    const foodAlreadyExists = await monthSalesRepository.findOne({ name });
 
     if (foodAlreadyExists) {
       foodAlreadyExists.frequency++;
@@ -69,10 +69,10 @@ class MonthSalesService {
     }
 
     const newSale = monthSalesRepository.create({
-      nameFood,
+      name,
       tagFood,
       description,
-      priceFood,
+      price,
       frequency: 1
     })
 

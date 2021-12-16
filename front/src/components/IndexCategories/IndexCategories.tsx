@@ -7,6 +7,8 @@ import api from '../../services/api';
 import image from '../../assets/image-category.png';
 import { toast } from 'react-toastify';
 import EditCategory from '../CreateCategory/EditCategory';
+import styled from 'styled-components';
+import PaginationMenu from '../Pagination/Pagination';
 
 export default function IndexCategories() {
 
@@ -17,6 +19,9 @@ export default function IndexCategories() {
 
   const [open, setOpen] = useState(false);
   const [reload, setReload] = useState(false);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [categoriesPerPage] = useState(10);
 
   function getTags() {
     api.get('/api/list-tags').then((response) => {
@@ -51,6 +56,14 @@ export default function IndexCategories() {
     toggle();
   }
 
+  const indexOfLastCategory = categoriesPerPage * currentPage;
+  const indexOfFirstCategory = indexOfLastCategory - categoriesPerPage;
+  const currentCategories = allCategories.slice(indexOfFirstCategory, indexOfLastCategory);
+
+  const paginate = (numberPage: any) => {
+    setCurrentPage(numberPage);
+  }
+
   return (
     <>
       <h2>🍲 Aqui estão todas as categorias de sua loja</h2>
@@ -59,7 +72,7 @@ export default function IndexCategories() {
         <>
           <List
             itemLayout="horizontal"
-            dataSource={allCategories}
+            dataSource={currentCategories}
             renderItem={item => (
               <List.Item
                 actions={[<a onClick={() => { setEditModal(true); toggle(); setCategorySelected(item) }} className="btn btn-success text-white" key="list-loadmore-edit">Editar</a>,
@@ -92,6 +105,16 @@ export default function IndexCategories() {
           </div>
         </>
       }
+      <Align>
+        <PaginationMenu itemsPerPage={categoriesPerPage} totalItems={allCategories.length} paginate={paginate} />
+      </Align>
     </>
   );
 }
+
+const Align = styled.div`
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;

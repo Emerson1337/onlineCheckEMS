@@ -47,7 +47,11 @@ class FoodTypeService {
   public async listAllTags() {
     const foodTypesRepository = getCustomRepository(FoodTypesRepository);
 
-    const foodsTypes = await foodTypesRepository.find();
+    const foodsTypes = await foodTypesRepository.find({
+      order: {
+        created_at: 'DESC',
+      }
+    });
 
     return foodsTypes;
   }

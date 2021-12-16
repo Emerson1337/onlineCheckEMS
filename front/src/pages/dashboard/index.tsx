@@ -18,7 +18,6 @@ import GraphColumnDashboard from '../../components/Graphs/GraphColumnDashboard';
 import GraphLineDashboard from '../../components/Graphs/GraphLineDashboard';
 import IndexCategories from '../../components/IndexCategories/IndexCategories';
 import FadeIn from 'react-fade-in/lib/FadeIn';
-import EarningCard from '../../components/CardMenu/EarningCard';
 
 const { SubMenu } = Menu;
 
@@ -80,10 +79,6 @@ export default function Dashboard() {
                 <MenuFoldOutlined onClick={() => toggle()} />
             }
           </Header>
-          <div style={{ display: 'flex', flexDirection: 'row', padding: '16px', height: 'max-content' }}>
-            <EarningCard money={200.00} />
-            <EarningCard money={200.00} />
-          </div>
           <Content
             className="site-layout-background"
             style={{

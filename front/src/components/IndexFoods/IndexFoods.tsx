@@ -6,6 +6,8 @@ import api from '../../services/api';
 import image from '../../assets/image-category.png';
 import EditFood from '../CreateFood/EditFood';
 import { toast } from 'react-toastify';
+import PaginationMenu from '../Pagination/Pagination';
+import styled from 'styled-components';
 
 export default function IndexFoods() {
 
@@ -16,6 +18,9 @@ export default function IndexFoods() {
 
   const [open, setOpen] = useState(false);
   const [reload, setReload] = useState(false);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [foodsPerPage] = useState(10);
 
   //Funcao que recarrega o componente de edicao, possibilitando 
   //que ele seja recarregado e tenha os inputs preenchidos com novos valores
@@ -49,6 +54,13 @@ export default function IndexFoods() {
       toast.error(error.response.data);
     })
   }
+  const indexOfLastFood = currentPage * foodsPerPage;
+  const indexOfFirstFood = indexOfLastFood - foodsPerPage;
+  const currentFoods = allFoods.slice(indexOfFirstFood, indexOfLastFood);
+
+  const paginate = (pageNumber: any): void => {
+    setCurrentPage(pageNumber);
+  }
 
   return (
     <>
@@ -58,7 +70,7 @@ export default function IndexFoods() {
         <>
           <List
             itemLayout="horizontal"
-            dataSource={allFoods}
+            dataSource={currentFoods}
             renderItem={food => (
               <List.Item
                 actions={[<a onClick={() => { setEditModal(true); setFoodSelected(food); toggle() }} className="btn btn-success text-white" key="list-loadmore-edit">Editar</a>,
@@ -96,6 +108,16 @@ export default function IndexFoods() {
           </div>
         </>
       }
+      <Align>
+        <PaginationMenu itemsPerPage={foodsPerPage} totalItems={allFoods.length} paginate={paginate} />
+      </Align>
     </>
   );
 }
+
+const Align = styled.div`
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
