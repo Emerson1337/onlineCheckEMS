@@ -7,8 +7,9 @@ import api from '../../services/api';
 import image from '../../assets/image-category.png';
 import { toast } from 'react-toastify';
 import EditCategory from '../CreateCategory/EditCategory';
-import styled from 'styled-components';
-import PaginationMenu from '../Pagination/Pagination';
+// import styled from 'styled-components';
+// import PaginationMenu from '../Pagination/Pagination';
+import { TextField } from '@material-ui/core';
 
 export default function IndexCategories() {
 
@@ -20,12 +21,14 @@ export default function IndexCategories() {
   const [open, setOpen] = useState(false);
   const [reload, setReload] = useState(false);
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [categoriesPerPage] = useState(10);
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const [categoriesPerPage] = useState(10);
+  const [filteredFood, setFilteredFood] = useState([]);
 
   function getTags() {
     api.get('/api/list-tags').then((response) => {
       setAllCategories(response.data);
+      setFilteredFood(response.data);
     }).catch((error) => {
       toast.error(error.response.data);
     });
@@ -56,13 +59,23 @@ export default function IndexCategories() {
     toggle();
   }
 
-  const indexOfLastCategory = categoriesPerPage * currentPage;
-  const indexOfFirstCategory = indexOfLastCategory - categoriesPerPage;
-  const currentCategories = allCategories.slice(indexOfFirstCategory, indexOfLastCategory);
+  // const indexOfLastCategory = categoriesPerPage * currentPage;
+  // const indexOfFirstCategory = indexOfLastCategory - categoriesPerPage;
+  // const currentCategories = allCategories.slice(indexOfFirstCategory, indexOfLastCategory);
 
-  const paginate = (numberPage: any) => {
-    setCurrentPage(numberPage);
-  }
+  // const paginate = (numberPage: any) => {
+  //   setCurrentPage(numberPage);
+  // }
+
+  const filterItems = (value: any) => {
+    if (value.length === 0) {
+      setFilteredFood(allCategories);
+    } else {
+      setFilteredFood(allCategories.filter((category: any) => {
+        return category['name'].toLowerCase().indexOf(value.toLowerCase()) !== -1;
+      }));
+    }
+  };
 
   return (
     <>
@@ -70,9 +83,15 @@ export default function IndexCategories() {
       <hr />
       {
         <>
+          <div>
+            <TextField
+              label="Pesquisar categoria"
+              onChange={(event) => filterItems(event.target.value)}
+            />
+          </div>
           <List
             itemLayout="horizontal"
-            dataSource={currentCategories}
+            dataSource={filteredFood}
             renderItem={item => (
               <List.Item
                 actions={[<a onClick={() => { setEditModal(true); toggle(); setCategorySelected(item) }} className="btn btn-success text-white" key="list-loadmore-edit">Editar</a>,
@@ -105,16 +124,16 @@ export default function IndexCategories() {
           </div>
         </>
       }
-      <Align>
+      {/* <Align>
         <PaginationMenu itemsPerPage={categoriesPerPage} totalItems={allCategories.length} paginate={paginate} />
-      </Align>
+      </Align> */}
     </>
   );
 }
 
-const Align = styled.div`
-  margin-top: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
+// const Align = styled.div`
+//   margin-top: 10px;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+// `;
