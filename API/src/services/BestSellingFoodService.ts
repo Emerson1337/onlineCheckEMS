@@ -15,6 +15,11 @@ class BestSellingFoodService {
       },
     });
 
+    if (!mostFrequentlySales.length) {
+      return ('Nenhuma venda registrada neste mês!');
+    }
+
+
     const mostFrequentlySale = mostFrequentlySales[0];
 
     var date = new Date();
@@ -42,7 +47,7 @@ class BestSellingFoodService {
 
     const allSoldFoods = await bestSellingFoodRepository.find({
       order: {
-        created_at: 'DESC',
+        created_at: 'ASC',
       }
     });
 

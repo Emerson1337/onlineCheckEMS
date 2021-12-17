@@ -18,13 +18,13 @@ class BestSellingCategoryService {
     var allSales = await monthSalesRepository.find(); //all sales
 
     if (!allSales.length) {
-      return new Error('Nenhuma venda registrada neste mês!');
+      return ('Nenhuma venda registrada neste mês!');
     }
 
     allCategories.forEach(async category => {
       //picking all categories name
       var allSalesCategoryName = allSales.filter((obj) => {
-        return obj.tagFood == category.name;
+        return obj.tagFood == category.id;
       })
 
       //counting total sold by category
@@ -70,10 +70,10 @@ class BestSellingCategoryService {
       await bestSellingCategoryRepository.save(bestCategory);
     } catch (err: any) {
       const error = new Error(err);
-      return new Error(error.message);
+      throw new Error(error.message);
     }
 
-    return bestCategory;
+    return;
   }
 }
 

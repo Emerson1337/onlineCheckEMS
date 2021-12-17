@@ -9,9 +9,9 @@ import MoneyMonthlyController from '../controllers/MoneyMonthlyController';
 import MonthSalesController from '../controllers/MonthSalesController';
 import { Auth } from '../middlewares/auth';
 import verifyCreateUserValidator from '../middlewares/verifyCreateUserValidator';
-import BestSellingCategory from '../models/BestSellingCategory';
 
 
+const bestSellingCategoryController = new BestSellingCategoryController();
 const createUsersController = new CreateUsersController();
 const createFoodController = new CreateFoodController();
 const createFoodTypeController = new CreateFoodTypeController();
@@ -49,9 +49,8 @@ router.delete('/api/remove-tag/:id', auth.authMiddleware, createFoodTypeControll
 router.put('/api/update-tag/:id', auth.authMiddleware, createFoodTypeController.handleEditTag);
 
 //REGISTOR DE NOVA VENDA
-router.get('/api/sale', monthSalesController.insertNewSale);
+router.post('/api/sale', monthSalesController.insertNewSale);
+router.get('/api/test', bestSellingCategoryController.calculateBestSellingCategory);
 
-//ROTAS DE TESTE
-router.get('/api/sale', monthSalesController.insertNewSale);
 
 export default router;

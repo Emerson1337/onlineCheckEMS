@@ -1,11 +1,11 @@
-import cron from 'node-cron';
-
-import BestSellingCategoryController from '../controllers/BestSellingCategoryController'
+import { CronJob } from 'cron';
 import MonthSalesController from '../controllers/MonthSalesController';
+
+import BestSellingCategoryService from '../services/BestSellingCategoryService';
 import BestSellingFoodService from '../services/BestSellingFoodService';
 import MoneyMonthlyService from '../services/MoneyMonthlyService';
 
-const bestSellingCategoryController = new BestSellingCategoryController();
+const bestSellingCategoryService = new BestSellingCategoryService();
 const bestSellingFoodService = new BestSellingFoodService();
 const moneyMonthlyService = new MoneyMonthlyService();
 const monthSalesController = new MonthSalesController();
@@ -19,10 +19,13 @@ const monthSalesController = new MonthSalesController();
 // | minute
 // second ( optional )
 
-cron.schedule('0 1 * * * *', () => {
+const job = new CronJob('* * * * 1 *', () => {
     //ROUTINES
-    bestSellingCategoryController.calculateBestSellingCategory();
+    bestSellingCategoryService.storeBestCategory();
     bestSellingFoodService.storeBestFood();
     moneyMonthlyService.storeMoneyMonthly();
     monthSalesController.clearTable();
-});
+}, null, true, 'America/Sao_Paulo');
+
+
+export default job;

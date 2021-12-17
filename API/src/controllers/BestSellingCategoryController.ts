@@ -3,15 +3,15 @@ import BestSellingCategoryService from '../services/BestSellingCategoryService';
 
 class BestSellingCategoryController {
 
-  async calculateBestSellingCategory() {
+  async calculateBestSellingCategory(request: Request, response: Response) {
     try {
       const bestSellingCategoryService = new BestSellingCategoryService();
 
-      const exito = await bestSellingCategoryService.storeBestCategory();
+      await bestSellingCategoryService.storeBestCategory();
 
-      return ({ "success": "success!" });
+      return response.status(200).json('success!');
     } catch (err: any) {
-      return (err.message);
+      return response.status(500).json(err.message);
     }
   }
 

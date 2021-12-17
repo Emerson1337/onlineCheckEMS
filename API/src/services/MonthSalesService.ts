@@ -28,28 +28,28 @@ class MonthSalesService {
       throw new Error(err.errors);
     });
 
-    const specialCharacters = "/([~!@#$%^&*+=-[],,/{}|:<>?])";
+    const specialCharacters = "/([!@#$%^&*+=[],,/{}|:<>?])";
 
     for (let i = 0; i < specialCharacters.length; i++) {
       if (name.indexOf(specialCharacters[i]) != -1) {
-        return new Error("Nome inválido!");
+        throw new Error("Nome inválido!");
       }
       if (tagFood.indexOf(specialCharacters[i]) != -1) {
-        return new Error("Categoria inválida!");
+        throw new Error("Categoria inválida!");
       }
       if (description.indexOf(specialCharacters[i]) != -1) {
-        return new Error("Descrição inválida!");
+        throw new Error("Descrição inválida!");
       }
     }
 
     if (price <= 0) {
-      return new Error("Preço inválido!");
+      throw new Error("Preço inválido!");
     }
 
-    const foodTypeExists = await foodTypeRepository.findOne({ where: { name: tagFood } });
+    const foodTypeExists = await foodTypeRepository.findOne({ where: { id: tagFood } });
 
     if (!foodTypeExists) {
-      return new Error("Essa categoria não existe!");
+      throw new Error("Essa categoria não existe!");
     }
 
     const monthSalesRepository = getCustomRepository(MonthSalesRespository);
@@ -63,7 +63,7 @@ class MonthSalesService {
         await monthSalesRepository.save(updateSale);
       } catch (err: any) {
         const error = new Error(err);
-        return new Error(error.message);
+        throw new Error(error.message);
       }
       return { Success: "Venda efetuada com sucesso!" };
     }
