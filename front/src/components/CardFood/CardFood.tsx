@@ -49,6 +49,7 @@ const CardGlobal = styled.div`
     color: #fff;
     font-weight: bold;
     margin-bottom: 10px;
+    padding: 2px;
   }
   .cardBody {
     background: #fff;

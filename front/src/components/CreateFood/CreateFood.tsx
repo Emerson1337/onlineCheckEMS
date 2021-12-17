@@ -94,7 +94,7 @@ export default function CreateFood() {
     <>
       <h2>🥫  Adicionar novas comidas</h2>
       <hr />
-      <Form {...layout} form={form} name="nest-messages" onFinish={createFood} validateMessages={validateMessages}>
+      <Form {...layout} encType={"multipart/form-data"} form={form} name="nest-messages" onFinish={createFood} validateMessages={validateMessages}>
         <Form.Item name={['food', 'name']} label="Nome" rules={[{ required: true }]}>
           <Input />
         </Form.Item>

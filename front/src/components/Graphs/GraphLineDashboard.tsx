@@ -13,7 +13,7 @@ export default function GraphLineDashboard() {
       response.data.moneyMonthly.map((money: any) => {
         setData(data => [...data, {
           month: money.month[0].toUpperCase() + money.month.substr(1),
-          'valor (R$)': money.price
+          'valor (R$)': Math.floor(money.price * 100) / 100
         }])
       });
     }).catch((error) => {

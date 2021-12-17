@@ -7,8 +7,6 @@ import api from '../../services/api';
 import image from '../../assets/image-category.png';
 import { toast } from 'react-toastify';
 import EditCategory from '../CreateCategory/EditCategory';
-// import styled from 'styled-components';
-// import PaginationMenu from '../Pagination/Pagination';
 import { TextField } from '@material-ui/core';
 
 export default function IndexCategories() {
@@ -21,8 +19,6 @@ export default function IndexCategories() {
   const [open, setOpen] = useState(false);
   const [reload, setReload] = useState(false);
 
-  // const [currentPage, setCurrentPage] = useState(1);
-  // const [categoriesPerPage] = useState(10);
   const [filteredFood, setFilteredFood] = useState([]);
 
   function getTags() {
@@ -59,14 +55,6 @@ export default function IndexCategories() {
     toggle();
   }
 
-  // const indexOfLastCategory = categoriesPerPage * currentPage;
-  // const indexOfFirstCategory = indexOfLastCategory - categoriesPerPage;
-  // const currentCategories = allCategories.slice(indexOfFirstCategory, indexOfLastCategory);
-
-  // const paginate = (numberPage: any) => {
-  //   setCurrentPage(numberPage);
-  // }
-
   const filterItems = (value: any) => {
     if (value.length === 0) {
       setFilteredFood(allCategories);
@@ -83,7 +71,7 @@ export default function IndexCategories() {
       <hr />
       {
         <>
-          <div>
+          <div className="mb-4">
             <TextField
               label="Pesquisar categoria"
               onChange={(event) => filterItems(event.target.value)}
@@ -124,16 +112,6 @@ export default function IndexCategories() {
           </div>
         </>
       }
-      {/* <Align>
-        <PaginationMenu itemsPerPage={categoriesPerPage} totalItems={allCategories.length} paginate={paginate} />
-      </Align> */}
     </>
   );
 }
-
-// const Align = styled.div`
-//   margin-top: 10px;
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-// `;

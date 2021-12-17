@@ -14,18 +14,17 @@ export default function Login() {
     const password = $('#password').val();
 
     api.post('/api/login', { email, password }).then((response) => {
-
       setHasError(false);
       localStorage.setItem('Authorization', `${response.data}`);
-
       window.location.href = "/dashboard";
-
     }).catch((error) => {
-
-      setHasError(true);
-      setMessageError(error.response.data);
-      console.log("oops " + error.response.data);
-
+      try {
+        setMessageError(error.response.data);
+        setHasError(true);
+      } catch (e) {
+        setMessageError([]);
+        setHasError(true);
+      }
     })
   }
 

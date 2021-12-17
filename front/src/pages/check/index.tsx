@@ -10,12 +10,14 @@ import FinishOrderModal from '../../components/Modals/modalFinishOrder';
 import api from '../../services/api';
 import BtnCategory from '../../components/BtnCategory/BtnCategory';
 import FadeIn from 'react-fade-in/lib/FadeIn';
+import GetNameUser from '../../components/Modals/GetNameUser';
 
 export default function Check() {
 
   //LISTING CATEGORIES
   const [allCategories, SetAllCategories] = useState([]);
-  const [loading, SetLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [loadingPage, setLoadingPage] = useState(true);
 
   useEffect(() => {
     api.get('/api/list-tags').then((categories: any) => {
@@ -33,12 +35,12 @@ export default function Check() {
     api.get('/api/list-top-foods').then((foods: any) => {
       SetAllFoods([]);
 
-      SetLoading(false);
+      setLoading(false);
       SetAllFoods(foods.data);
     }).catch((error) => {
       SetAllFoods([]);
 
-      SetLoading(false);
+      setLoading(false);
       console.log("Ops! " + error);
     })
   }, []);
@@ -46,30 +48,30 @@ export default function Check() {
   function getFoodsByTag(tagId: any) {
 
     if (tagId.length) {
-      SetLoading(true);
+      setLoading(true);
 
       api.get(`/api/list-by-tag/${tagId}`).then((foods: any) => {
         SetAllFoods([]);
 
-        SetLoading(false);
+        setLoading(false);
         SetAllFoods(foods.data);
       }).catch((error) => {
         SetAllFoods([]);
 
-        SetLoading(false);
+        setLoading(false);
         console.log("Ops! " + error);
       })
     } else {
-      SetLoading(true);
+      setLoading(true);
       api.get('/api/list-top-foods').then((foods: any) => {
         SetAllFoods([]);
 
-        SetLoading(false);
+        setLoading(false);
         SetAllFoods(foods.data);
       }).catch((error) => {
         SetAllFoods([]);
 
-        SetLoading(false);
+        setLoading(false);
         console.log("Ops! " + error);
       })
     }
@@ -77,6 +79,17 @@ export default function Check() {
 
   //MODAL CONFIG
   const [isVisibleModal, SetIsVisibleModal] = useState(false);
+
+  const [isFirstAccess, setIsFirstAccess] = useState(false);
+
+  useEffect(() => {
+    if (localStorage.getItem('shopping')) {
+      setIsFirstAccess(false);
+    } else {
+      setIsFirstAccess(true);
+    }
+    setLoadingPage(false);
+  }, [])
 
   useEffect(() => {
     function removeMainScroll(isVisibleModal: boolean) {
@@ -90,59 +103,75 @@ export default function Check() {
 
   return (
     <>
-      {isVisibleModal &&
-        <FinishOrderModal onClose={() => { SetIsVisibleModal(false) }} />
+      {
+        !loadingPage ?
+          <FadeIn>
+            {!isFirstAccess ?
+              <>
+                {isVisibleModal &&
+                  <FinishOrderModal onClose={() => { SetIsVisibleModal(false) }} />
+                }
+                <LinkFinishOrder>
+                  <FinishOrder onClick={() => (SetIsVisibleModal(true))}>
+                    <FiShoppingCart />
+                  </FinishOrder>
+                </LinkFinishOrder>
+                <BannerCategory>
+                  <p className="slogan"><strong>Pizzaria mundo do sabor.</strong></p>
+                  <p className="slogan"><strong>Olá, {localStorage.getItem('shopping')}</strong></p>
+                  <h1 className="ask">Qual tipo de comida deseja?</h1>
+                  <p className="explain">Escolha o tipo de comida abaixo para checar o cardápio!</p>
+                </BannerCategory>
+                <SelectCategory className="container">
+                  <div onClick={() => (getFoodsByTag([]))}>
+                    <BtnCategory key={0} category={'Top do mês'} />
+                  </div>
+                  {
+                    allCategories &&
+                    allCategories.map((category, key) => {
+                      return (
+                        <div onClick={() => (getFoodsByTag(category['id']))}>
+                          <BtnCategory key={category['id']} category={category['name']} />
+                        </div>
+                      );
+                    })
+                  }
+                </SelectCategory>
+                <Products id="cardFoods">
+                  {
+                    loading ? <ReactLoading type={'cylon'} color={'#FA4A0C'} /> : null
+                  }
+                  {
+                    !loading ?
+                      (
+                        allFoods.length ?
+                          allFoods.map((food, key) => {
+                            return <FadeIn>
+                              <CardFood key={food['id']} name={food['name'] || food['nameFood']} price={food['price'] || food['priceFood']} description={food['description']} />
+                            </FadeIn>
+                          })
+                          :
+                          <h2>
+                            <img src={notfound} alt="Nada encontrado." />
+                          </h2>
+                      ) : null
+                  }
+                </Products>
+              </>
+              :
+              <GetNameUser onClose={() => { setIsFirstAccess(false) }} />
+            }
+          </FadeIn>
+          :
+          <ReactLoading type={'cylon'} color={'#FA4A0C'} />
       }
-      <LinkFinishOrder>
-        <FinishOrder onClick={() => (SetIsVisibleModal(true))}>
-          <FiShoppingCart />
-        </FinishOrder>
-      </LinkFinishOrder>
-      <BannerCategory>
-        <p className="slogan"><strong>Pizzaria mundo do sabor.</strong></p>
-        <h1 className="ask">Qual tipo de comida deseja?</h1>
-        <p className="explain">Escolha o tipo de comida abaixo para checar o cardápio!</p>
-      </BannerCategory>
-      <SelectCategory className="container">
-        <div onClick={() => (getFoodsByTag([]))}>
-          <BtnCategory key={0} category={'Top do mês'} />
-        </div>
-        {
-          allCategories &&
-          allCategories.map((category, key) => {
-            return (
-              <div onClick={() => (getFoodsByTag(category['id']))}>
-                <BtnCategory key={category['id']} category={category['name']} />
-              </div>
-            );
-          })
-        }
-      </SelectCategory>
-      <Products id="cardFoods">
-        {
-          loading ? <ReactLoading type={'cylon'} color={'#FA4A0C'} /> : null
-        }
-        {
-          !loading ?
-            (
-              allFoods.length ?
-                allFoods.map((food, key) => {
-                  return <FadeIn>
-                    <CardFood key={food['id']} name={food['name'] || food['nameFood']} price={food['price'] || food['priceFood']} description={food['description']} />
-                  </FadeIn>
-                })
-                :
-                <h2>
-                  <img src={notfound} alt="Nada encontrado." />
-                </h2>
-            ) : null
-        }
-      </Products>
+
     </>
   )
 }
 
 const BannerCategory = styled.section`
+  font-family: 'Montserrat', sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;

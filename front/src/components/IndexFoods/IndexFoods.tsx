@@ -7,8 +7,6 @@ import api from '../../services/api';
 import image from '../../assets/image-category.png';
 import EditFood from '../CreateFood/EditFood';
 import { toast } from 'react-toastify';
-// import PaginationMenu from '../Pagination/Pagination';
-// import styled from 'styled-components';
 import { TextField } from '@material-ui/core';
 
 export default function IndexFoods() {
@@ -21,9 +19,7 @@ export default function IndexFoods() {
   const [open, setOpen] = useState(false);
   const [reload, setReload] = useState(false);
 
-  // const [currentPage, setCurrentPage] = useState(1);
   const [filteredFood, setFilteredFood] = useState([]);
-  // const [foodsPerPage] = useState(10);
 
   //Funcao que recarrega o componente de edicao, possibilitando 
   //que ele seja recarregado e tenha os inputs preenchidos com novos valores
@@ -59,14 +55,6 @@ export default function IndexFoods() {
     })
   }
 
-  // const indexOfLastFood = currentPage * foodsPerPage;
-  // const indexOfFirstFood = indexOfLastFood - foodsPerPage;
-  // const currentFoods = allFoods.slice(indexOfFirstFood, indexOfLastFood);
-
-  // const paginate = (pageNumber: any): void => {
-  //   setCurrentPage(pageNumber);
-  // }
-
   const filterItems = (value: any) => {
     if (value.length === 0) {
       setFilteredFood(allFoods);
@@ -83,7 +71,7 @@ export default function IndexFoods() {
       <hr />
       {
         <>
-          <div>
+          <div className="mb-4">
             <TextField
               label="Pesquisar comida"
               onChange={(event) => filterItems(event.target.value)}
@@ -129,16 +117,6 @@ export default function IndexFoods() {
           </div>
         </>
       }
-      {/* <Align> */}
-      {/* <PaginationMenu itemsPerPage={foodsPerPage} totalItems={allFoods.length} paginate={paginate} /> */}
-      {/* </Align> */}
     </>
   );
 }
-
-// const Align = styled.div`
-//   margin-top: 10px;
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-// `;
