@@ -171,7 +171,6 @@ export default function Check() {
 }
 
 const BannerCategory = styled.section`
-  font-family: 'Montserrat', sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -29,7 +29,6 @@ export default function GetNameUser({ onClose = () => { } }: any) {
 };
 
 const UIModalOverlay = styled.div`
-    font-family: 'Montserrat', sans-serif;
     z-index: 9999;
     position: fixed;
     top: 0;
