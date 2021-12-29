@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable import/no-anonymous-default-export */
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 // import { FaShoppingCart } from 'react-icons/fa'
 
@@ -11,9 +11,12 @@ interface cardProps {
   name: string;
   price: number;
   description: string;
+  shopping: (name: string, price: number, qtd: number) => void;
 }
 
-export default function CardFood({ name, price, description }: cardProps) {
+export default function CardFood({ name, price, description, shopping }: cardProps) {
+
+  const [qtd, setQtd] = useState(0);
 
   return (
     <>
@@ -25,8 +28,16 @@ export default function CardFood({ name, price, description }: cardProps) {
           <h5>Preço: R$ {price}</h5>
           <p className="ingredients">Ingredientes</p>
           <p>{description.length === 80 ? description : description.substr(0, 78) + '...'}</p>
-
-          <button className="btn addCar">Adicionar</button>
+          <div>
+            <div className="container">
+              <div className="row">
+                <ButtonsQtd className="col-md-12">
+                  <ButtonQtd type="button" onClick={() => qtd > 0 ? setQtd(qtd - 1) : setQtd(0)} id="menos"><i className="fa fa-minus-circle" aria-hidden="true">-</i></ButtonQtd><span>{qtd}</span><ButtonQtd onClick={() => setQtd(qtd + 1)} type="button" id="mais">+<i className="fa fa-plus-circle" aria-hidden="true"></i></ButtonQtd>
+                </ButtonsQtd>
+              </div>
+            </div>
+            <button onClick={() => qtd > 0 && shopping(name, price, qtd)} className={`btn ${qtd <= 0 && 'disableButton'} addCar`}>Adicionar</button>
+          </div>
         </div>
       </CardGlobal>
     </>
@@ -54,8 +65,9 @@ const CardGlobal = styled.div`
   .cardBody {
     background: #fff;
     border-radius: 20px;
-    padding: 0 8px;
-    height: 350px;
+    padding: 0 10px;
+    padding-bottom: 20px;
+    height: max-content;
     width: 250px;
   }
   .addCar {
@@ -64,6 +76,12 @@ const CardGlobal = styled.div`
     font-weight: bold;
     color: #fff;
     border-radius: 20px;
+  }
+  .disableButton {
+    background: #f5a284;
+  }
+  .disableButton:hover {
+    background: #f5a284 !important;
   }
   .addCar:hover {
     background: #af360a;
@@ -83,3 +101,25 @@ const CardGlobal = styled.div`
     margin-bottom: 2px;
   }
 `;
+
+const ButtonQtd = styled.button`
+  background-color: transparent;
+  border-radius: 20px;
+  width: 50px;
+  height: 50px;
+  font-size: 30px;
+  border: 1px solid #737373;
+  color: #737373;
+  margin: 10px;
+  
+  :hover {
+    cursor: pointer;
+  }
+`;
+
+const ButtonsQtd = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+

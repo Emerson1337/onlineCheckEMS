@@ -1,6 +1,8 @@
+/* eslint-disable react/style-prop-object */
 import React, { useEffect, useState } from 'react';
-import styled from "styled-components";
+import styled from 'styled-components';
 import CardFood from '../../components/CardFood/CardFood';
+import Carousel from "react-elastic-carousel";
 
 import notfound from '../../assets/notfound.png';
 import ReactLoading from "react-loading";
@@ -77,6 +79,12 @@ export default function Check() {
     }
   }
 
+  const shopping = (name: string, price: number, qtd = 1) => {
+    console.log(name, price, qtd);
+
+    return;
+  };
+
   //MODAL CONFIG
   const [isVisibleModal, SetIsVisibleModal] = useState(false);
 
@@ -101,6 +109,13 @@ export default function Check() {
     removeMainScroll(isVisibleModal);
   }, [isVisibleModal])
 
+  const breakPoints = [
+    { width: 1, itemsToShow: 2, itemPadding: [0, 0] },
+    { width: 550, itemsToShow: 4, itemPadding: [0, 0] },
+    { width: 768, itemsToShow: 12, itemPadding: [0, 0] },
+    { width: 1200, itemsToShow: 18, itemPadding: [0, 0] },
+  ];
+
   return (
     <>
       {
@@ -123,19 +138,21 @@ export default function Check() {
                   <p className="explain">Escolha o tipo de comida abaixo para checar o cardápio!</p>
                 </BannerCategory>
                 <SelectCategory className="container">
-                  <div onClick={() => (getFoodsByTag([]))}>
-                    <BtnCategory key={0} category={'Top do mês'} />
-                  </div>
-                  {
-                    allCategories &&
-                    allCategories.map((category, key) => {
-                      return (
-                        <div onClick={() => (getFoodsByTag(category['id']))}>
-                          <BtnCategory key={category['id']} category={category['name']} />
-                        </div>
-                      );
-                    })
-                  }
+                  <Carousel pagination={false} showArrows={false} isRTL={false} breakPoints={breakPoints}>
+                    <div onClick={() => (getFoodsByTag([]))}>
+                      <BtnCategory key={0} category={'Top do mês'} />
+                    </div>
+                    {
+                      allCategories &&
+                      allCategories.map((category, key) => {
+                        return (
+                          <div onClick={() => (getFoodsByTag(category['id']))}>
+                            <BtnCategory key={category['id']} category={category['name']} />
+                          </div>
+                        );
+                      })
+                    }
+                  </Carousel>
                 </SelectCategory>
                 <Products id="cardFoods">
                   {
@@ -147,7 +164,7 @@ export default function Check() {
                         allFoods.length ?
                           allFoods.map((food, key) => {
                             return <FadeIn>
-                              <CardFood key={food['id']} name={food['name'] || food['nameFood']} price={food['price'] || food['priceFood']} description={food['description']} />
+                              <CardFood key={food['id']} shopping={shopping} name={food['name'] || food['nameFood']} price={food['price'] || food['priceFood']} description={food['description']} />
                             </FadeIn>
                           })
                           :
@@ -204,6 +221,10 @@ const SelectCategory = styled.section`
   justify-content: center;
   align-items: center;
   margin-bottom: 50px;
+
+  .rec .rec-item-wrapper {
+    width: max-content !important;
+  }
 `;
 
 const Products = styled.section`
@@ -212,6 +233,7 @@ const Products = styled.section`
   flex-wrap: wrap;
   padding: 0 10%;
   padding-bottom: 100px;
+  min-height: 100vh;
 
   @media(max-width: 768px) {
     justify-content: center;
