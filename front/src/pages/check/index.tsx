@@ -249,23 +249,6 @@ const SelectCategory = styled.section`
   justify-content: center;
   align-items: center;
   margin-bottom: 50px;
-
-  @media(min-width: 768px) {
-    /* .rec-item-wrapper {
-      width: 100% !important;
-    }
-    
-    .rec-swipable {
-      justify-content: center !important;
-      width: 100%;
-      
-    }
-
-    .rec-slider {
-      width: max-content;
-    } */
-  }
-
 `;
 
 const Products = styled.section`
