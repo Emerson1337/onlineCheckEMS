@@ -1,8 +1,9 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable react/style-prop-object */
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import CardFood from '../../components/CardFood/CardFood';
-import Carousel from "react-elastic-carousel";
+import Carousel from 'react-elastic-carousel';
 
 import notfound from '../../assets/notfound.png';
 import ReactLoading from "react-loading";
@@ -13,6 +14,7 @@ import api from '../../services/api';
 import BtnCategory from '../../components/BtnCategory/BtnCategory';
 import FadeIn from 'react-fade-in/lib/FadeIn';
 import GetNameUser from '../../components/Modals/GetNameUser';
+import { toast } from 'react-toastify';
 
 export default function Check() {
 
@@ -80,7 +82,33 @@ export default function Check() {
   }
 
   const shopping = (name: string, price: number, qtd = 1) => {
-    console.log(name, price, qtd);
+    var getItems = localStorage.getItem("items");
+    var items = [];
+
+    var totalPriceFood = qtd * price;
+
+    if (getItems) {
+      items = JSON.parse(getItems);
+      var doesntExists = true;
+
+      //if item already exists then your quantity is incremented
+      items.map((item: any) => {
+        if (item.name === name) {
+          doesntExists = false;
+          return item.qtd += qtd;
+        }
+      });
+
+      doesntExists && items.push({ name, price, qtd, totalPriceFood })
+      toast.success(`${qtd} uni. de ${name} adicionado ao seu carrinho!`);
+
+    } else {
+
+      items.push({ name, price, qtd, totalPriceFood })
+      toast.success(`${qtd} uni. de ${name} adicionado ao seu carrinho!`);
+    }
+
+    localStorage.setItem("items", JSON.stringify(items));
 
     return;
   };
@@ -110,10 +138,10 @@ export default function Check() {
   }, [isVisibleModal])
 
   const breakPoints = [
-    { width: 1, itemsToShow: 2, itemPadding: [0, 0] },
-    { width: 550, itemsToShow: 4, itemPadding: [0, 0] },
-    { width: 768, itemsToShow: 12, itemPadding: [0, 0] },
-    { width: 1200, itemsToShow: 18, itemPadding: [0, 0] },
+    { width: 1, itemsToShow: 2.5, itemPadding: [0, 0] },
+    { width: 550, itemsToShow: 3.5, itemPadding: [0, 0] },
+    { width: 768, itemsToShow: 6.5, itemPadding: [0, 0] },
+    { width: 1200, itemsToShow: 10, itemPadding: [0, 0] },
   ];
 
   return (
@@ -138,7 +166,7 @@ export default function Check() {
                   <p className="explain">Escolha o tipo de comida abaixo para checar o cardápio!</p>
                 </BannerCategory>
                 <SelectCategory className="container">
-                  <Carousel pagination={false} showArrows={false} isRTL={false} breakPoints={breakPoints}>
+                  <Carousel outerSpacing={0} pagination={false} showArrows={false} isRTL={false} breakPoints={breakPoints}>
                     <div onClick={() => (getFoodsByTag([]))}>
                       <BtnCategory key={0} category={'Top do mês'} />
                     </div>
@@ -222,9 +250,22 @@ const SelectCategory = styled.section`
   align-items: center;
   margin-bottom: 50px;
 
-  .rec .rec-item-wrapper {
-    width: max-content !important;
+  @media(min-width: 768px) {
+    /* .rec-item-wrapper {
+      width: 100% !important;
+    }
+    
+    .rec-swipable {
+      justify-content: center !important;
+      width: 100%;
+      
+    }
+
+    .rec-slider {
+      width: max-content;
+    } */
   }
+
 `;
 
 const Products = styled.section`

@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+/* eslint-disable array-callback-return */
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useState } from 'react';
 import { IoMdClose } from 'react-icons/io';
 import styled from 'styled-components';
 import { Switch } from 'antd';
@@ -11,6 +13,19 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
   const [toDelivery, setToDelivery] = useState(false);
   const [cashPayment, setcashPayment] = useState(false);
   const [rest, setRest] = useState(false);
+  const [itemsToBuy, setItemsToBuy] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+
+  useEffect(() => {
+    var itemsStorage = localStorage.getItem("items");
+    if (itemsStorage) {
+      var object = JSON.parse(itemsStorage);
+      setItemsToBuy(object);
+      object.map((item: any) => {
+        setTotalPrice(totalPrice + item.totalPriceFood);
+      })
+    }
+  }, [])
 
   function switchDelivery() {
     toDelivery ? setToDelivery(false) : setToDelivery(true);
@@ -52,11 +67,17 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
             <InfoBuy>
               <h5 id="transition-modal-title">Finalizando Pedidos</h5>
               <h1>Valor Total: </h1>
-              <h1>R$ 58,60</h1>
+              <h1>{totalPrice.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</h1>
               <div id="transition-modal-description">
                 <p>Pedidos</p>
-                <p>Pizza Chocolate, qtd: 1: R$ 20,50</p>
-                <p>Pizza Calabresa, qtd: 1: R$ 22,90</p>
+                {
+                  itemsToBuy.map((item: any, key: number) => {
+                    return <>
+                      <p key={key}>{item.name}, qtd: {item.qtd}: (uni: {item.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}) - {item.totalPriceFood.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+                      <button>- unidade</button><button>remover</button>
+                    </>
+                  })
+                }
               </div>
               <h2>Preencha as informações para finalizar o pedido.</h2>
             </InfoBuy>
@@ -64,7 +85,7 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
               <form>
                 <div className="form-group">
                   <label htmlFor="name"><strong>Nome: </strong></label>
-                  <input type="text" className="form-control" id="name" placeholder="Ex: João Paulo" />
+                  <input value={localStorage.getItem("name")!} type="text" className="form-control" id="name" placeholder="Ex: João Paulo" />
                 </div>
                 <div className="switch form-check">
                   <Switch

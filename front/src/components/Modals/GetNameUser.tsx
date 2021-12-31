@@ -7,7 +7,7 @@ export default function GetNameUser({ onClose = () => { } }: any) {
     const [name, setName] = useState('');
 
     const getName = () => {
-        localStorage.setItem('shopping', name);
+        localStorage.setItem('name', name);
     }
 
     return (

@@ -22,7 +22,7 @@ const Button = styled.button`
   font-weight: bold;
   background: #FA4A0C;
   border-radius: 50px;
-
+  
   :hover{
     background: #af360a;
   }

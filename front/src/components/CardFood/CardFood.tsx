@@ -36,7 +36,7 @@ export default function CardFood({ name, price, description, shopping }: cardPro
                 </ButtonsQtd>
               </div>
             </div>
-            <button onClick={() => qtd > 0 && shopping(name, price, qtd)} className={`btn ${qtd <= 0 && 'disableButton'} addCar`}>Adicionar</button>
+            <button onClick={() => { qtd > 0 && shopping(name, price, qtd); setQtd(0) }} className={`btn ${qtd <= 0 && 'disableButton'} addCar`}>Adicionar</button>
           </div>
         </div>
       </CardGlobal>
