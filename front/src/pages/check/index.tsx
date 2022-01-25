@@ -1,6 +1,6 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable react/style-prop-object */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import styled from 'styled-components';
 import CardFood from '../../components/CardFood/CardFood';
 import Carousel from 'react-elastic-carousel';
@@ -85,8 +85,6 @@ export default function Check() {
     var getItems = localStorage.getItem("items");
     var items = [];
 
-    var totalPriceFood = qtd * price;
-
     if (getItems) {
       items = JSON.parse(getItems);
       var doesntExists = true;
@@ -99,12 +97,12 @@ export default function Check() {
         }
       });
 
-      doesntExists && items.push({ name, price, qtd, totalPriceFood })
+      doesntExists && items.push({ name, price, qtd })
       toast.success(`${qtd} uni. de ${name} adicionado ao seu carrinho!`);
 
     } else {
 
-      items.push({ name, price, qtd, totalPriceFood })
+      items.push({ name, price, qtd })
       toast.success(`${qtd} uni. de ${name} adicionado ao seu carrinho!`);
     }
 
@@ -118,8 +116,8 @@ export default function Check() {
 
   const [isFirstAccess, setIsFirstAccess] = useState(false);
 
-  useEffect(() => {
-    if (localStorage.getItem('shopping')) {
+  useLayoutEffect((): any => {
+    if (localStorage.getItem('name')) {
       setIsFirstAccess(false);
     } else {
       setIsFirstAccess(true);
@@ -174,7 +172,7 @@ export default function Check() {
                       allCategories &&
                       allCategories.map((category, key) => {
                         return (
-                          <div onClick={() => (getFoodsByTag(category['id']))}>
+                          <div key={key} onClick={() => (getFoodsByTag(category['id']))}>
                             <BtnCategory key={category['id']} category={category['name']} />
                           </div>
                         );
@@ -191,7 +189,7 @@ export default function Check() {
                       (
                         allFoods.length ?
                           allFoods.map((food, key) => {
-                            return <FadeIn>
+                            return <FadeIn key={key}>
                               <CardFood key={food['id']} shopping={shopping} name={food['name'] || food['nameFood']} price={food['price'] || food['priceFood']} description={food['description']} />
                             </FadeIn>
                           })

@@ -8,6 +8,11 @@ export default function GetNameUser({ onClose = () => { } }: any) {
 
     const getName = () => {
         localStorage.setItem('name', name);
+        onClose();
+    }
+
+    const onEnter = (event: any) => {
+        return event.key === 'Enter' ? getName() : '';
     }
 
     return (
@@ -19,8 +24,8 @@ export default function GetNameUser({ onClose = () => { } }: any) {
                         <div id="transition-modal-description">
                             <h3>Só precisamos saber qual o seu nome, 😊</h3>
                         </div>
-                        <InputName onChange={(event) => setName(event.target.value)} />
-                        <ButtonFinishOrder onClick={(event) => { getName(); onClose() }} className="btn">Confirmar</ButtonFinishOrder>
+                        <InputName onKeyDown={(event) => { onEnter(event) }} onChange={(event) => setName(event.target.value)} />
+                        <ButtonFinishOrder onClick={(event) => { getName() }} className="btn">Confirmar</ButtonFinishOrder>
                     </InfoBuy>
                 </FadeIn>
             </UIModalOverlay >

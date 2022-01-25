@@ -1,12 +1,14 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable array-callback-return */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
-import { IoMdClose } from 'react-icons/io';
+import { IoMdClose, IoMdRemove } from 'react-icons/io';
 import styled from 'styled-components';
 import { Switch } from 'antd';
 import { CloseOutlined, CheckOutlined } from '@ant-design/icons';
 import FadeIn from 'react-fade-in/lib/FadeIn';
 import { Fade } from '@material-ui/core';
+import { FiTrash } from 'react-icons/fi';
 
 export default function FinishOrderModal({ onClose = () => { }, children }: any) {
 
@@ -17,15 +19,24 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
   const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
+    getTotalPrice();
+  }, [])
+
+  const getTotalPrice = () => {
     var itemsStorage = localStorage.getItem("items");
+    var totalPriceFood = 0;
+    var oldTotalPrice = 0;
+
     if (itemsStorage) {
       var object = JSON.parse(itemsStorage);
       setItemsToBuy(object);
       object.map((item: any) => {
-        setTotalPrice(totalPrice + item.totalPriceFood);
+        totalPriceFood = oldTotalPrice + (item.price * item.qtd);
+        oldTotalPrice = totalPriceFood;
       })
     }
-  }, [])
+    setTotalPrice(totalPriceFood);
+  }
 
   function switchDelivery() {
     toDelivery ? setToDelivery(false) : setToDelivery(true);
@@ -42,6 +53,47 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
 
     if ($('#rest').val()! >= 2) {
 
+    }
+  }
+
+  const removeUnitFood = (index: number) => {
+    var itemsStorage = localStorage.getItem("items");
+    if (itemsStorage) {
+      var objectVector = JSON.parse(itemsStorage);
+      objectVector[index].qtd -= 1;
+      objectVector[index].totalPriceFood -= objectVector[index].price;
+
+      if (objectVector[index].qtd <= 0) {
+        setTotalPrice(0);
+        return clearFood(index);
+      } else {
+        var object = JSON.stringify(objectVector);
+        localStorage.setItem("items", object);
+      }
+    }
+
+    setItemsToBuy(objectVector);
+    getTotalPrice();
+  }
+
+  const clearFood = (index: number) => {
+    var itemsStorage = localStorage.getItem("items");
+    if (itemsStorage) {
+      var objectVector = JSON.parse(itemsStorage);
+      objectVector.splice(index, 1);
+
+      var object = JSON.stringify(objectVector);
+
+      //if object is null we need remove him, because overwrite doesnt work
+      if (objectVector.length === 0) {
+        localStorage.removeItem("items");
+        setTotalPrice(0);
+        setItemsToBuy([]);
+      } else {
+        localStorage.setItem("items", object);
+        setItemsToBuy(objectVector);
+        getTotalPrice();
+      }
     }
   }
 
@@ -70,14 +122,21 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
               <h1>{totalPrice.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</h1>
               <div id="transition-modal-description">
                 <p>Pedidos</p>
-                {
-                  itemsToBuy.map((item: any, key: number) => {
-                    return <>
-                      <p key={key}>{item.name}, qtd: {item.qtd}: (uni: {item.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}) - {item.totalPriceFood.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
-                      <button>- unidade</button><button>remover</button>
-                    </>
-                  })
-                }
+                <div className="carMarketFoods">
+                  {
+                    itemsToBuy.map((item: any, key: number) => {
+                      return <p key={key} className="eachFood">
+                        <span key={`${item.name}-${key}`}>
+                          {item.name} - qtd: {item.qtd} - (uni: {item.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}) - {(item.price * item.qtd).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                        </span>
+                        <span key={item.name} className="buttonsFood">
+                          <IoMdRemove key={`${item.name}-${item.qtd}`} className="removeUnit" onClick={(event) => removeUnitFood(key)} /><FiTrash key={`${item.name}-${key}-${key}`} onClick={(event) => clearFood(key)} className="clearFood" />
+                        </span>
+                      </p>
+                    })
+                  }
+                </div>
+
               </div>
               <h2>Preencha as informações para finalizar o pedido.</h2>
             </InfoBuy>
@@ -85,7 +144,7 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
               <form>
                 <div className="form-group">
                   <label htmlFor="name"><strong>Nome: </strong></label>
-                  <input value={localStorage.getItem("name")!} type="text" className="form-control" id="name" placeholder="Ex: João Paulo" />
+                  <input defaultValue={localStorage.getItem("name")!} type="text" className="form-control" id="name" placeholder="Ex: João Paulo" />
                 </div>
                 <div className="switch form-check">
                   <Switch
@@ -117,19 +176,19 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
                 }
                 <p><strong>Forma de pagamento: </strong></p>
                 <div className="form-check">
-                  <input className="form-check-input" onClick={() => { setcashPayment(false) }} type="radio" name="exampleRadios" id="creditCard" value="option1" />
+                  <input className="form-check-input" onClick={() => { setcashPayment(false) }} type="radio" name="exampleRadios" id="creditCard" defaultValue="option1" />
                   <label className="form-check-label" htmlFor="creditCard">
                     Cartão (Crédito/Débito)
                   </label>
                 </div>
                 <div className="form-check">
-                  <input className="form-check-input" type="radio" onClick={() => { setcashPayment(true) }} name="exampleRadios" id="cash" value="option2" />
+                  <input className="form-check-input" type="radio" onClick={() => { setcashPayment(true) }} name="exampleRadios" id="cash" defaultValue="option2" />
                   <label className="form-check-label" htmlFor="cash">
                     Dinheiro
                   </label>
                 </div>
                 <div className="form-check">
-                  <input className="form-check-input" onClick={() => { setcashPayment(false) }} type="radio" name="exampleRadios" id="creditCard" value="option1" />
+                  <input className="form-check-input" onClick={() => { setcashPayment(false) }} type="radio" name="exampleRadios" id="creditCard" defaultValue="option1" />
                   <label className="form-check-label" htmlFor="creditCard">
                     PIX
                   </label>
@@ -190,6 +249,35 @@ const UIModalOverlay = styled.div`
   color: #FFF;
   padding: 2% 25% 5% 25%;
   background-color: #FA4A0C;
+  
+  .buttonsFood {
+    display: flex;
+  }
+
+  .eachFood {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .removeUnit {
+    font-size: 18px;
+    color: #fff;
+    margin: 0 20px;
+  }
+
+  .removeUnit, .clearFood {
+    font-size: 18px;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  .removeUnit:hover, .clearFood:hover {
+    font-size: 18px;
+    color: #d3cece;
+  }
+
+  
 
   input {
     border-radius: 20px;

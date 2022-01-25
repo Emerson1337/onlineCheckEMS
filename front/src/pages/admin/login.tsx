@@ -28,6 +28,10 @@ export default function Login() {
     })
   }
 
+  const onEnter = (event: any) => {
+    return event.key === 'Enter' ? login() : '';
+  }
+
   return (
     <Container>
       <Form>
@@ -38,11 +42,13 @@ export default function Login() {
           }
         </Errors>
         <input
+          onKeyDown={(event) => onEnter(event)}
           id="email"
           type="email"
           placeholder="Endereço de e-mail"
         />
         <input
+          onKeyDown={(event) => onEnter(event)}
           id="password"
           type="password"
           placeholder="Senha"
