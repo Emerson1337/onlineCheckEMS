@@ -25,7 +25,7 @@ export default function CardFood({ name, price, description, shopping }: cardPro
         <div className="cardBody">
           <img src={pizzaImage} />
 
-          <h5>Preço: R$ {price}</h5>
+          <h5>Preço: {price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</h5>
           <p className="ingredients">Ingredientes</p>
           <p>{description.length === 80 ? description : description.substr(0, 78) + '...'}</p>
           <div>

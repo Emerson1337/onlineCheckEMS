@@ -5,10 +5,10 @@ class MonthSalesController {
 
   async insertNewSale(request: Request, response: Response) {
     try {
-      const { name, tagFood, description, price } = request.body;
+      const itemsToBuy = request.body;
 
       const monthSalesService = new MonthSalesService();
-      const monthSale = await monthSalesService.addNewMonthSale({ name, tagFood, description, price });
+      const monthSale = await monthSalesService.addSale(itemsToBuy);
 
       return response.status(200).json(monthSale);
     } catch (err: any) {

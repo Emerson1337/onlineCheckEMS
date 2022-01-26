@@ -9,14 +9,22 @@ import { CloseOutlined, CheckOutlined } from '@ant-design/icons';
 import FadeIn from 'react-fade-in/lib/FadeIn';
 import { Fade } from '@material-ui/core';
 import { FiTrash } from 'react-icons/fi';
+import api from '../../services/api';
 
 export default function FinishOrderModal({ onClose = () => { }, children }: any) {
 
   const [toDelivery, setToDelivery] = useState(false);
-  const [cashPayment, setcashPayment] = useState(false);
   const [rest, setRest] = useState(false);
   const [itemsToBuy, setItemsToBuy] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
+
+  const [address, setAddress] = useState('');
+  const [name, setName] = useState('');
+  const [complement, setComplement] = useState('');
+  const [cashPayment, setcashPayment] = useState(false);
+  const [moneyBack, setMoneyBack] = useState(0);
+  const [pix, setPix] = useState(false);
+  const [card, setCard] = useState(false);
 
   useEffect(() => {
     getTotalPrice();
@@ -46,14 +54,37 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
     rest ? setRest(false) : setRest(true);
   }
 
-  function checkPaymentMethod() {
-    if (!$('#creditCard').prop('checked') && !$('#cash').prop('checked')) {
-      alert('Selecione o método de pagamento.');
+  function finishOrder() {
+    var objectInfoUser = {
+      address: address,
+      complement: complement,
+      moneyBack: moneyBack,
+      pix: pix,
+      card: card,
+      cashPayment: cashPayment
     }
 
-    if ($('#rest').val()! >= 2) {
+    localStorage.setItem("user_info", JSON.stringify(objectInfoUser));
 
-    }
+    var itemsToBuyString = localStorage.getItem("items");
+    // itemsToBuyString && api.get(`/api/sale`, { itemsToBuyString }).then((response) => {
+    // });
+
+    messageWhatsappGenerator();
+  }
+
+  function messageWhatsappGenerator() {
+    var orderList = itemsToBuy.map((item: any) => {
+      return `${item.name}%0AQTD: ${item.qtd}%0AValor Unit: ${(item.price).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}%0AValor: *${(item.price * item.qtd).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}*`;
+    });
+
+    window.location.href = `https://api.whatsapp.com/send?phone=558588254097&text=Olá, sou ${name}! Escolhi os seguintes produtos:%0A%0A ${orderList}`;
+
+    // `https://api.whatsapp.com/send?phone=5585986160705&text=Olá, sou ${dados.cliente}! Escolhi os seguintes produtos:%0A%0A ${listaPedidos} 
+    // %0A%0A %0A%0APREÇO TOTAL (R$2,00 ENTREGA): *R$${precoTotal}*
+    // %0A%0ADesejo todos para entrega no seguinte endereço:%0A${dados.endereco}
+    // %0APonto de Referência: ${dados.referencia}. 
+    // %0APor favor, troco para: *R$${dados.troco}*`);
   }
 
   const removeUnitFood = (index: number) => {
@@ -61,7 +92,6 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
     if (itemsStorage) {
       var objectVector = JSON.parse(itemsStorage);
       objectVector[index].qtd -= 1;
-      objectVector[index].totalPriceFood -= objectVector[index].price;
 
       if (objectVector[index].qtd <= 0) {
         setTotalPrice(0);
@@ -126,7 +156,7 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
                   {
                     itemsToBuy.map((item: any, key: number) => {
                       return <p key={key} className="eachFood">
-                        <span key={`${item.name}-${key}`}>
+                        <span className="descriptionBuy" key={`${item.name}-${key}`}>
                           {item.name} - qtd: {item.qtd} - (uni: {item.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}) - {(item.price * item.qtd).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                         </span>
                         <span key={item.name} className="buttonsFood">
@@ -144,7 +174,7 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
               <form>
                 <div className="form-group">
                   <label htmlFor="name"><strong>Nome: </strong></label>
-                  <input defaultValue={localStorage.getItem("name")!} type="text" className="form-control" id="name" placeholder="Ex: João Paulo" />
+                  <input onChange={(e) => { setName(e.target.value); localStorage.setItem("name", e.target.value) }} defaultValue={localStorage.getItem("name")!} type="text" className="form-control" id="name" placeholder="Ex: João Paulo" />
                 </div>
                 <div className="switch form-check">
                   <Switch
@@ -159,11 +189,11 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
                       <div id="adressDelivery">
                         <div className="form-group">
                           <label htmlFor="address"><strong>Endereço: </strong></label>
-                          <input type="text" className="form-control" id="address" placeholder="Ex: Rua Verde, 340" />
+                          <input onChange={(e) => setAddress(e.target.value)} type="text" className="form-control" id="address" placeholder="Ex: Rua Verde, 340" />
                         </div>
                         <div className="form-group">
                           <label htmlFor="refference"><strong>Ponto de Referência: </strong></label>
-                          <input type="text" className="form-control" id="refference" placeholder="Ex: Apto; Altos..." />
+                          <input onChange={(e) => setComplement(e.target.value)} type="text" className="form-control" id="refference" placeholder="Ex: Apto; Altos..." />
                         </div>
                       </div>
                     </Fade>
@@ -176,19 +206,19 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
                 }
                 <p><strong>Forma de pagamento: </strong></p>
                 <div className="form-check">
-                  <input className="form-check-input" onClick={() => { setcashPayment(false) }} type="radio" name="exampleRadios" id="creditCard" defaultValue="option1" />
+                  <input className="form-check-input" onClick={() => { setcashPayment(false); setCard(true); setPix(false); setMoneyBack(0) }} type="radio" name="exampleRadios" id="creditCard" defaultValue="option1" />
                   <label className="form-check-label" htmlFor="creditCard">
                     Cartão (Crédito/Débito)
                   </label>
                 </div>
                 <div className="form-check">
-                  <input className="form-check-input" type="radio" onClick={() => { setcashPayment(true) }} name="exampleRadios" id="cash" defaultValue="option2" />
+                  <input className="form-check-input" type="radio" onClick={() => { setcashPayment(true); setCard(false); setPix(false) }} name="exampleRadios" id="cash" defaultValue="option2" />
                   <label className="form-check-label" htmlFor="cash">
                     Dinheiro
                   </label>
                 </div>
                 <div className="form-check">
-                  <input className="form-check-input" onClick={() => { setcashPayment(false) }} type="radio" name="exampleRadios" id="creditCard" defaultValue="option1" />
+                  <input className="form-check-input" onClick={() => { setcashPayment(false); setCard(false); setPix(true); setMoneyBack(0) }} type="radio" name="exampleRadios" id="creditCard" defaultValue="option1" />
                   <label className="form-check-label" htmlFor="creditCard">
                     PIX
                   </label>
@@ -204,7 +234,7 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
                             <div className="input-group-prepend">
                               <div className="input-group-text">R$</div>
                             </div>
-                            <input type="number" className="form-control" id="rest" placeholder="Ex: 50,00" />
+                            <input onChange={(e) => setMoneyBack(Number(e.target.value))} type="number" className="form-control" id="rest" placeholder="Ex: 50,00" />
                           </div>
                         </div>
                       </div>
@@ -223,13 +253,13 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
                     <Switch
                       checkedChildren={<CheckOutlined />}
                       unCheckedChildren={<CloseOutlined />}
-                      onChange={() => switchPayment()} /> Não preciso de troco.
+                      onChange={() => { switchPayment(); setMoneyBack(0) }} /> Não preciso de troco.
                   </div>
                 }
               </form>
             </div>
             <FinishBuy>
-              <ButtonFinishOrder onClick={() => { checkPaymentMethod() }} className="btn">Finalizar Pedido</ButtonFinishOrder>
+              <ButtonFinishOrder onClick={() => { finishOrder() }} className="btn">Finalizar Pedido</ButtonFinishOrder>
             </FinishBuy>
           </div>
         </FadeIn>
@@ -252,6 +282,10 @@ const UIModalOverlay = styled.div`
   
   .buttonsFood {
     display: flex;
+  }
+
+  .descriptionBuy {
+    text-align: left;
   }
 
   .eachFood {

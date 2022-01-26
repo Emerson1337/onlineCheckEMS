@@ -80,6 +80,23 @@ class MonthSalesService {
     return { Success: "Venda efetuada com sucesso!" };
   }
 
+  async addSale(foods: any) {
+    const sale = foods.forEach((item: any) => {
+      var name = item.name;
+      var tagFood = item.tagFood;
+      var description = item.description;
+      var price = item.price;
+
+      return this.addNewMonthSale({ name, tagFood, description, price });
+    });
+
+    if (sale) {
+      return { Success: "Venda efetuada com sucesso!" };
+    } else {
+      return { error: "Algo deu errado!" };
+    }
+  }
+
   async deleteAllData() {
     const monthSalesRepository = getCustomRepository(MonthSalesRespository);
     const allSales = await monthSalesRepository.find();
@@ -91,7 +108,7 @@ class MonthSalesService {
     if (deleted!) {
       return { Success: "Tabela limpa com sucesso!" };
     } else {
-      return { error: "Alguma coisa deu errada!" };
+      return { error: "Algo deu errado!" };
     }
   }
 }
