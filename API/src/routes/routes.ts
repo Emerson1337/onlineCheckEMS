@@ -7,6 +7,7 @@ import { CreateFoodTypeController } from '../controllers/CreateFoodTypeControlle
 import CreateUsersController from '../controllers/CreateUsersController';
 import MoneyMonthlyController from '../controllers/MoneyMonthlyController';
 import MonthSalesController from '../controllers/MonthSalesController';
+import RestaurantInfoController from '../controllers/RestaurantInfoController';
 import { Auth } from '../middlewares/auth';
 import verifyCreateUserValidator from '../middlewares/verifyCreateUserValidator';
 
@@ -19,6 +20,7 @@ const monthSalesController = new MonthSalesController();
 const moneyMonthlyController = new MoneyMonthlyController();
 const bestSellingFoodController = new BestSellingFoodController();
 const authController = new AuthController();
+const restaurantInfoController = new RestaurantInfoController();
 
 const auth = new Auth();
 
@@ -47,6 +49,12 @@ router.post('/api/create-tag-food', auth.authMiddleware, createFoodTypeControlle
 router.get('/api/list-tags', createFoodTypeController.handleListAllTags);
 router.delete('/api/remove-tag/:id', auth.authMiddleware, createFoodTypeController.handleRemoveTag);
 router.put('/api/update-tag/:id', auth.authMiddleware, createFoodTypeController.handleEditTag);
+
+// INFORMACOES DO RESTAURANTE
+router.post('/api/restaurant-info', auth.authMiddleware, restaurantInfoController.create);
+router.get('/api/restaurant-info/:id', auth.authMiddleware, restaurantInfoController.create);
+router.put('/api/restaurant-info/:id', auth.authMiddleware, restaurantInfoController.update);
+
 
 //REGISTOR DE NOVA VENDA
 router.post('/api/sale', monthSalesController.insertNewSale);

@@ -81,7 +81,7 @@ export default function Check() {
     }
   }
 
-  const shopping = (name: string, price: number, qtd = 1) => {
+  const shopping = (name: string, price: number, description: string, qtd = 1, category: string) => {
     var getItems = localStorage.getItem("items");
     var items = [];
 
@@ -97,12 +97,10 @@ export default function Check() {
         }
       });
 
-      doesntExists && items.push({ name, price, qtd })
+      doesntExists && items.push({ name, price, description, qtd, category })
       toast.success(`${qtd} uni. de ${name} adicionado ao seu carrinho!`);
-
     } else {
-
-      items.push({ name, price, qtd })
+      items.push({ name, price, description, qtd, category })
       toast.success(`${qtd} uni. de ${name} adicionado ao seu carrinho!`);
     }
 
@@ -159,7 +157,7 @@ export default function Check() {
                 </LinkFinishOrder>
                 <BannerCategory>
                   <p className="slogan"><strong>Pizzaria mundo do sabor.</strong></p>
-                  <p className="slogan"><strong>Olá, {localStorage.getItem('shopping')}</strong></p>
+                  <p className="slogan"><strong>Olá, {localStorage.getItem('name')}</strong></p>
                   <h1 className="ask">Qual tipo de comida deseja?</h1>
                   <p className="explain">Escolha o tipo de comida abaixo para checar o cardápio!</p>
                 </BannerCategory>
@@ -190,7 +188,7 @@ export default function Check() {
                         allFoods.length ?
                           allFoods.map((food, key) => {
                             return <FadeIn key={key}>
-                              <CardFood key={food['id']} shopping={shopping} name={food['name'] || food['nameFood']} price={food['price'] || food['priceFood']} description={food['description']} />
+                              <CardFood key={food['id']} shopping={shopping} name={food['name'] || food['nameFood']} price={food['price'] || food['priceFood']} description={food['description']} category={food['tagFood']} />
                             </FadeIn>
                           })
                           :

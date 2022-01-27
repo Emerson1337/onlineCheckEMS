@@ -8,12 +8,13 @@ interface MonthSaleData {
   name: string,
   tagFood: string,
   description: string,
+  qtd: number,
   price: number,
 }
 
 class MonthSalesService {
 
-  async addNewMonthSale({ name, tagFood, description, price }: MonthSaleData) {
+  async addNewMonthSale({ name, tagFood, qtd, description, price }: MonthSaleData) {
 
     const foodTypeRepository = getCustomRepository(FoodTypesRepository);
 
@@ -28,7 +29,7 @@ class MonthSalesService {
       throw new Error(err.errors);
     });
 
-    const specialCharacters = "/([!@#$%^&*+=[],,/{}|:<>?])";
+    const specialCharacters = "/([!@#$%&*+=[]/{}|:<>?])";
 
     for (let i = 0; i < specialCharacters.length; i++) {
       if (name.indexOf(specialCharacters[i]) != -1) {
@@ -57,37 +58,37 @@ class MonthSalesService {
     const foodAlreadyExists = await monthSalesRepository.findOne({ name });
 
     if (foodAlreadyExists) {
-      foodAlreadyExists.frequency++;
-      const updateSale = monthSalesRepository.create(foodAlreadyExists);
+      foodAlreadyExists.frequency += qtd;
       try {
-        await monthSalesRepository.save(updateSale);
+        await monthSalesRepository.save(foodAlreadyExists);
       } catch (err: any) {
         const error = new Error(err);
         throw new Error(error.message);
       }
       return { Success: "Venda efetuada com sucesso!" };
+    } else {
+      const newSale = monthSalesRepository.create({
+        name,
+        tagFood,
+        description,
+        price,
+        frequency: qtd
+      })
+      await monthSalesRepository.save(newSale);
     }
 
-    const newSale = monthSalesRepository.create({
-      name,
-      tagFood,
-      description,
-      price,
-      frequency: 1
-    })
-
-    await monthSalesRepository.save(newSale);
     return { Success: "Venda efetuada com sucesso!" };
   }
 
   async addSale(foods: any) {
-    const sale = foods.forEach((item: any) => {
+    const sale = foods.itemsToBuy.map((item: any) => {
       var name = item.name;
-      var tagFood = item.tagFood;
+      var tagFood = item.category;
       var description = item.description;
+      var qtd = item.qtd;
       var price = item.price;
 
-      return this.addNewMonthSale({ name, tagFood, description, price });
+      this.addNewMonthSale({ name, tagFood, qtd, description, price });
     });
 
     if (sale) {

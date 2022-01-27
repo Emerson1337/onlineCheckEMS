@@ -18,6 +18,7 @@ import GraphColumnDashboard from '../../components/Graphs/GraphColumnDashboard';
 import GraphLineDashboard from '../../components/Graphs/GraphLineDashboard';
 import IndexCategories from '../../components/IndexCategories/IndexCategories';
 import FadeIn from 'react-fade-in/lib/FadeIn';
+import RestaurantInfo from '../../components/RestaurantInfo/RestaurantInfo';
 
 const { SubMenu } = Menu;
 
@@ -45,25 +46,28 @@ export default function Dashboard() {
           </div>
           <Menu theme="light" mode="inline" defaultSelectedKeys={[menu]}>
             <Menu.Item key="1" onClick={() => { changeMenu('1'); localStorage.setItem('gui', '1') }} icon={<PlusSquareFilled />}>
+              Informações do restaurante
+            </Menu.Item>
+            <Menu.Item key="2" onClick={() => { changeMenu('2'); localStorage.setItem('gui', '2') }} icon={<PlusSquareFilled />}>
               Criar Categoria
             </Menu.Item>
-            <Menu.Item key="2" onClick={() => { changeMenu('2'); localStorage.setItem('gui', '2') }} icon={<PlusCircleFilled />}>
+            <Menu.Item key="3" onClick={() => { changeMenu('3'); localStorage.setItem('gui', '3') }} icon={<PlusCircleFilled />}>
               Adicionar Comida
             </Menu.Item>
-            <Menu.Item key="3" onClick={() => { changeMenu('3'); localStorage.setItem('gui', '3') }} icon={<ContactsOutlined />}>
+            <Menu.Item key="4" onClick={() => { changeMenu('4'); localStorage.setItem('gui', '4') }} icon={<ContactsOutlined />}>
               Listar Categorias
             </Menu.Item>
-            <Menu.Item key="4" onClick={() => { changeMenu('4'); localStorage.setItem('gui', '4') }} icon={<ContactsOutlined />}>
+            <Menu.Item key="5" onClick={() => { changeMenu('5'); localStorage.setItem('gui', '5') }} icon={<ContactsOutlined />}>
               Listar Comidas
             </Menu.Item>
-            <SubMenu key="5" icon={<AreaChartOutlined />} title="Estatísticas">
-              <Menu.Item key="6" onClick={() => { changeMenu('6'); localStorage.setItem('gui', '6') }}>
+            <SubMenu key="6" icon={<AreaChartOutlined />} title="Estatísticas">
+              <Menu.Item key="7" onClick={() => { changeMenu('7'); localStorage.setItem('gui', '7') }}>
                 Vendas Produtos
               </Menu.Item>
-              <Menu.Item key="7" onClick={() => { changeMenu('7'); localStorage.setItem('gui', '7') }}>
+              <Menu.Item key="8" onClick={() => { changeMenu('8'); localStorage.setItem('gui', '8') }}>
                 Saídas Prod. Mensais
               </Menu.Item>
-              <Menu.Item key="8" onClick={() => { changeMenu('8'); localStorage.setItem('gui', '8') }}>
+              <Menu.Item key="9" onClick={() => { changeMenu('9'); localStorage.setItem('gui', '9') }}>
                 Vendas Mensais (R$)
               </Menu.Item>
             </SubMenu>
@@ -90,27 +94,30 @@ export default function Dashboard() {
             <FadeIn>
               {
                 menu === '1' ?
-                  <CreateCategory />
+                  <RestaurantInfo />
                   :
                   menu === '2' ?
-                    <CreateFood />
+                    <CreateCategory />
                     :
                     menu === '3' ?
-                      <IndexCategories />
+                      <CreateFood />
                       :
                       menu === '4' ?
-                        <IndexFoods />
+                        <IndexCategories />
                         :
-                        menu === '6' ?
-                          <GraphPieDashboard />
+                        menu === '5' ?
+                          <IndexFoods />
                           :
                           menu === '7' ?
-                            <GraphColumnDashboard />
+                            <GraphPieDashboard />
                             :
                             menu === '8' ?
-                              <GraphLineDashboard />
+                              <GraphColumnDashboard />
                               :
-                              ''
+                              menu === '9' ?
+                                <GraphLineDashboard />
+                                :
+                                ''
               }
             </FadeIn>
           </Content>

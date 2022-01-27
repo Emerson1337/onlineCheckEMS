@@ -11,6 +11,7 @@ import { Fade } from '@material-ui/core';
 import { FiTrash } from 'react-icons/fi';
 import api from '../../services/api';
 
+
 export default function FinishOrderModal({ onClose = () => { }, children }: any) {
 
   const [toDelivery, setToDelivery] = useState(false);
@@ -28,6 +29,7 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
 
   useEffect(() => {
     getTotalPrice();
+    setName(localStorage.getItem("name") || '');
   }, [])
 
   const getTotalPrice = () => {
@@ -58,33 +60,41 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
     var objectInfoUser = {
       address: address,
       complement: complement,
-      moneyBack: moneyBack,
-      pix: pix,
-      card: card,
-      cashPayment: cashPayment
     }
 
     localStorage.setItem("user_info", JSON.stringify(objectInfoUser));
 
-    var itemsToBuyString = localStorage.getItem("items");
-    // itemsToBuyString && api.get(`/api/sale`, { itemsToBuyString }).then((response) => {
-    // });
+    itemsToBuy && api.post(`/api/sale`, { itemsToBuy }).then((response) => {
+    });
 
     messageWhatsappGenerator();
   }
 
   function messageWhatsappGenerator() {
     var orderList = itemsToBuy.map((item: any) => {
-      return `${item.name}%0AQTD: ${item.qtd}%0AValor Unit: ${(item.price).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}%0AValor: *${(item.price * item.qtd).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}*`;
+      return `%0A%0A${item.name}%0AQTD: ${item.qtd}%0AValor Unit: ${(item.price).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}%0AValor: *${(item.price * item.qtd).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}*`;
     });
 
-    window.location.href = `https://api.whatsapp.com/send?phone=558588254097&text=Olá, sou ${name}! Escolhi os seguintes produtos:%0A%0A ${orderList}`;
+    window.location.href = (`https://api.whatsapp.com/send?phone=558586160705&text=Olá, sou ${name}! Escolhi os seguintes produtos: ${orderList}
+    %0A%0A %0A%0APREÇO TOTAL (R$2,00 ENTREGA): *${totalPrice.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}*
+    %0A%0ADesejo todos para entrega no seguinte endereço:%0A*${address}*
+    %0APonto de Referência: *${complement}*. 
+    %0AForma de pagamento: ${paymentMethodGenerator(cashPayment, moneyBack, card, pix)}`);
+  }
 
-    // `https://api.whatsapp.com/send?phone=5585986160705&text=Olá, sou ${dados.cliente}! Escolhi os seguintes produtos:%0A%0A ${listaPedidos} 
-    // %0A%0A %0A%0APREÇO TOTAL (R$2,00 ENTREGA): *R$${precoTotal}*
-    // %0A%0ADesejo todos para entrega no seguinte endereço:%0A${dados.endereco}
-    // %0APonto de Referência: ${dados.referencia}. 
-    // %0APor favor, troco para: *R$${dados.troco}*`);
+  const paymentMethodGenerator = (cashPayment: boolean, moneyBack: number, card: boolean, pix: boolean) => {
+    if (cashPayment) {
+      return cashPayment ? `*Dinheiro*. Troco para: ${moneyBack.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}` : 'Não preciso de troco.'
+    }
+
+    if (card) {
+      return "*Cartão de crédito/débito*";
+    }
+
+    if (pix) {
+      return "*PIX*"
+    }
+
   }
 
   const removeUnitFood = (index: number) => {
@@ -156,11 +166,11 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
                   {
                     itemsToBuy.map((item: any, key: number) => {
                       return <p key={key} className="eachFood">
-                        <span className="descriptionBuy" key={`${item.name}-${key}`}>
+                        <span className="descriptionBuy" key={`${item.name} -${key} `}>
                           {item.name} - qtd: {item.qtd} - (uni: {item.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}) - {(item.price * item.qtd).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                         </span>
                         <span key={item.name} className="buttonsFood">
-                          <IoMdRemove key={`${item.name}-${item.qtd}`} className="removeUnit" onClick={(event) => removeUnitFood(key)} /><FiTrash key={`${item.name}-${key}-${key}`} onClick={(event) => clearFood(key)} className="clearFood" />
+                          <IoMdRemove key={`${item.name} -${item.qtd} `} className="removeUnit" onClick={(event) => removeUnitFood(key)} /><FiTrash key={`${item.name} -${key} -${key} `} onClick={(event) => clearFood(key)} className="clearFood" />
                         </span>
                       </p>
                     })
@@ -269,57 +279,57 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
 };
 
 const UIModalOverlay = styled.div`
-  z-index: 9999;
-  position: fixed;
-  overflow-y: scroll;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  color: #FFF;
-  padding: 2% 25% 5% 25%;
-  background-color: #FA4A0C;
+    z-index: 9999;
+    position: fixed;
+    overflow-y: scroll;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    color: #FFF;
+    padding: 2% 25% 5% 25%;
+    background-color: #FA4A0C;
   
   .buttonsFood {
-    display: flex;
-  }
+      display: flex;
+    }
 
   .descriptionBuy {
-    text-align: left;
-  }
+      text-align: left;
+    }
 
   .eachFood {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
   .removeUnit {
-    font-size: 18px;
-    color: #fff;
-    margin: 0 20px;
-  }
+      font-size: 18px;
+      color: #fff;
+      margin: 0 20px;
+    }
 
   .removeUnit, .clearFood {
-    font-size: 18px;
-    color: #fff;
-    cursor: pointer;
-  }
+      font-size: 18px;
+      color: #fff;
+      cursor: pointer;
+    }
 
   .removeUnit:hover, .clearFood:hover {
-    font-size: 18px;
-    color: #d3cece;
-  }
+      font-size: 18px;
+      color: #d3cece;
+    }
 
   
 
   input {
-    border-radius: 20px;
-  }
+      border-radius: 20px;
+    }
 
-  #inputRest {
-    width: 40%;
-  }
+    #inputRest {
+      width: 40 %;
+    }
 
   .switch {
     margin-bottom: 10px;
@@ -352,18 +362,18 @@ const UIModalOverlay = styled.div`
     justify-content: right;
   }
 
-  @media(max-width: 768px){
+  @media(max - width: 768px) {
     padding: 5% 15% 5% 15%;
-
+    
     #inputRest {
       width: 70%;
     }
   }
-`;
+  `;
 
 const InfoBuy = styled.div`
   text-align: center;
-  
+
 
   #transition-modal-description p{
     line-height: 1rem;
@@ -378,17 +388,17 @@ const InfoBuy = styled.div`
     margin: 10% 5% 5% 5%;
   }
 
-  @media(max-width: 768px){
+  @media(max-width: 768px) {
     h2 {
       font-size: 1rem;
     }
   }
-`;
+  `;
 
 const FinishBuy = styled.div`
   text-align: center;
   margin-top: 30px;
-`;
+  `;
 
 const ButtonClose = styled.button`
   display: flex;
@@ -401,7 +411,7 @@ const ButtonClose = styled.button`
   :hover {
     background: #d3cece;
   }
-`;
+  `;
 
 const ButtonFinishOrder = styled.button`
   background: #fff;
@@ -410,12 +420,12 @@ const ButtonFinishOrder = styled.button`
   font-weight: bold;
   font-size: 18px;
   width: 200px;
-  
-  @media(max-width: 768px){
+
+  @media(max-width: 768px) {
     width: 80%;
   }
 
   :hover {
     background: #d3cece;
   }
-`;
+  `;
