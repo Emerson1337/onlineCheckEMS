@@ -10,6 +10,7 @@ import FadeIn from 'react-fade-in/lib/FadeIn';
 import { Fade } from '@material-ui/core';
 import { FiTrash } from 'react-icons/fi';
 import api from '../../services/api';
+import { toast } from 'react-toastify';
 
 
 export default function FinishOrderModal({ onClose = () => { }, children }: any) {
@@ -27,9 +28,21 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
   const [pix, setPix] = useState(false);
   const [card, setCard] = useState(false);
 
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [deliveryFee, setDeliveryFee] = useState(0);
+
   useEffect(() => {
     getTotalPrice();
     setName(localStorage.getItem("name") || '');
+    setAddress(JSON.parse(localStorage.getItem("user_info") || '').address);
+    setComplement(JSON.parse(localStorage.getItem("user_info") || '').complement);
+
+    api.get('/api/restaurant-info').then((response) => {
+      setPhoneNumber(response.data.phone_number);
+      setDeliveryFee(response.data.delivery_fee);
+    }).catch((error) => {
+      toast.error(error.response.data);
+    })
   }, [])
 
   const getTotalPrice = () => {
@@ -68,31 +81,45 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
     });
 
     messageWhatsappGenerator();
+
+    localStorage.removeItem("items");
+    setItemsToBuy([]);
   }
 
   function messageWhatsappGenerator() {
     var orderList = itemsToBuy.map((item: any) => {
-      return `%0A%0A${item.name}%0AQTD: ${item.qtd}%0AValor Unit: ${(item.price).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}%0AValor: *${(item.price * item.qtd).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}*`;
+      return `%0A%0A✅ ${item.name}%0AQuantidade: ${item.qtd}x%0AValor Unit: ${(item.price).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}%0AValor: *${(item.price * item.qtd).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}*`;
     });
 
-    window.location.href = (`https://api.whatsapp.com/send?phone=558586160705&text=Olá, sou ${name}! Escolhi os seguintes produtos: ${orderList}
-    %0A%0A %0A%0APREÇO TOTAL (R$2,00 ENTREGA): *${totalPrice.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}*
-    %0A%0ADesejo todos para entrega no seguinte endereço:%0A*${address}*
-    %0APonto de Referência: *${complement}*. 
-    %0AForma de pagamento: ${paymentMethodGenerator(cashPayment, moneyBack, card, pix)}`);
+    window.location.href = (`https://api.whatsapp.com/send?phone=${phoneNumber}&text=Olá, sou ${name}! Escolhi os seguintes produtos 🍲: ${orderList}
+      ${isDelivery(toDelivery)}
+      %0A🤑 Forma de pagamento: ${paymentMethodGenerator(cashPayment, moneyBack, card, pix)}%0A%0A😊 Obrigado!`);
   }
 
   const paymentMethodGenerator = (cashPayment: boolean, moneyBack: number, card: boolean, pix: boolean) => {
     if (cashPayment) {
-      return cashPayment ? `*Dinheiro*. Troco para: ${moneyBack.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}` : 'Não preciso de troco.'
+      return `*Dinheiro* (💵). ${moneyBack ? `Troco para: ${moneyBack.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}` : 'Não precisarei de troco!'}`;
     }
 
     if (card) {
-      return "*Cartão de crédito/débito*";
+      return "*Cartão de crédito/débito* (💳)";
     }
 
     if (pix) {
-      return "*PIX*"
+      return "*PIX* (📱)"
+    }
+
+  }
+
+  const isDelivery = (toDelivery: boolean) => {
+
+    if (toDelivery) {
+      return `%0A%0A💰 PREÇO TOTAL (${deliveryFee.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} Taxa de entrega): *${(totalPrice + deliveryFee).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}*
+      %0A%0A🏡 Desejo todos para entrega no seguinte endereço:%0A*${address}*
+      %0A%0A📓 Ponto de Referência: *${complement}*.%0A%0A`
+    } else {
+      return `%0A%0A💰 PREÇO TOTAL: *${(totalPrice).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}*
+      %0A%0A🚶‍♂️ Farei a retirada no local.%0A`
     }
 
   }
@@ -190,7 +217,7 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
                   <Switch
                     checkedChildren={<CheckOutlined />}
                     unCheckedChildren={<CloseOutlined />}
-                    onChange={() => switchDelivery()} /> Desejo para entrega (Taxa: R$2,00)
+                    onChange={() => switchDelivery()} /> Desejo para entrega (Taxa: {deliveryFee.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })})
                 </div>
                 {
                   toDelivery ?
@@ -199,11 +226,11 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
                       <div id="adressDelivery">
                         <div className="form-group">
                           <label htmlFor="address"><strong>Endereço: </strong></label>
-                          <input onChange={(e) => setAddress(e.target.value)} type="text" className="form-control" id="address" placeholder="Ex: Rua Verde, 340" />
+                          <input defaultValue={address} onChange={(e) => setAddress(e.target.value)} type="text" className="form-control" id="address" placeholder="Ex: Rua Verde, 340" />
                         </div>
                         <div className="form-group">
                           <label htmlFor="refference"><strong>Ponto de Referência: </strong></label>
-                          <input onChange={(e) => setComplement(e.target.value)} type="text" className="form-control" id="refference" placeholder="Ex: Apto; Altos..." />
+                          <input defaultValue={complement} onChange={(e) => setComplement(e.target.value)} type="text" className="form-control" id="refference" placeholder="Ex: Apto; Altos..." />
                         </div>
                       </div>
                     </Fade>

@@ -52,8 +52,7 @@ router.put('/api/update-tag/:id', auth.authMiddleware, createFoodTypeController.
 
 // INFORMACOES DO RESTAURANTE
 router.post('/api/restaurant-info', auth.authMiddleware, restaurantInfoController.create);
-router.get('/api/restaurant-info/:id', auth.authMiddleware, restaurantInfoController.create);
-router.put('/api/restaurant-info/:id', auth.authMiddleware, restaurantInfoController.update);
+router.get('/api/restaurant-info', restaurantInfoController.listInfo);
 
 
 //REGISTOR DE NOVA VENDA

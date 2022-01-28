@@ -29,7 +29,7 @@ class MonthSalesService {
       throw new Error(err.errors);
     });
 
-    const specialCharacters = "/([!@#$%&*+=[]/{}|:<>?])";
+    const specialCharacters = "/([!@#$%&*+=[]/{}|:<>])";
 
     for (let i = 0; i < specialCharacters.length; i++) {
       if (name.indexOf(specialCharacters[i]) != -1) {

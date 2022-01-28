@@ -8,7 +8,7 @@ import {
 
 import { v4 as uuid } from 'uuid';
 
-@Entity('RestaurantInfo')
+@Entity('restaurant_info')
 class RestaurantInfo {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -16,7 +16,7 @@ class RestaurantInfo {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
   logo: string;
 
   @Column()

@@ -1,12 +1,10 @@
+/* eslint-disable no-template-curly-in-string */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import MaskedInput from 'react-text-mask';
 import createNumberMask from 'text-mask-addons/dist/createNumberMask';
-import { Form, Input, Button, Upload, Space, Select } from 'antd';
-import {
-    UploadOutlined,
-} from '@ant-design/icons';
-import { useEffect, useState } from 'react';
+import { Form, Input, Button } from 'antd';
+import { useState } from 'react';
 import api from '../../services/api';
 import { toast } from 'react-toastify';
 const layout = {
@@ -14,40 +12,46 @@ const layout = {
     wrapperCol: { span: 16 },
 };
 
-/* eslint-disable no-template-curly-in-string */
 const validateMessages = {
     required: '${label} é obrigatório!',
 };
-/* eslint-enable no-template-curly-in-string */
 
 export default function RestaurantInfo() {
 
-    const [allCategories, setAllCategories] = useState([]);
+    const [name, setName] = useState('');
+    const [phone_number, setPhone_number] = useState(0);
+    const [delivery_fee, setDelivery_fee] = useState(0);
+    const [loaded, setLoaded] = useState(false);
+
     const [form] = Form.useForm();
 
-    useEffect(() => {
-        api.get('/api/list-tags').then((response) => {
-            setAllCategories(response.data);
+    const getInfo = () => {
+        setLoaded(false);
+        api.get('/api/restaurant-info').then((response) => {
+            setName(response.data.name); //always return just one object
+            setPhone_number(response.data.phone_number); //always return just one object
+            setDelivery_fee(response.data.delivery_fee); //always return just one object
+            setLoaded(true);
         }).catch((error) => {
             toast.error(error.response.data);
         });
+    }
+
+    useLayoutEffect(() => {
+        getInfo();
     }, [])
 
-    const createFood = (values: any) => {
-        const name = values.food.name;
-        const description = values.food.description;
-        const tagFood = values.food.tagFood;
-        const price = values.food.price.split('R$').join('').replace(',', '.');
-        const image = values.food.image;
+    const saveRestaurantInfo = (values: any) => {
+        const name = values.info.name;
+        const phone_number = values.info.phone_number;
+        const delivery_fee = values.info.delivery_fee.split('R$').join('').replace(',', '.');
         const userJWT = localStorage.getItem("Authorization");
 
-
-        api.post('/api/create-food', { name, tagFood, description, price, image, userJWT }).then((response) => {
+        api.post('/api/restaurant-info', { name, phone_number, delivery_fee, userJWT }).then((response) => {
             toast.success(response.data);
-            form.resetFields();
         }).catch((error) => {
             toast.error(error.response.data);
-        })
+        });
     };
 
     const defaultMaskOptions = {
@@ -94,17 +98,19 @@ export default function RestaurantInfo() {
         <>
             <h2>✅ Informações do restaurante</h2>
             <hr />
-            <Form {...layout} encType={"multipart/form-data"} form={form} name="nest-messages" onFinish={createFood} validateMessages={validateMessages}>
-                <Form.Item name={['food', 'name']} label="Nome" rules={[{ required: true }]}>
-                    <Input />
-                </Form.Item>
-                <Form.Item initialValue={''} name={['food', 'description']} label="Número de telefone" rules={[{ required: true }]}>
-                    <Input />
-                </Form.Item>
-                <Form.Item name={['food', 'price']} label="Taxa de entrega" rules={[{ required: true }]}>
-                    <CurrencyInput />
-                </Form.Item>
-                <Form.Item initialValue={''} name={['food', 'image']} label="Logo" rules={[{ required: true }]}>
+            {
+                loaded &&
+                <Form {...layout} encType={"multipart/form-data"} form={form} name="nest-messages" onFinish={saveRestaurantInfo} validateMessages={validateMessages}>
+                    <Form.Item initialValue={name} name={['info', 'name']} label="Nome" rules={[{ required: true }]}>
+                        <Input />
+                    </Form.Item>
+                    <Form.Item initialValue={phone_number} name={['info', 'phone_number']} label="Número de telefone" rules={[{ required: true }]}>
+                        <Input />
+                    </Form.Item>
+                    <Form.Item initialValue={delivery_fee} name={['info', 'delivery_fee']} label="Taxa de entrega" rules={[{ required: true }]}>
+                        <CurrencyInput />
+                    </Form.Item>
+                    {/* <Form.Item initialValue={''} name={['info', 'logo']} label="Logo" rules={[{ required: true }]}>
                     <Space direction="vertical" style={{ width: '100%' }} size="large">
                         <Upload
                             listType="picture"
@@ -113,13 +119,14 @@ export default function RestaurantInfo() {
                             <Button icon={<UploadOutlined />}>Enviar (Max: 1)</Button>
                         </Upload>
                     </Space>
-                </Form.Item>
-                <Form.Item initialValue={''} wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
-                    <Button type="primary" htmlType="submit">
-                        Salvar
-                    </Button>
-                </Form.Item>
-            </Form>
+                </Form.Item> */}
+                    <Form.Item initialValue={''} wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
+                        <Button type="primary" htmlType="submit">
+                            Salvar
+                        </Button>
+                    </Form.Item>
+                </Form>
+            }
         </>
     );
 };
