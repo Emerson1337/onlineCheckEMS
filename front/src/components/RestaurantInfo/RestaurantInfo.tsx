@@ -3,10 +3,12 @@
 import React, { useLayoutEffect } from 'react';
 import MaskedInput from 'react-text-mask';
 import createNumberMask from 'text-mask-addons/dist/createNumberMask';
+import InputMask from "react-input-mask";
 import { Form, Input, Button } from 'antd';
 import { useState } from 'react';
 import api from '../../services/api';
 import { toast } from 'react-toastify';
+import styled from 'styled-components';
 const layout = {
     labelCol: { span: 8 },
     wrapperCol: { span: 16 },
@@ -43,8 +45,8 @@ export default function RestaurantInfo() {
 
     const saveRestaurantInfo = (values: any) => {
         const name = values.info.name;
-        const phone_number = values.info.phone_number;
-        const delivery_fee = values.info.delivery_fee.split('R$').join('').replace(',', '.');
+        const phone_number = values.info.phone_number.replace(/[+()-]/g, '').replace(" ", "");
+        const delivery_fee = String(values.info.delivery_fee).split('R$').join('').replace(',', '.');
         const userJWT = localStorage.getItem("Authorization");
 
         api.post('/api/restaurant-info', { name, phone_number, delivery_fee, userJWT }).then((response) => {
@@ -100,17 +102,19 @@ export default function RestaurantInfo() {
             <hr />
             {
                 loaded &&
-                <Form {...layout} encType={"multipart/form-data"} form={form} name="nest-messages" onFinish={saveRestaurantInfo} validateMessages={validateMessages}>
-                    <Form.Item initialValue={name} name={['info', 'name']} label="Nome" rules={[{ required: true }]}>
-                        <Input />
-                    </Form.Item>
-                    <Form.Item initialValue={phone_number} name={['info', 'phone_number']} label="Número de telefone" rules={[{ required: true }]}>
-                        <Input />
-                    </Form.Item>
-                    <Form.Item initialValue={delivery_fee} name={['info', 'delivery_fee']} label="Taxa de entrega" rules={[{ required: true }]}>
-                        <CurrencyInput />
-                    </Form.Item>
-                    {/* <Form.Item initialValue={''} name={['info', 'logo']} label="Logo" rules={[{ required: true }]}>
+                <FormStyled>
+
+                    <Form {...layout} encType={"multipart/form-data"} form={form} name="nest-messages" onFinish={saveRestaurantInfo} validateMessages={validateMessages}>
+                        <Form.Item initialValue={name} name={['info', 'name']} label="Nome" rules={[{ required: true }]}>
+                            <Input />
+                        </Form.Item>
+                        <Form.Item initialValue={phone_number} name={['info', 'phone_number']} label="Número de telefone" rules={[{ required: true }]}>
+                            <InputMask className='InputMasked' mask="+99 (99)9999-9999" />
+                        </Form.Item>
+                        <Form.Item initialValue={delivery_fee} name={['info', 'delivery_fee']} label="Taxa de entrega" rules={[{ required: true }]}>
+                            <CurrencyInput />
+                        </Form.Item>
+                        {/* <Form.Item initialValue={''} name={['info', 'logo']} label="Logo" rules={[{ required: true }]}>
                     <Space direction="vertical" style={{ width: '100%' }} size="large">
                         <Upload
                             listType="picture"
@@ -120,13 +124,40 @@ export default function RestaurantInfo() {
                         </Upload>
                     </Space>
                 </Form.Item> */}
-                    <Form.Item initialValue={''} wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
-                        <Button type="primary" htmlType="submit">
-                            Salvar
-                        </Button>
-                    </Form.Item>
-                </Form>
+                        <Form.Item initialValue={''} wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
+                            <Button type="primary" htmlType="submit">
+                                Salvar
+                            </Button>
+                        </Form.Item>
+                    </Form>
+                </FormStyled>
             }
         </>
     );
 };
+
+
+const FormStyled = styled.div`
+    .InputMasked {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-variant: tabular-nums;
+        list-style: none;
+        font-feature-settings: 'tnum', "tnum";
+        position: relative;
+        display: inline-block;
+        width: 100%;
+        min-width: 0;
+        padding: 4px 11px;
+        color: rgba(0, 0, 0, 0.85);
+        font-size: 14px;
+        line-height: 1.5715;
+        background-color: #fff;
+        background-image: none;
+        border: 1px solid #d9d9d9;
+        border-radius: 2px;
+        transition: all 0.3s;
+    }
+
+`;

@@ -11,6 +11,7 @@ import { Fade } from '@material-ui/core';
 import { FiTrash } from 'react-icons/fi';
 import api from '../../services/api';
 import { toast } from 'react-toastify';
+import ThankYouModal from '../Modals/ThankYou';
 
 
 export default function FinishOrderModal({ onClose = () => { }, children }: any) {
@@ -31,11 +32,18 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
   const [phoneNumber, setPhoneNumber] = useState('');
   const [deliveryFee, setDeliveryFee] = useState(0);
 
+  const [endLoad, setEndLoad] = useState(false);
+
   useEffect(() => {
+    const staticAddress = JSON.parse(localStorage.getItem("user_info") || '[{}]').address;
+    const staticComplement = JSON.parse(localStorage.getItem("user_info") || '[{} ]').complement;
+    const staticName = localStorage.getItem("name") || '';
+
+    setEndLoad(false);
     getTotalPrice();
-    setName(localStorage.getItem("name") || '');
-    setAddress(JSON.parse(localStorage.getItem("user_info") || '').address);
-    setComplement(JSON.parse(localStorage.getItem("user_info") || '').complement);
+    setName(staticName);
+    setAddress(staticAddress);
+    setComplement(staticComplement);
 
     api.get('/api/restaurant-info').then((response) => {
       setPhoneNumber(response.data.phone_number);
@@ -62,7 +70,13 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
   }
 
   function switchDelivery() {
-    toDelivery ? setToDelivery(false) : setToDelivery(true);
+    if (toDelivery) {
+      setToDelivery(false);
+      setTotalPrice(totalPrice - deliveryFee)
+    } else {
+      setToDelivery(true);
+      setTotalPrice(totalPrice + deliveryFee)
+    }
   }
 
   function switchPayment() {
@@ -84,6 +98,8 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
 
     localStorage.removeItem("items");
     setItemsToBuy([]);
+
+    setEndLoad(true)
   }
 
   function messageWhatsappGenerator() {
@@ -92,8 +108,7 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
     });
 
     window.location.href = (`https://api.whatsapp.com/send?phone=${phoneNumber}&text=Olá, sou ${name}! Escolhi os seguintes produtos 🍲: ${orderList}
-      ${isDelivery(toDelivery)}
-      %0A🤑 Forma de pagamento: ${paymentMethodGenerator(cashPayment, moneyBack, card, pix)}%0A%0A😊 Obrigado!`);
+      ${isDelivery(toDelivery)}🤑 Forma de pagamento: ${paymentMethodGenerator(cashPayment, moneyBack, card, pix)}%0A%0A😊 Obrigado!`);
   }
 
   const paymentMethodGenerator = (cashPayment: boolean, moneyBack: number, card: boolean, pix: boolean) => {
@@ -164,144 +179,159 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
     }
   }
 
-  // function checkFields() {
-  //   if (!$('#address').val() ||
-  //     !$('#refference').val() ||
-  //     !$('#rest').val() ||
-  //     !$('#name').val()) {
-  //     alert('Preencha todos os campos!');
-  //   }
-  // }
+  function checkFields() {
+    if (!$('#address').val() ||
+      !$('#refference').val() ||
+      !$('#rest').val() ||
+      !$('#name').val()) {
+      return alert('Preencha todos os campos!');
+    }
+    finishOrder();
+  }
 
   return (
     <>
-      <UIModalOverlay>
-        <FadeIn>
-          <div>
-            <div id="buttonToClose">
-              <ButtonClose className="btn" onClick={onClose} type="button">
-                <IoMdClose color={'black'} size={18} />
-              </ButtonClose>
-            </div>
-            <InfoBuy>
-              <h5 id="transition-modal-title">Finalizando Pedidos</h5>
-              <h1>Valor Total: </h1>
-              <h1>{totalPrice.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</h1>
-              <div id="transition-modal-description">
-                <p>Pedidos</p>
-                <div className="carMarketFoods">
-                  {
-                    itemsToBuy.map((item: any, key: number) => {
-                      return <p key={key} className="eachFood">
-                        <span className="descriptionBuy" key={`${item.name} -${key} `}>
-                          {item.name} - qtd: {item.qtd} - (uni: {item.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}) - {(item.price * item.qtd).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                        </span>
-                        <span key={item.name} className="buttonsFood">
-                          <IoMdRemove key={`${item.name} -${item.qtd} `} className="removeUnit" onClick={(event) => removeUnitFood(key)} /><FiTrash key={`${item.name} -${key} -${key} `} onClick={(event) => clearFood(key)} className="clearFood" />
-                        </span>
-                      </p>
-                    })
-                  }
+      {
+        endLoad ?
+          <ThankYouModal></ThankYouModal>
+          :
+          <UIModalOverlay>
+            <FadeIn>
+              <div>
+                <div id="buttonToClose">
+                  <ButtonClose className="btn" onClick={onClose} type="button">
+                    <IoMdClose color={'black'} size={18} />
+                  </ButtonClose>
                 </div>
+                <InfoBuy>
+                  <h5 id="transition-modal-title">Finalizando Pedidos</h5>
+                  <h1>Valor Total: </h1>
+                  <h1>{totalPrice.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</h1>
+                  <div id="transition-modal-description">
+                    <p>Pedidos</p>
+                    <div className="carMarketFoods">
+                      {
+                        itemsToBuy.map((item: any, key: number) => {
+                          return <p key={key} className="eachFood">
+                            <span className="descriptionBuy" key={`${item.name} -${key} `}>
+                              {item.name} - qtd: {item.qtd} - (uni: {item.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}) - {(item.price * item.qtd).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                            </span>
+                            <span key={item.name} className="buttonsFood">
+                              <IoMdRemove key={`${item.name} -${item.qtd} `} className="removeUnit" onClick={(event) => removeUnitFood(key)} /><FiTrash key={`${item.name} -${key} -${key} `} onClick={(event) => clearFood(key)} className="clearFood" />
+                            </span>
+                          </p>
+                        })
+                      }
+                      {
+                        toDelivery ?
+                          <p className="eachFood">
+                            Taxa de entrega - {deliveryFee.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                          </p>
+                          :
+                          ''
+                      }
+                    </div>
 
-              </div>
-              <h2>Preencha as informações para finalizar o pedido.</h2>
-            </InfoBuy>
-            <div className="formClient">
-              <form>
-                <div className="form-group">
-                  <label htmlFor="name"><strong>Nome: </strong></label>
-                  <input onChange={(e) => { setName(e.target.value); localStorage.setItem("name", e.target.value) }} defaultValue={localStorage.getItem("name")!} type="text" className="form-control" id="name" placeholder="Ex: João Paulo" />
-                </div>
-                <div className="switch form-check">
-                  <Switch
-                    checkedChildren={<CheckOutlined />}
-                    unCheckedChildren={<CloseOutlined />}
-                    onChange={() => switchDelivery()} /> Desejo para entrega (Taxa: {deliveryFee.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })})
-                </div>
-                {
-                  toDelivery ?
-                    <Fade in={toDelivery}
-                      style={{ transitionDelay: '100ms' }}>
-                      <div id="adressDelivery">
-                        <div className="form-group">
-                          <label htmlFor="address"><strong>Endereço: </strong></label>
-                          <input defaultValue={address} onChange={(e) => setAddress(e.target.value)} type="text" className="form-control" id="address" placeholder="Ex: Rua Verde, 340" />
-                        </div>
-                        <div className="form-group">
-                          <label htmlFor="refference"><strong>Ponto de Referência: </strong></label>
-                          <input defaultValue={complement} onChange={(e) => setComplement(e.target.value)} type="text" className="form-control" id="refference" placeholder="Ex: Apto; Altos..." />
-                        </div>
-                      </div>
-                    </Fade>
-                    :
-                    <Fade in={toDelivery}
-                      style={{ transitionDelay: '100ms' }}>
-                      <div>
-                      </div>
-                    </Fade>
-                }
-                <p><strong>Forma de pagamento: </strong></p>
-                <div className="form-check">
-                  <input className="form-check-input" onClick={() => { setcashPayment(false); setCard(true); setPix(false); setMoneyBack(0) }} type="radio" name="exampleRadios" id="creditCard" defaultValue="option1" />
-                  <label className="form-check-label" htmlFor="creditCard">
-                    Cartão (Crédito/Débito)
-                  </label>
-                </div>
-                <div className="form-check">
-                  <input className="form-check-input" type="radio" onClick={() => { setcashPayment(true); setCard(false); setPix(false) }} name="exampleRadios" id="cash" defaultValue="option2" />
-                  <label className="form-check-label" htmlFor="cash">
-                    Dinheiro
-                  </label>
-                </div>
-                <div className="form-check">
-                  <input className="form-check-input" onClick={() => { setcashPayment(false); setCard(false); setPix(true); setMoneyBack(0) }} type="radio" name="exampleRadios" id="creditCard" defaultValue="option1" />
-                  <label className="form-check-label" htmlFor="creditCard">
-                    PIX
-                  </label>
-                </div>
-                {
-                  cashPayment && !rest ?
-                    <Fade in={cashPayment}
-                      style={{ transitionDelay: '100ms' }}>
-                      <div id="cashRest">
-                        <label className="number" htmlFor="rest">Quantia p/ troco: </label>
-                        <div id="inputRest" className="col-auto">
-                          <div className="input-group mb-2">
-                            <div className="input-group-prepend">
-                              <div className="input-group-text">R$</div>
-                            </div>
-                            <input onChange={(e) => setMoneyBack(Number(e.target.value))} type="number" className="form-control" id="rest" placeholder="Ex: 50,00" />
-                          </div>
-                        </div>
-                      </div>
-                    </Fade>
-                    :
-                    <Fade in={cashPayment}
-                      style={{ transitionDelay: '100ms' }}>
-                      <div>
-
-                      </div>
-                    </Fade>
-                }
-                {
-                  cashPayment &&
-                  <div id="notCashRest">
-                    <Switch
-                      checkedChildren={<CheckOutlined />}
-                      unCheckedChildren={<CloseOutlined />}
-                      onChange={() => { switchPayment(); setMoneyBack(0) }} /> Não preciso de troco.
                   </div>
-                }
-              </form>
-            </div>
-            <FinishBuy>
-              <ButtonFinishOrder onClick={() => { finishOrder() }} className="btn">Finalizar Pedido</ButtonFinishOrder>
-            </FinishBuy>
-          </div>
-        </FadeIn>
-      </UIModalOverlay >
+                  <h2>Preencha as informações para finalizar o pedido.</h2>
+                </InfoBuy>
+                <div className="formClient">
+                  <form>
+                    <div className="form-group">
+                      <label htmlFor="name"><strong>Nome: </strong></label>
+                      <input onChange={(e) => { setName(e.target.value); localStorage.setItem("name", e.target.value) }} defaultValue={localStorage.getItem("name")!} type="text" className="form-control" id="name" placeholder="Ex: João Paulo" />
+                    </div>
+                    <div className="switch form-check">
+                      <Switch
+                        checkedChildren={<CheckOutlined />}
+                        unCheckedChildren={<CloseOutlined />}
+                        onChange={() => switchDelivery()} /> Desejo para entrega (Taxa: {deliveryFee.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })})
+                    </div>
+                    {
+                      toDelivery ?
+                        <Fade in={toDelivery}
+                          style={{ transitionDelay: '100ms' }}>
+                          <div id="adressDelivery">
+                            <div className="form-group">
+                              <label htmlFor="address"><strong>Endereço: </strong></label>
+                              <input defaultValue={address} onChange={(e) => setAddress(e.target.value)} type="text" className="form-control" id="address" placeholder="Ex: Rua Verde, 340" />
+                            </div>
+                            <div className="form-group">
+                              <label htmlFor="refference"><strong>Ponto de Referência: </strong></label>
+                              <input defaultValue={complement} onChange={(e) => setComplement(e.target.value)} type="text" className="form-control" id="refference" placeholder="Ex: Apto; Altos..." />
+                            </div>
+                          </div>
+                        </Fade>
+                        :
+                        <Fade in={toDelivery}
+                          style={{ transitionDelay: '100ms' }}>
+                          <div>
+                          </div>
+                        </Fade>
+                    }
+                    <p><strong>Forma de pagamento: </strong></p>
+                    <div className="form-check">
+                      <input className="form-check-input" onClick={() => { setcashPayment(false); setCard(true); setPix(false); setMoneyBack(0) }} type="radio" name="exampleRadios" id="creditCard" defaultValue="option1" />
+                      <label className="form-check-label" htmlFor="creditCard">
+                        Cartão (Crédito/Débito)
+                      </label>
+                    </div>
+                    <div className="form-check">
+                      <input className="form-check-input" type="radio" onClick={() => { setcashPayment(true); setCard(false); setPix(false) }} name="exampleRadios" id="cash" defaultValue="option2" />
+                      <label className="form-check-label" htmlFor="cash">
+                        Dinheiro
+                      </label>
+                    </div>
+                    <div className="form-check">
+                      <input className="form-check-input" onClick={() => { setcashPayment(false); setCard(false); setPix(true); setMoneyBack(0) }} type="radio" name="exampleRadios" id="creditCard" defaultValue="option1" />
+                      <label className="form-check-label" htmlFor="creditCard">
+                        PIX
+                      </label>
+                    </div>
+                    {
+                      cashPayment && !rest ?
+                        <Fade in={cashPayment}
+                          style={{ transitionDelay: '100ms' }}>
+                          <div id="cashRest">
+                            <label className="number" htmlFor="rest">Quantia p/ troco: </label>
+                            <div id="inputRest" className="col-auto">
+                              <div className="input-group mb-2">
+                                <div className="input-group-prepend">
+                                  <div className="input-group-text">R$</div>
+                                </div>
+                                <input onChange={(e) => setMoneyBack(Number(e.target.value))} type="number" className="form-control" id="rest" placeholder="Ex: 50,00" />
+                              </div>
+                            </div>
+                          </div>
+                        </Fade>
+                        :
+                        <Fade in={cashPayment}
+                          style={{ transitionDelay: '100ms' }}>
+                          <div>
+
+                          </div>
+                        </Fade>
+                    }
+                    {
+                      cashPayment &&
+                      <div id="notCashRest">
+                        <Switch
+                          checkedChildren={<CheckOutlined />}
+                          unCheckedChildren={<CloseOutlined />}
+                          onChange={() => { switchPayment(); setMoneyBack(0) }} /> Não preciso de troco.
+                      </div>
+                    }
+                  </form>
+                </div>
+                <FinishBuy>
+                  <ButtonFinishOrder onClick={() => { checkFields() }} className={`btn ${name && address && complement ? 'buttonDisabled' : ''}`}>Finalizar Pedido</ButtonFinishOrder>
+                </FinishBuy>
+              </div>
+            </FadeIn>
+          </UIModalOverlay >
+      }
     </>
+
   );
 };
 
@@ -320,6 +350,12 @@ const UIModalOverlay = styled.div`
   .buttonsFood {
       display: flex;
     }
+
+  .buttonDisabled {
+    cursor: not-allowed;
+    background-color: #d3cece; 
+    pointer-events: none;
+  }
 
   .descriptionBuy {
       text-align: left;

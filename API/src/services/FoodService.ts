@@ -3,6 +3,7 @@ import FoodsRepository from '../repositories/FoodsRepository';
 import FoodTypesRepository from '../repositories/FoodTypesRepository';
 import * as yup from 'yup';
 import MonthSalesRespository from '../repositories/MonthSalesRepository';
+import { validate as validateUuid } from 'uuid';
 
 interface Request {
   name: string;
@@ -25,6 +26,10 @@ class FoodService {
     await schema.validate({ name, price, tagFood, description }).catch((err) => {
       throw new Error(err.errors);
     });
+
+    if (!validateUuid(tagFood)) {
+      throw new Error("Selecione uma categoria!");
+    }
 
     const specialCharacters = "/([!@#$%^&*+=-[],,/{}|:<>?])";
 
@@ -73,6 +78,10 @@ class FoodService {
       throw new Error(err.errors);
     });
 
+    if (!validateUuid(tagFood)) {
+      throw new Error("Selecione uma categoria!");
+    }
+
     let food = await foodRepository.findOne({ where: { id } });
 
     if (!food) {
@@ -97,6 +106,10 @@ class FoodService {
 
   public async removeFood(id: string) {
     const foodsRepository = getCustomRepository(FoodsRepository);
+
+    if (!validateUuid(id)) {
+      throw new Error("Identificação inválida!");
+    }
 
     const foods = await foodsRepository.findOne(id);
 
@@ -126,6 +139,10 @@ class FoodService {
 
   async listByTag(id: string) {
     const foodRepository = getCustomRepository(FoodsRepository);
+
+    if (!validateUuid(id)) {
+      throw new Error("Identificação inválida!");
+    }
 
     const foods = await foodRepository.find({ where: { tagFood: id } });
 

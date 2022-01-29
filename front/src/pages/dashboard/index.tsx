@@ -7,7 +7,8 @@ import {
   ContactsOutlined,
   PlusCircleFilled,
   PlusSquareFilled,
-  AreaChartOutlined
+  AreaChartOutlined,
+  InfoCircleOutlined
 } from '@ant-design/icons';
 import styled from 'styled-components';
 import CreateCategory from '../../components/CreateCategory/CreateCategory';
@@ -45,7 +46,7 @@ export default function Dashboard() {
             <h5>GESTÃO</h5>
           </div>
           <Menu theme="light" mode="inline" defaultSelectedKeys={[menu]}>
-            <Menu.Item key="1" onClick={() => { changeMenu('1'); localStorage.setItem('gui', '1') }} icon={<PlusSquareFilled />}>
+            <Menu.Item key="1" onClick={() => { changeMenu('1'); localStorage.setItem('gui', '1') }} icon={<InfoCircleOutlined />}>
               Informações do restaurante
             </Menu.Item>
             <Menu.Item key="2" onClick={() => { changeMenu('2'); localStorage.setItem('gui', '2') }} icon={<PlusSquareFilled />}>

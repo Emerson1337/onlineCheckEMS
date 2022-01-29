@@ -4,9 +4,6 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  JoinColumn,
-  ManyToOne,
-  OneToMany
 } from 'typeorm';
 
 import { v4 as uuid } from 'uuid';

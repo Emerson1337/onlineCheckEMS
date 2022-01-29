@@ -16,6 +16,7 @@ export default function Login() {
     api.post('/api/login', { email, password }).then((response) => {
       setHasError(false);
       localStorage.setItem('Authorization', `${response.data}`);
+      localStorage.setItem("gui", "1");
       window.location.href = "/dashboard";
     }).catch((error) => {
       try {
