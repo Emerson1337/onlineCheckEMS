@@ -5,17 +5,16 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 // import { FaShoppingCart } from 'react-icons/fa'
 
-import pizzaImage from '../../assets/pizza-1.png'
-
 interface cardProps {
   name: string;
+  image: string;
   price: number;
   description: string;
   category: string;
   shopping: (name: string, price: number, description: string, qtd: number, category: string) => void;
 }
 
-export default function CardFood({ name, price, description, category, shopping }: cardProps) {
+export default function CardFood({ name, image, price, description, category, shopping }: cardProps) {
 
   const [qtd, setQtd] = useState(0);
 
@@ -24,7 +23,7 @@ export default function CardFood({ name, price, description, category, shopping 
       <CardGlobal>
         <h5 className="title">{name}</h5>
         <div className="cardBody">
-          <img src={pizzaImage} />
+          <img src={image} />
 
           <h5>Preço: {price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</h5>
           <p className="ingredients">Ingredientes</p>
@@ -93,9 +92,9 @@ const CardGlobal = styled.div`
   }
 
   img {
-    margin: 20px 0px;
+    margin: 5px 0px;
     width: 200px;
-    height: 100px;
+    height: 150px;
   }
   .ingredients {
     font-weight: bold;

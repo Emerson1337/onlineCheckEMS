@@ -8,6 +8,7 @@
       "@types/typescript": "^2.0.0",
       "@types/uuid": "^8.3.0",
       "bcrypt": "^5.0.1",
+      "cloudinary": "^1.28.1",
       "cors": "^2.8.5",
       "cron": "^1.8.2",
       "dotenv": "^10.0.0",

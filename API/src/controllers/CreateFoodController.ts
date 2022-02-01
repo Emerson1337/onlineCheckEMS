@@ -4,10 +4,10 @@ import FoodService from '../services/FoodService';
 class createFoodController {
   public async handleCreateFood(request: Request, response: Response) {
     try {
-      const { name, price, tagFood, description } = request.body;
+      const { name, image, price, tagFood, description } = request.body;
       const foodService = new FoodService();
 
-      const food = await foodService.create({ name, price, tagFood, description });
+      const food = await foodService.create({ name, image, price, tagFood, description });
       if (food) {
         return response.status(200).json("Comida criada com sucesso!");
       } else {
@@ -50,10 +50,10 @@ class createFoodController {
 
   public async handleEditFood(request: Request, response: Response) {
     try {
-      const { name, tagFood, description, price, image } = request.body;
+      const { name, image, tagFood, description, price } = request.body;
       const { id } = request.params;
       const foodService = new FoodService();
-      const food = await foodService.editFood(id, { name, price, tagFood, description });
+      const food = await foodService.editFood(id, { name, image, price, tagFood, description });
 
       if (food) {
         return response.status(200).json("Comida editada com sucesso!");

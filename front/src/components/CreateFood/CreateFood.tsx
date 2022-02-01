@@ -23,6 +23,7 @@ const validateMessages = {
 export default function CreateFood() {
 
   const [allCategories, setAllCategories] = useState([]);
+  const [image, setImage] = useState({});
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -38,16 +39,14 @@ export default function CreateFood() {
     const description = values.food.description;
     const tagFood = values.food.tagFood;
     const price = values.food.price.split('R$').join('').replace(',', '.');
-    const image = values.food.image;
     const userJWT = localStorage.getItem("Authorization");
 
-
-    api.post('/api/create-food', { name, tagFood, description, price, image, userJWT }).then((response) => {
+    api.post('/api/create-food', { name, image, tagFood, description, price, userJWT }).then((response) => {
       toast.success(response.data);
       form.resetFields();
     }).catch((error) => {
       toast.error(error.response.data);
-    })
+    });
   };
 
   const defaultMaskOptions = {
@@ -116,8 +115,10 @@ export default function CreateFood() {
         <Form.Item initialValue={''} name={['food', 'image']} label="Imagem" rules={[{ required: true }]}>
           <Space direction="vertical" style={{ width: '100%' }} size="large">
             <Upload
+              onChange={(file) => { file.file.status = 'success'; setImage(file.file) }}
               listType="picture"
               maxCount={1}
+              showUploadList={true}
             >
               <Button icon={<UploadOutlined />}>Enviar (Max: 1)</Button>
             </Upload>

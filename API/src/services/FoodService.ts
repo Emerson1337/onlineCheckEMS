@@ -4,16 +4,18 @@ import FoodTypesRepository from '../repositories/FoodTypesRepository';
 import * as yup from 'yup';
 import MonthSalesRespository from '../repositories/MonthSalesRepository';
 import { validate as validateUuid } from 'uuid';
+import cloudinary from '../utils/cloudinary';
 
 interface Request {
   name: string;
   price: number;
   tagFood: string;
+  image: object;
   description: string;
 }
 
 class FoodService {
-  public async create({ name, price, tagFood, description }: Request) {
+  public async create({ name, image, price, tagFood, description }: Request) {
     const foodsRepository = getCustomRepository(FoodsRepository)
     const foodsTypeRepository = getCustomRepository(FoodTypesRepository)
 
@@ -52,7 +54,19 @@ class FoodService {
       throw new Error("Essa categoria não existe!");
     }
 
-    const food = foodsRepository.create({ name, price, tagFood, description });
+    const imageLink = await cloudinary.uploader.upload(image.thumbUrl,
+      {
+        public_id: image.originFileObj.uid
+      }
+    );
+
+    const food = foodsRepository.create({
+      name,
+      image: imageLink.url,
+      price,
+      tagFood,
+      description
+    });
 
     try {
       await foodsRepository.save(food);
@@ -64,7 +78,7 @@ class FoodService {
     return food;
   }
 
-  public async editFood(id: string, { name, price, tagFood, description }: Request) {
+  public async editFood(id: string, { name, image, price, tagFood, description }: Request) {
     const foodRepository = getCustomRepository(FoodsRepository);
     const foodTypesRepository = getCustomRepository(FoodTypesRepository);
 
@@ -96,6 +110,7 @@ class FoodService {
 
     const foodUpdated = await foodRepository.update({ id }, {
       name,
+      image: imageLink.url,
       price,
       description,
       tagFood

@@ -17,6 +17,9 @@ class Foods {
   name: string;
 
   @Column()
+  image: string;
+
+  @Column()
   price: number;
 
   @Column()

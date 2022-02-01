@@ -180,12 +180,12 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
   }
 
   function checkFields() {
-    if (!$('#address').val() ||
-      !$('#refference').val() ||
-      !$('#rest').val() ||
-      !$('#name').val()) {
-      return alert('Preencha todos os campos!');
-    }
+    // if (!$('#address').val() ||
+    //   !$('#refference').val() ||
+    //   !$('#rest').val() ||
+    //   !$('#name').val()) {
+    //   return alert('Preencha todos os campos!');
+    // }
     finishOrder();
   }
 
@@ -351,11 +351,11 @@ const UIModalOverlay = styled.div`
       display: flex;
     }
 
-  .buttonDisabled {
+  /* .buttonDisabled {
     cursor: not-allowed;
     background-color: #d3cece; 
     pointer-events: none;
-  }
+  } */
 
   .descriptionBuy {
       text-align: left;

@@ -15,6 +15,7 @@ import BtnCategory from '../../components/BtnCategory/BtnCategory';
 import FadeIn from 'react-fade-in/lib/FadeIn';
 import GetNameUser from '../../components/Modals/GetNameUser';
 import { toast } from 'react-toastify';
+import Navbar from '../../components/Navbar/Navbar';
 
 export default function Check() {
 
@@ -145,7 +146,11 @@ export default function Check() {
       {
         !loadingPage ?
           <FadeIn>
-            {!isFirstAccess ?
+            {isFirstAccess ?
+              <BlankBackground>
+                < GetNameUser onClose={() => { setIsFirstAccess(false) }} />
+              </BlankBackground>
+              :
               <>
                 {isVisibleModal &&
                   <FinishOrderModal onClose={() => { SetIsVisibleModal(false) }} />
@@ -188,7 +193,7 @@ export default function Check() {
                         allFoods.length ?
                           allFoods.map((food, key) => {
                             return <FadeIn key={key}>
-                              <CardFood key={food['id']} shopping={shopping} name={food['name'] || food['nameFood']} price={food['price'] || food['priceFood']} description={food['description']} category={food['tagFood']} />
+                              <CardFood key={food['id']} image={food['image']} shopping={shopping} name={food['name'] || food['nameFood']} price={food['price'] || food['priceFood']} description={food['description']} category={food['tagFood']} />
                             </FadeIn>
                           })
                           :
@@ -199,8 +204,6 @@ export default function Check() {
                   }
                 </Products>
               </>
-              :
-              <GetNameUser onClose={() => { setIsFirstAccess(false) }} />
             }
           </FadeIn>
           :
@@ -237,6 +240,12 @@ const BannerCategory = styled.section`
       font-size: 18px;
     }
   }
+`;
+
+const BlankBackground = styled.div`
+  background-color: #fff;
+  width: 100vh;
+  height: 100vh;
 `;
 
 const SelectCategory = styled.section`
