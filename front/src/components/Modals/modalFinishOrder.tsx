@@ -129,7 +129,7 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
   const isDelivery = (toDelivery: boolean) => {
 
     if (toDelivery) {
-      return `%0A%0A💰 PREÇO TOTAL (${deliveryFee.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} Taxa de entrega): *${(totalPrice + deliveryFee).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}*
+      return `%0A%0A💰 PREÇO TOTAL (${deliveryFee.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} Taxa de entrega): *${(totalPrice).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}*
       %0A%0A🏡 Desejo todos para entrega no seguinte endereço:%0A*${address}*
       %0A%0A📓 Ponto de Referência: *${complement}*.%0A%0A`
     } else {

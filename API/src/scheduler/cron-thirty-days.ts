@@ -19,7 +19,7 @@ const monthSalesController = new MonthSalesController();
 // | minute
 // second ( optional )
 
-const job = new CronJob('* * * * 1 *', () => {
+const job = new CronJob('* * * * */2 *', () => {
     //ROUTINES
     bestSellingCategoryService.storeBestCategory();
     bestSellingFoodService.storeBestFood();

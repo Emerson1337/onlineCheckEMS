@@ -1,22 +1,32 @@
 /* eslint-disable array-callback-return */
 import { Pie } from '@ant-design/charts';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+import months from '../../assets/months.json';
 import api from '../../services/api';
 
 export default function GraphPieDashboard() {
 
-  const [data, setData] = useState([{}])
+  const [date, setdate] = useState([{}])
+
+  var comumDate = new Date();
+  var monthNumber = comumDate.getMonth();
+  // @ts-ignore
+  var month = months[monthNumber];
 
   //resgatando as informacoes
   useEffect(() => {
     api.get('/api/list-top-foods').then((response) => {
-      response.data.map((food: any) => {
-        console.log(food)
-        setData(data => [...data, {
-          type: food.name[0].toUpperCase() + food.name.substr(1),
-          quantidade: food.frequency
-        }])
-      });
+      if (response.data.length) {
+        response.data.map((food: any) => {
+          setdate(date => [...date, {
+            type: food.name[0].toUpperCase() + food.name.substr(1),
+            quantidade: food.frequency
+          }])
+        });
+      } else {
+        toast.warn('Não existem comidas vendidas neste mês.')
+      }
     }).catch((error) => {
       console.log(error)
     });
@@ -24,7 +34,7 @@ export default function GraphPieDashboard() {
 
   var config = {
     appendPadding: 10,
-    data: data,
+    data: date,
     angleField: 'quantidade',
     colorField: 'type',
     radius: 0.9,
@@ -44,7 +54,7 @@ export default function GraphPieDashboard() {
   };
   return (
     <>
-      <h2>Produtos vendidos neste mês (Setembro) 💸</h2>
+      <h2>Produtos vendidos neste mês ({month}) 💸</h2>
       <hr />
       <Pie {...config} />
     </>

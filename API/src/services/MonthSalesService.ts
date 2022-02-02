@@ -76,19 +76,19 @@ class MonthSalesService {
       })
       await monthSalesRepository.save(newSale);
     }
-
+    console.log('teste')
     return { Success: "Venda efetuada com sucesso!" };
   }
 
   async addSale(foods: any) {
-    const sale = foods.itemsToBuy.map((item: any) => {
+    const sale = foods.itemsToBuy.map(async (item: any) => {
       var name = item.name;
       var tagFood = item.category;
       var description = item.description;
       var qtd = item.qtd;
       var price = item.price;
 
-      this.addNewMonthSale({ name, tagFood, qtd, description, price });
+      await this.addNewMonthSale({ name, tagFood, qtd, description, price });
     });
 
     if (sale) {

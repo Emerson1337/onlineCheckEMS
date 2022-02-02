@@ -29,6 +29,7 @@ export default function IndexFoods() {
   }
 
   const closeModal = () => {
+    document.body.style.overflow = 'visible';
     setEditModal(false);
     toggle();
   }

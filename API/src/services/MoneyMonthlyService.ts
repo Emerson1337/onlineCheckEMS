@@ -25,6 +25,7 @@ class MoneyMonthlyService {
       month: months[month],
       price: totalCash,
     });
+
     try {
       await moneyMonthlyRepository.save(monthlyCash);
     } catch (err: any) {

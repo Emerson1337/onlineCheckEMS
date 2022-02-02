@@ -10,7 +10,13 @@ interface Request {
   name: string;
   price: number;
   tagFood: string;
-  image: object;
+  image: {
+    thumbUrl: string,
+    originFileObj: {
+      uid: string
+    },
+
+  };
   description: string;
 }
 
@@ -108,6 +114,12 @@ class FoodService {
       return new Error("Categoria não encontrada!");
     }
 
+    const imageLink = await cloudinary.uploader.upload(image.thumbUrl,
+      {
+        public_id: image.originFileObj.uid
+      }
+    );
+    // const imageLink = await cloudinary.uploader.destroy(image.originFileObj.uid);
     const foodUpdated = await foodRepository.update({ id }, {
       name,
       image: imageLink.url,

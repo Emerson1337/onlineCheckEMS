@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react";
@@ -5,6 +6,10 @@ import { useEffect, useState } from 'react';
 import api from '../../services/api';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
+import { Form, Button, Upload, Space } from 'antd';
+import {
+  UploadOutlined,
+} from '@ant-design/icons';
 
 export default function EditFood({ props, close, food }: any) {
 
@@ -13,7 +18,9 @@ export default function EditFood({ props, close, food }: any) {
   const [categoryFood, setCategory] = useState('');
   const [descriptionFood, setDescription] = useState('');
   const [priceFood, setPrice] = useState('');
-  const [imageFood, setImage] = useState('');
+  const [imageFood, setImage] = useState({});
+
+  document.body.style.overflow = 'hidden';
 
   useEffect(() => {
     setName(food.name);
@@ -21,7 +28,7 @@ export default function EditFood({ props, close, food }: any) {
     setDescription(food.description);
     setPrice(food.price);
     setImage(food.image);
-  }, [])
+  }, []);
 
   useEffect(() => {
     api.get('/api/list-tags').then((response) => {
@@ -40,8 +47,9 @@ export default function EditFood({ props, close, food }: any) {
     const image = imageFood;
     const userJWT = localStorage.getItem("Authorization");
 
-    api.put(`/api/update-food/${food.id}`, { name, tagFood, description, price, image, userJWT }).then((response) => {
+    api.put(`/api/update-food/${food.id}`, { name, image, tagFood, description, price, userJWT }).then((response) => {
       toast.success(response.data);
+      document.body.style.overflow = 'visible';
       close();
     }).catch((error) => {
       toast.error(error.response.data);
@@ -86,6 +94,18 @@ export default function EditFood({ props, close, food }: any) {
             <InputPrice onChange={(event) => setPrice(event.target.value.split('R$').join('').replace(',', '.'))} defaultValue={food.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} required />
           </div>
         </div>
+        <Form.Item initialValue={''} name={['food', 'image']} rules={[{ required: true }]}>
+          <Space direction="vertical" style={{ width: '100%' }} size="large">
+            <Upload
+              onChange={(file) => { file.file.status = 'success'; setImage(file.file) }}
+              listType="picture"
+              maxCount={1}
+              showUploadList={true}
+            >
+              <Button icon={<UploadOutlined />}>Enviar (Max: 1)</Button>
+            </Upload>
+          </Space>
+        </Form.Item>
         <button onClick={updateFood} className="btn btn-primary" type="button">Atualizar</button>
       </form>
     </>

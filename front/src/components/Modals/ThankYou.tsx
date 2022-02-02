@@ -85,20 +85,6 @@ const UIModalOverlay = styled.div`
 }
 `;
 
-const InputName = styled.input`
-    border: none;
-    background-color: #E0E0E0;
-    width: 100%;
-    border-radius: 20px;
-    padding: 15px;
-    font-size: 18px;
-    font-weight: bold;
-    text-align: center;
-    :focus {
-        outline: none;
-    }
-`;
-
 const InfoBuy = styled.div`
     text-align: center;
     display: flex;
@@ -128,22 +114,4 @@ const InfoBuy = styled.div`
         font-size: 1rem;
         }
     }
-`;
-
-const ButtonFinishOrder = styled.button`
-  background: #FA4A0C;
-  border-radius: 20px;
-  color: #fff;
-  font-weight: bold;
-  font-size: 18px;
-  width: 200px;
-  margin-top: 20px;
-  
-  @media(max-width: 768px){
-    width: 80%;
-  }
-
-  :hover {
-    background: #af360a;
-  }
 `;

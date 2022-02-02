@@ -3,7 +3,7 @@
 /* eslint-disable import/no-anonymous-default-export */
 import React, { useState } from 'react';
 import styled from 'styled-components';
-// import { FaShoppingCart } from 'react-icons/fa'
+import defaultImage from '../../assets/image-category.png'
 
 interface cardProps {
   name: string;
@@ -23,7 +23,12 @@ export default function CardFood({ name, image, price, description, category, sh
       <CardGlobal>
         <h5 className="title">{name}</h5>
         <div className="cardBody">
-          <img src={image} />
+          {
+            image ?
+              <img src={image} />
+              :
+              <img src={defaultImage} />
+          }
 
           <h5>Preço: {price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</h5>
           <p className="ingredients">Ingredientes</p>
@@ -94,7 +99,7 @@ const CardGlobal = styled.div`
   img {
     margin: 5px 0px;
     width: 200px;
-    height: 150px;
+    height: 200px;
   }
   .ingredients {
     font-weight: bold;
