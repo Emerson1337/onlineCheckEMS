@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react';
+import ReactLoading from "react-loading";
 import MaskedInput from 'react-text-mask';
 import createNumberMask from 'text-mask-addons/dist/createNumberMask';
 import { Form, Input, Button, Upload, Space, Select } from 'antd';
@@ -23,6 +24,7 @@ const validateMessages = {
 export default function CreateFood() {
 
   const [allCategories, setAllCategories] = useState([]);
+  const [requestSent, setRequestSent] = useState(false);
   const [image, setImage] = useState({});
   const [form] = Form.useForm();
 
@@ -40,12 +42,14 @@ export default function CreateFood() {
     const tagFood = values.food.tagFood;
     const price = values.food.price.split('R$').join('').replace(',', '.');
     const userJWT = localStorage.getItem("Authorization");
-
+    setRequestSent(true);
     api.post('/api/create-food', { name, image, tagFood, description, price, userJWT }).then((response) => {
       toast.success(response.data);
       form.resetFields();
+      setRequestSent(false);
     }).catch((error) => {
       toast.error(error.response.data);
+      setRequestSent(false);
     });
   };
 
@@ -117,7 +121,7 @@ export default function CreateFood() {
             <Upload
               onChange={(file) => { file.file.status = 'success'; setImage(file.file) }}
               listType="picture"
-              maxCount={1}
+              maxCount={1}  
               showUploadList={true}
             >
               <Button icon={<UploadOutlined />}>Enviar (Max: 1)</Button>
@@ -126,7 +130,7 @@ export default function CreateFood() {
         </Form.Item>
         <Form.Item initialValue={''} wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
           <Button type="primary" htmlType="submit">
-            Adicionar
+            {requestSent ? <ReactLoading width={20} height={20} type={'spin'} color={'#fff'} /> : 'Adicionar'}
           </Button>
         </Form.Item>
       </Form>

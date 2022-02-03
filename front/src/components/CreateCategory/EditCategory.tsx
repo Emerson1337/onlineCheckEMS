@@ -3,12 +3,13 @@
 import React from "react";
 import { useEffect, useState } from 'react';
 import api from '../../services/api';
+import ReactLoading from "react-loading";
 import { toast } from 'react-toastify';
-import { cpuUsage } from "process";
 
 export default function EditCategory({ props, close, category }: any) {
 
   const [categoryFood, setCategory] = useState('');
+  const [requestSent, setRequestSent] = useState(false);
 
   useEffect(() => {
     setCategory(category.tagFood);
@@ -17,12 +18,14 @@ export default function EditCategory({ props, close, category }: any) {
   function updateTag() {
     const name = categoryFood;
     const userJWT = localStorage.getItem("Authorization");
-
+    setRequestSent(true);
     api.put(`/api/update-tag/${category.id}`, { name, userJWT }).then((response) => {
       toast.success(response.data);
       close();
+      setRequestSent(false);
     }).catch((error) => {
       toast.error(error.response.data);
+      setRequestSent(false);
     });
   };
 
@@ -37,7 +40,9 @@ export default function EditCategory({ props, close, category }: any) {
             <input onChange={(event) => setCategory(event.target.value)} defaultValue={category.name} type="text" className="form-control" id="validationDefault01" placeholder="Nome da categoria" required />
           </div>
         </div>
-        <button onClick={updateTag} className="btn btn-primary" type="button">Atualizar</button>
+        <button onClick={updateTag} className="btn btn-primary" type="button">
+          {requestSent ? <ReactLoading width={20} height={20} type={'spin'} color={'#fff'} /> : 'Atualizar'}
+        </button>
       </form>
     </>
   );

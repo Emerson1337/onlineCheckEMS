@@ -76,7 +76,7 @@ class MonthSalesService {
       })
       await monthSalesRepository.save(newSale);
     }
-    console.log('teste')
+
     return { Success: "Venda efetuada com sucesso!" };
   }
 

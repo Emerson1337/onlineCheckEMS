@@ -15,7 +15,6 @@ import BtnCategory from '../../components/BtnCategory/BtnCategory';
 import FadeIn from 'react-fade-in/lib/FadeIn';
 import GetNameUser from '../../components/Modals/GetNameUser';
 import { toast } from 'react-toastify';
-import Navbar from '../../components/Navbar/Navbar';
 
 export default function Check() {
 

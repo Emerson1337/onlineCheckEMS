@@ -60,15 +60,20 @@ class FoodService {
       throw new Error("Essa categoria não existe!");
     }
 
-    const imageLink = await cloudinary.uploader.upload(image.thumbUrl,
-      {
-        public_id: image.originFileObj.uid
-      }
-    );
+    var imageLink;
+    
+    if(image) {
+      imageLink = await cloudinary.uploader.upload(image.thumbUrl,
+        {
+          public_id: image.originFileObj.uid
+        }
+      );
+    }
 
     const food = foodsRepository.create({
       name,
-      image: imageLink.url,
+      image: imageLink ? imageLink.url : undefined,
+      image_id: imageLink ? imageLink.public_id : undefined,
       price,
       tagFood,
       description
@@ -114,15 +119,22 @@ class FoodService {
       return new Error("Categoria não encontrada!");
     }
 
-    const imageLink = await cloudinary.uploader.upload(image.thumbUrl,
-      {
-        public_id: image.originFileObj.uid
-      }
-    );
-    // const imageLink = await cloudinary.uploader.destroy(image.originFileObj.uid);
+    var imageLink;
+
+    if(image.thumbUrl) {
+      await cloudinary.uploader.destroy(food.image_id);
+
+      imageLink = await cloudinary.uploader.upload(image.thumbUrl,
+        {
+          public_id: image.originFileObj.uid
+        }
+      );
+    }
+
     const foodUpdated = await foodRepository.update({ id }, {
       name,
-      image: imageLink.url,
+      image: imageLink ? imageLink.url : food.image,
+      image_id: imageLink ? imageLink.public_id : food.image_id,
       price,
       description,
       tagFood
@@ -139,12 +151,13 @@ class FoodService {
     }
 
     const foods = await foodsRepository.findOne(id);
-
+    
     if (!foods) {
       throw new Error("Essa comida não existe!");
     }
     try {
       await foodsRepository.remove(foods);
+      await cloudinary.uploader.destroy(foods.image_id);
     } catch (err: any) {
       const error = new Error(err);
       throw new Error(error.message);

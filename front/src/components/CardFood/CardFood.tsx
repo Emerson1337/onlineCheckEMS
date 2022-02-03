@@ -97,7 +97,8 @@ const CardGlobal = styled.div`
   }
 
   img {
-    margin: 5px 0px;
+    margin: 10px 0px;
+    border-radius: 15px;
     width: 200px;
     height: 200px;
   }

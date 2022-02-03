@@ -20,6 +20,9 @@ class Foods {
   image: string;
 
   @Column()
+  image_id: string;
+
+  @Column()
   price: number;
 
   @Column()

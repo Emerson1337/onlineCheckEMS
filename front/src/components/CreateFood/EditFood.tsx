@@ -3,6 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react";
 import { useEffect, useState } from 'react';
+import ReactLoading from "react-loading";
 import api from '../../services/api';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
@@ -20,7 +21,7 @@ export default function EditFood({ props, close, food }: any) {
   const [priceFood, setPrice] = useState('');
   const [imageFood, setImage] = useState({});
 
-  document.body.style.overflow = 'hidden';
+  const [requestSent, setRequestSent] = useState(false);
 
   useEffect(() => {
     setName(food.name);
@@ -28,12 +29,16 @@ export default function EditFood({ props, close, food }: any) {
     setDescription(food.description);
     setPrice(food.price);
     setImage(food.image);
+    document.body.style.overflow = 'hidden';
   }, []);
 
   useEffect(() => {
     api.get('/api/list-tags').then((response) => {
       toast.success(response.data);
       setAllCategories(response.data)
+      response.data.map((category: any) => (
+        category['id'] === food.tagFood ? setCategory(category['id']) : ''
+      ))
     }).catch((error) => {
       toast.error(error.response.data);
     });
@@ -46,13 +51,14 @@ export default function EditFood({ props, close, food }: any) {
     const price = Number(priceFood);
     const image = imageFood;
     const userJWT = localStorage.getItem("Authorization");
-
+    setRequestSent(true);
     api.put(`/api/update-food/${food.id}`, { name, image, tagFood, description, price, userJWT }).then((response) => {
       toast.success(response.data);
-      document.body.style.overflow = 'visible';
       close();
+      setRequestSent(false);
     }).catch((error) => {
       toast.error(error.response.data);
+      setRequestSent(false);
     })
   };
 
@@ -60,7 +66,7 @@ export default function EditFood({ props, close, food }: any) {
     <>
       <h2>{food.name}</h2>
       <hr />
-      <form>
+      <Form>
         <div className="form-row">
           <div className="col-md-10 mb-3">
             <label htmlFor="validationDefault01">Nome *</label>
@@ -70,12 +76,9 @@ export default function EditFood({ props, close, food }: any) {
         <div className="form-row">
           <div className="col-md-10 mb-3">
             <label htmlFor="validationDefault03">Categoria *</label>
-            <select onChange={(event) => setCategory(event.target.value)} className="custom-select mr-sm-2" id="inlineFormCustomSelect">
+            <select onChange={(event) => setCategory(event.target.value)} value={categoryFood} className="custom-select mr-sm-2" id="inlineFormCustomSelect">
               {
                 allCategories.map((category) => (
-                  category['id'] === food.tagFood ?
-                    <option key={category['id']} value={category['id']} selected>{category['name']}</option>
-                    :
                     <option key={category['id']} value={category['id']}>{category['name']}</option>
                 ))
               }
@@ -106,8 +109,10 @@ export default function EditFood({ props, close, food }: any) {
             </Upload>
           </Space>
         </Form.Item>
-        <button onClick={updateFood} className="btn btn-primary" type="button">Atualizar</button>
-      </form>
+        <button onClick={updateFood} className="btn btn-primary" type="button">
+          {requestSent ? <ReactLoading width={20} height={20} type={'spin'} color={'#fff'} /> : 'Atualizar'}
+        </button>
+      </Form>
     </>
   );
 };

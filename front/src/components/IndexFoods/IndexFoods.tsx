@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
@@ -26,10 +27,11 @@ export default function IndexFoods() {
   const toggle = () => {
     open ? setOpen(false) : setOpen(true);
     open ? setReload(false) : setReload(true);
+    document.body.style.overflow = 'scroll';
   }
 
   const closeModal = () => {
-    document.body.style.overflow = 'visible';
+    document.body.style.overflow = 'scroll';
     setEditModal(false);
     toggle();
   }
@@ -82,20 +84,19 @@ export default function IndexFoods() {
             itemLayout="horizontal"
             dataSource={filteredFood}
             renderItem={food => (
-              <List.Item
-                actions={[<a onClick={() => { setEditModal(true); setFoodSelected(food); toggle() }} className="btn btn-success text-white" key="list-loadmore-edit">Editar</a>,
-                <a onClick={() => deleteFood(food['id'])} className="btn btn-danger text-white" key="list-loadmore-more">Deletar</a>]}
-              >
-                <List.Item.Meta
-                  avatar={<Avatar src={image} />}
-                  title={<a>{food['name']}</a>}
-                  description={food['description']}
-                />
-                <h5>
-                  {Number(food['price']).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                </h5>
-              </List.Item>
-
+                <List.Item
+                  actions={[<a onClick={() => { setEditModal(true); setFoodSelected(food); toggle() }} className="btn btn-success text-white" key="list-loadmore-edit">Editar</a>,
+                  <a onClick={() => deleteFood(food['id'])} className="btn btn-danger text-white" key="list-loadmore-more">Deletar</a>]}
+                  >
+                  <List.Item.Meta
+                    avatar={<Avatar src={food['image'] ?? image} />}
+                    title={<a>{food['name']}</a>}
+                    description={food['description']}
+                    />
+                  <h5>
+                    {Number(food['price']).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                  </h5>
+                </List.Item>
             )}
           />
           <div className="site-drawer-render-in-current-wrapper">
