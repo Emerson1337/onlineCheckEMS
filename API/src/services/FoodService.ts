@@ -60,20 +60,17 @@ class FoodService {
       throw new Error("Essa categoria não existe!");
     }
 
-    var imageLink;
     
-    if(image) {
-      imageLink = await cloudinary.uploader.upload(image.thumbUrl,
-        {
-          public_id: image.originFileObj.uid
-        }
-      );
-    }
+    const imageLink = await cloudinary.uploader.upload(image.thumbUrl,
+      {
+        public_id: image.originFileObj.uid
+      }
+    );
 
     const food = foodsRepository.create({
       name,
-      image: imageLink ? imageLink.url : undefined,
-      image_id: imageLink ? imageLink.public_id : undefined,
+      image: imageLink.url,
+      image_id: imageLink.public_id,
       price,
       tagFood,
       description
