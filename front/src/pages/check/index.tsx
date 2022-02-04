@@ -243,7 +243,7 @@ const BannerCategory = styled.section`
 
 const BlankBackground = styled.div`
   background-color: #fff;
-  width: 100vh;
+  width: 100vw;
   height: 100vh;
 `;
 

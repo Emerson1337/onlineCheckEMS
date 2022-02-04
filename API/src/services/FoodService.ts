@@ -11,11 +11,8 @@ interface Request {
   price: number;
   tagFood: string;
   image: {
+    uid: string,
     thumbUrl: string,
-    originFileObj: {
-      uid: string
-    },
-
   };
   description: string;
 }
@@ -63,7 +60,7 @@ class FoodService {
     
     const imageLink = await cloudinary.uploader.upload(image.thumbUrl,
       {
-        public_id: image.originFileObj.uid
+        public_id: image.uid
       }
     );
 
@@ -118,12 +115,11 @@ class FoodService {
 
     var imageLink;
 
-    if(image.thumbUrl) {
-      await cloudinary.uploader.destroy(food.image_id);
-
+    if(image.uid) {
+      food.image_id && await cloudinary.uploader.destroy(food.image_id);
       imageLink = await cloudinary.uploader.upload(image.thumbUrl,
         {
-          public_id: image.originFileObj.uid
+          public_id: image.uid
         }
       );
     }
@@ -154,7 +150,7 @@ class FoodService {
     }
     try {
       await foodsRepository.remove(foods);
-      await cloudinary.uploader.destroy(foods.image_id);
+      foods.image_id && await cloudinary.uploader.destroy(foods.image_id);
     } catch (err: any) {
       const error = new Error(err);
       throw new Error(error.message);

@@ -38,10 +38,12 @@ const UIModalOverlay = styled.div`
     position: fixed;
     top: 0;
     left: 0;
-    bottom: 0;
     right: 0;
+    bottom: 0;
+    height: 100vh;
+    width: 100vw;
     color: #252B42;
-    padding: 2% 25% 5% 25%;
+    padding: 6%;
     background-color: #fff;
 
     display: flex;
@@ -87,13 +89,13 @@ const UIModalOverlay = styled.div`
         justify-content: right;
     }
 
-    @media(max-width: 768px){
+    @media(min-width: 768px){
         padding: 5% 15% 5% 15%;
 
-    #inputRest {
-        width: 70%;
+        #inputRest {
+            width: 70%;
+        }
     }
-}
 `;
 
 const InputName = styled.input`

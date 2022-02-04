@@ -107,7 +107,7 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
       return `%0A%0A✅ ${item.name}%0AQuantidade: ${item.qtd}x%0AValor Unit: ${(item.price).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}%0AValor: *${(item.price * item.qtd).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}*`;
     });
 
-    window.location.href = (`https://api.whatsapp.com/send?phone=${phoneNumber}&text=Olá, sou ${name}! Escolhi os seguintes produtos 🍲: ${orderList}
+    window.location.href = (`https://api.whatsapp.com/send?phone=${phoneNumber}&text=Olá, sou *${name}*! Escolhi os seguintes produtos 🍲: ${orderList}
       ${isDelivery(toDelivery)}🤑 Forma de pagamento: ${paymentMethodGenerator(cashPayment, moneyBack, card, pix)}%0A%0A😊 Obrigado!`);
   }
 
@@ -180,12 +180,21 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
   }
 
   function checkFields() {
-    // if (!$('#address').val() ||
-    //   !$('#refference').val() ||
-    //   !$('#rest').val() ||
-    //   !$('#name').val()) {
-    //   return alert('Preencha todos os campos!');
-    // }
+    if(!name) {
+      return alert("Precisamos do seu nome 🤭.")
+    }
+    if(toDelivery && !address) {
+      return alert('Precisamos do seu endereço para entrega 🤭.')
+    }
+
+    if(!cashPayment && !pix && !card) {
+      return alert('Precisamos saber qual método de pagamento deseja 🤭.')
+    }
+
+    if(cashPayment && !moneyBack && !rest) {
+      return alert('Precisamos saber para quanto você deseja o troco. Caso não precise, marque a opção: "Não preciso de troco" 🤭.')
+    }
+
     finishOrder();
   }
 
@@ -344,7 +353,7 @@ const UIModalOverlay = styled.div`
     bottom: 0;
     right: 0;
     color: #FFF;
-    padding: 2% 25% 5% 25%;
+    padding: 6%;
     background-color: #FA4A0C;
   
   .buttonsFood {
@@ -425,8 +434,8 @@ const UIModalOverlay = styled.div`
     justify-content: right;
   }
 
-  @media(max - width: 768px) {
-    padding: 5% 15% 5% 15%;
+  @media(min-width: 768px) {
+    padding: 2% 25%;
     
     #inputRest {
       width: 70%;
@@ -436,7 +445,6 @@ const UIModalOverlay = styled.div`
 
 const InfoBuy = styled.div`
   text-align: center;
-
 
   #transition-modal-description p{
     line-height: 1rem;
