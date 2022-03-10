@@ -7,9 +7,11 @@ class RestaurantInfoController {
     try {
       const restaurantInfoService = new RestaurantInfoService();
 
-      const { name, phone_number, delivery_fee } = request.body;
+      const { enterprise, phone_number, delivery_fee } = request.body;
 
-      await restaurantInfoService.createOrUpdate({ name, phone_number, delivery_fee });
+      var enterpriseId = response.locals.decodedToken.id;
+
+      await restaurantInfoService.createOrUpdate({ enterprise, phone_number, delivery_fee }, enterpriseId);
 
       return response.status(200).json('Informações do restaurante adicionadas com sucesso!');
     } catch (err: any) {
@@ -21,7 +23,9 @@ class RestaurantInfoController {
     try {
       const restaurantInfoService = new RestaurantInfoService();
 
-      const restauranteInfo = await restaurantInfoService.listInfo();
+      var enterpriseId = response.locals.decodedToken.id;
+
+      const restauranteInfo = await restaurantInfoService.listInfo(enterpriseId);
 
       return response.status(200).json(restauranteInfo);
     } catch (err: any) {

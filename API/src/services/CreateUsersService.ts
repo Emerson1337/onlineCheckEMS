@@ -7,12 +7,15 @@ import * as yup from 'yup';
 
 interface RequestDATA {
   name: string;
+  enterprise: string;
+  phone_number: string,
+  delivery_fee: number
   email: string;
   password: string;
 }
 
 class CreateUserService {
-  public async create({ name, email, password }: RequestDATA) {
+  public async create({ name, enterprise, phone_number, delivery_fee, email, password }: RequestDATA) {
     const userRepository = getCustomRepository(UsersRepository);
 
     const userAlreadyExists = await userRepository.findOne({ email });
@@ -21,6 +24,9 @@ class CreateUserService {
 
     let schema = yup.object().shape({
       name: yup.string().required(),
+      enterprise: yup.string().required('O nome da empresa é obrigatório.'),
+      phone_number: yup.number().required('O campo número de telefone é obrigatório'),
+      delivery_fee: yup.string().required('O campo taxa de entrega é obrigatório'),
       email: yup.string().email(),
       password: yup.string().required(),
       createdOn: yup.date().default(function () {
@@ -28,39 +34,59 @@ class CreateUserService {
       }),
     });
 
-    const credentialsTrue = await schema.isValid({ name, email, password });
-
-    if (!credentialsTrue) {
-      return new Error("Email/Nome inválido!")
-    }
-
+    await schema.validate({ name, enterprise, phone_number, delivery_fee, email, password }).catch(
+      (error) => {
+        throw new Error(error)
+      }
+    );
 
     if (name.length <= 0) {
-      return new Error("Nome curto demais!")
+      throw new Error("Nome curto demais!")
+    }
+
+    if (enterprise.length <= 0) {
+      throw new Error("Nome do restaurante curto demais!")
+    }
+
+    if (phone_number.length <= 0) {
+      throw new Error("Número de telefone curto demais!")
+    }
+
+    if (delivery_fee < 0) {
+      throw new Error("Taxa de entrega inválida!")
     }
 
     for (let i = 0; i < specialCharacters.length; i++) {
       if (name.indexOf(specialCharacters[i]) != -1) {
-        return new Error("Nome inválido!")
+        throw new Error("Nome inválido!")
+      }
+    }
+
+    for (let i = 0; i < specialCharacters.length; i++) {
+      if (enterprise.indexOf(specialCharacters[i]) != -1) {
+        throw new Error("Nome de empresa inválido!");
       }
     }
 
     if (password.length < 8) {
-      return new Error("Senha curta demais!")
+      throw new Error("Senha curta demais!")
     }
 
     if (!regex.test(password)) {
-      return new Error("Senha inválida! Insira pelo menos um número.")
+      throw new Error("Senha inválida! Insira pelo menos um número.")
     }
 
     if (userAlreadyExists) {
-      return new Error('Esse endereço de e-mail já foi cadastrado!');
+      throw new Error('Esse endereço de e-mail já foi cadastrado!');
     }
 
     const passwordEncrypted = await hash(password, 8);
 
     const user = userRepository.create({
       name,
+      enterprise, 
+      phone_number, 
+      delivery_fee,
       email,
       password: passwordEncrypted,
     });
@@ -69,7 +95,7 @@ class CreateUserService {
       await userRepository.save(user);
     } catch (err: any) {
       const error = new Error(err);
-      return new Error(error.message);
+      throw new Error(error.message);
     }
 
     return user;

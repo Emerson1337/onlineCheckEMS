@@ -6,8 +6,9 @@ class createFoodController {
     try {
       const { name, image, price, tagFood, description } = request.body;
       const foodService = new FoodService();
+      var enterpriseId = response.locals.decodedToken.id;
 
-      const food = await foodService.create({ name, image, price, tagFood, description });
+      const food = await foodService.create({ name, image, price, tagFood, description }, enterpriseId);
       if (food) {
         return response.status(200).json("Comida criada com sucesso!");
       } else {
@@ -21,8 +22,9 @@ class createFoodController {
   public async handleListAllFoods(request: Request, response: Response) {
     try {
       const foodService = new FoodService();
+      var { enterprise } = request.params;
 
-      const foods = await foodService.listAllFoods();
+      const foods = await foodService.listAllFoods(enterprise);
       if (foods) {
         return response.status(200).json(foods);
       } else {
@@ -37,7 +39,9 @@ class createFoodController {
     try {
       const { id } = request.params;
       const foodService = new FoodService();
-      const result = await foodService.removeFood(id)
+      var enterpriseId = response.locals.decodedToken.id;
+
+      const result = await foodService.removeFood(id, enterpriseId)
       if (result) {
         return response.status(200).json(`A comida 🍕 ${result.name} foi deletada com sucesso!`);
       } else {
@@ -52,8 +56,9 @@ class createFoodController {
     try {
       const { name, image, tagFood, description, price } = request.body;
       const { id } = request.params;
+      var enterpriseId = response.locals.decodedToken.id;
       const foodService = new FoodService();
-      const food = await foodService.editFood(id, { name, image, price, tagFood, description });
+      const food = await foodService.editFood(id, { name, image, price, tagFood, description }, enterpriseId);
 
       if (food) {
         return response.status(200).json("Comida editada com sucesso!");
@@ -67,9 +72,9 @@ class createFoodController {
 
   async listByTag(request: Request, response: Response) {
     try {
-      const { id } = request.params;
+      const { id, enterprise } = request.params;
       const foodTypeService = new FoodService();
-      const foods = await foodTypeService.listByTag(id)
+      const foods = await foodTypeService.listByTag(id, enterprise)
 
       return response.status(200).json(foods);
     } catch (err: any) {
@@ -80,7 +85,8 @@ class createFoodController {
   public async listBestMonthSellingFoods(request: Request, response: Response) {
     try {
       const foodTypeService = new FoodService();
-      const foods = await foodTypeService.listTop10Foods();
+      const { enterprise } = request.params;
+      const foods = await foodTypeService.listTop10Foods(enterprise);
 
       return response.status(200).json(foods);
     } catch (err: any) {

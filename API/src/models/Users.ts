@@ -22,6 +22,18 @@ class User {
   @Column()
   password: string;
 
+  @Column()
+  enterprise: string;
+
+  @Column({ nullable: true })
+  logo: string;
+
+  @Column()
+  phone_number: string;
+
+  @Column()
+  delivery_fee: number;
+
   @CreateDateColumn()
   created_at: Date;
 

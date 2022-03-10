@@ -4,10 +4,10 @@ import CreateUserService from '../services/CreateUsersService';
 class CreateUsersController {
   async createUser(request: Request, response: Response) {
     try {
-      const { name, email, password } = request.body;
+      const { name, enterprise, phone_number, delivery_fee, email, password } = request.body;
       const createUser = new CreateUserService();
-
-      const user = await createUser.create({ name, email, password });
+      
+      const user = await createUser.create({ name, enterprise, phone_number, delivery_fee, email, password });
 
       return response.json(user);
     } catch (err: any) {

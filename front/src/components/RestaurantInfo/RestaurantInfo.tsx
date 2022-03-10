@@ -20,7 +20,7 @@ const validateMessages = {
 
 export default function RestaurantInfo() {
 
-    const [name, setName] = useState('');
+    const [enterprise, setEnterprise] = useState('');
     const [phone_number, setPhone_number] = useState(0);
     const [delivery_fee, setDelivery_fee] = useState(0);
     const [loaded, setLoaded] = useState(false);
@@ -30,7 +30,7 @@ export default function RestaurantInfo() {
     const getInfo = () => {
         setLoaded(false);
         api.get('/api/restaurant-info').then((response) => {
-            setName(response.data.name); //always return just one object
+            setEnterprise(response.data.enterprise); //always return just one object
             setPhone_number(response.data.phone_number); //always return just one object
             setDelivery_fee(response.data.delivery_fee); //always return just one object
             setLoaded(true);
@@ -44,12 +44,12 @@ export default function RestaurantInfo() {
     }, [])
 
     const saveRestaurantInfo = (values: any) => {
-        const name = values.info.name;
+        const enterprise = values.info.enterprise;
         const phone_number = values.info.phone_number.replace(/[+()-]/g, '').replace(" ", "");
         const delivery_fee = String(values.info.delivery_fee).split('R$').join('').replace(',', '.');
         const userJWT = localStorage.getItem("Authorization");
 
-        api.post('/api/restaurant-info', { name, phone_number, delivery_fee, userJWT }).then((response) => {
+        api.post('/api/restaurant-info', { enterprise, phone_number, delivery_fee, userJWT }).then((response) => {
             toast.success(response.data);
         }).catch((error) => {
             toast.error(error.response.data);
@@ -105,7 +105,7 @@ export default function RestaurantInfo() {
                 <FormStyled>
 
                     <Form {...layout} encType={"multipart/form-data"} form={form} name="nest-messages" onFinish={saveRestaurantInfo} validateMessages={validateMessages}>
-                        <Form.Item initialValue={name} name={['info', 'name']} label="Nome" rules={[{ required: true }]}>
+                        <Form.Item initialValue={enterprise} name={['info', 'enterprise']} label="Nome" rules={[{ required: true }]}>
                             <Input />
                         </Form.Item>
                         <Form.Item initialValue={phone_number} name={['info', 'phone_number']} label="Número de telefone" rules={[{ required: true }]}>

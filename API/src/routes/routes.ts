@@ -37,8 +37,8 @@ router.post('/api/create-food', auth.authMiddleware, createFoodController.handle
 router.get('/api/list-foods', createFoodController.handleListAllFoods);
 router.delete('/api/remove-food/:id', auth.authMiddleware, createFoodController.handleRemoveFood);
 router.put('/api/update-food/:id', auth.authMiddleware, createFoodController.handleEditFood);
-router.get('/api/list-by-tag/:id', createFoodController.listByTag);
-router.get('/api/list-top-foods', createFoodController.listBestMonthSellingFoods);
+router.get('/api/list-by-tag/:id/:enterprise', createFoodController.listByTag);
+router.get('/api/list-top-foods/:enterprise', createFoodController.listBestMonthSellingFoods);
 router.get('/api/best-sold-foods', bestSellingFoodController.bestSoldFoods);
 
 //ROTAS DE ANALISES GRAFICAS
@@ -52,7 +52,7 @@ router.put('/api/update-tag/:id', auth.authMiddleware, createFoodTypeController.
 
 // INFORMACOES DO RESTAURANTE
 router.post('/api/restaurant-info', auth.authMiddleware, restaurantInfoController.create);
-router.get('/api/restaurant-info', restaurantInfoController.listInfo);
+router.get('/api/restaurant-info', auth.authMiddleware, restaurantInfoController.listInfo);
 
 
 //REGISTOR DE NOVA VENDA

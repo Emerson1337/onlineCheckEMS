@@ -16,6 +16,9 @@ class FoodTypes {
   @Column()
   name: string;
 
+  @Column('uuid')
+  restaurant_id: string;
+
   @CreateDateColumn()
   created_at: Date;
 

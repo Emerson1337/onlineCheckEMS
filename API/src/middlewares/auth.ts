@@ -18,11 +18,12 @@ export class Auth {
 
     const [scheme, tokenValid] = parts;
 
+
     jwt.verify(tokenValid, pass, (err, decoded) => {
       if (err) {
         return response.status(403).send({ error: 'token invalid!' });
       };
-
+      response.locals.decodedToken = decoded;
     })
 
     return next();

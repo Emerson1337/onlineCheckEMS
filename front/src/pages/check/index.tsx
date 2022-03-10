@@ -36,7 +36,7 @@ export default function Check() {
   const [allFoods, SetAllFoods] = useState([]);
 
   useEffect(() => {
-    api.get('/api/list-top-foods').then((foods: any) => {
+    api.get(`/api/list-top-foods/${process.env.RESTAURANT_NAMES}`).then((foods: any) => {
       SetAllFoods([]);
 
       setLoading(false);
@@ -54,7 +54,7 @@ export default function Check() {
     if (tagId.length) {
       setLoading(true);
 
-      api.get(`/api/list-by-tag/${tagId}`).then((foods: any) => {
+      api.get(`/api/list-by-tag/${tagId}/brotherlanches`).then((foods: any) => {
         SetAllFoods([]);
 
         setLoading(false);
@@ -67,7 +67,7 @@ export default function Check() {
       })
     } else {
       setLoading(true);
-      api.get('/api/list-top-foods').then((foods: any) => {
+      api.get(`/api/list-top-foods/brotherlanches`).then((foods: any) => {
         SetAllFoods([]);
 
         setLoading(false);

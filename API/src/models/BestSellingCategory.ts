@@ -19,6 +19,9 @@ class BestSellingCategory {
   @Column()
   tagFood: string;
 
+  @Column('uuid')
+  restaurant_id: string;
+
   @Column()
   frequency: number;
 

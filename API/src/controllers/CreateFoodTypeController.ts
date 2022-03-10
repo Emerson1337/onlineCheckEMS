@@ -6,7 +6,10 @@ class CreateFoodTypeController {
     try {
       const { name } = request.body;
       const foodTypeService = new FoodTypeService();
-      const food = await foodTypeService.create(name);
+      var enterpriseId = response.locals.decodedToken.id;
+
+      const food = await foodTypeService.create(name, enterpriseId);
+
       if (food) {
         return response.status(200).json("Categoria criada com sucesso!");
       } else {
@@ -20,7 +23,9 @@ class CreateFoodTypeController {
   async handleListAllTags(request: Request, response: Response) {
     try {
       const foodTypeService = new FoodTypeService();
-      const tags = await foodTypeService.listAllTags();
+      const { enterprise } = request.params;
+
+      const tags = await foodTypeService.listAllTags(enterprise);
 
       return response.status(200).json(tags);
     } catch (err: any) {
@@ -31,8 +36,10 @@ class CreateFoodTypeController {
   async handleRemoveTag(request: Request, response: Response) {
     try {
       const { id } = request.params;
+      var enterpriseId = response.locals.decodedToken.id;
+      
       const foodTypeService = new FoodTypeService();
-      const result = await foodTypeService.removeTag(id);
+      const result = await foodTypeService.removeTag(id, enterpriseId);
       if (result) {
         return response.status(200).json(`A categoria 🍕 ${result.name} foi deletada com sucesso!`);
       } else {
@@ -48,8 +55,9 @@ class CreateFoodTypeController {
     try {
       const { name } = request.body;
       const { id } = request.params;
+      var enterpriseId = response.locals.decodedToken.id;
       const foodTypeService = new FoodTypeService();
-      const tagUpdated = await foodTypeService.editTag({ id, name });
+      const tagUpdated = await foodTypeService.editTag({ id, name }, enterpriseId);
 
       if (tagUpdated) {
         return response.status(200).json('Categoria editada com sucesso!');

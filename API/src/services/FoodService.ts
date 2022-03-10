@@ -5,6 +5,7 @@ import * as yup from 'yup';
 import MonthSalesRespository from '../repositories/MonthSalesRepository';
 import { validate as validateUuid } from 'uuid';
 import cloudinary from '../utils/cloudinary';
+import UsersRepository from '../repositories/UsersRepository';
 
 interface Request {
   name: string;
@@ -18,10 +19,10 @@ interface Request {
 }
 
 class FoodService {
-  public async create({ name, image, price, tagFood, description }: Request) {
+  public async create({ name, image, price, tagFood, description }: Request, enterpriseId: string) {
     const foodsRepository = getCustomRepository(FoodsRepository)
     const foodsTypeRepository = getCustomRepository(FoodTypesRepository)
-
+    
     let schema = yup.object().shape({
       name: yup.string().required('O campo nome é obrigatório'),
       price: yup.number().required('O campo preço é obrigatório'),
@@ -51,7 +52,12 @@ class FoodService {
       throw new Error("Preço inválido!");
     }
 
-    const foodTypeExists = foodsTypeRepository.findOne(tagFood);
+    const foodTypeExists = foodsTypeRepository.findOne({
+      where: {
+        id: tagFood,
+        restaurant_id: enterpriseId
+      }
+    });
 
     if (!foodTypeExists) {
       throw new Error("Essa categoria não existe!");
@@ -66,6 +72,7 @@ class FoodService {
 
     const food = foodsRepository.create({
       name,
+      restaurant_id: enterpriseId,
       image: imageLink.url,
       image_id: imageLink.public_id,
       price,
@@ -83,7 +90,7 @@ class FoodService {
     return food;
   }
 
-  public async editFood(id: string, { name, image, price, tagFood, description }: Request) {
+  public async editFood(id: string, { name, image, price, tagFood, description }: Request, enterpriseId: string) {
     const foodRepository = getCustomRepository(FoodsRepository);
     const foodTypesRepository = getCustomRepository(FoodTypesRepository);
 
@@ -101,13 +108,13 @@ class FoodService {
       throw new Error("Selecione uma categoria!");
     }
 
-    let food = await foodRepository.findOne({ where: { id } });
+    let food = await foodRepository.findOne({ where: { id, restaurant_id: enterpriseId } });
 
     if (!food) {
       return new Error("Comida não encontrada!");
     }
 
-    let category = await foodTypesRepository.findOne({ where: { id: tagFood } });
+    let category = await foodTypesRepository.findOne({ where: { id: tagFood, enteprise_id: enterpriseId } });
 
     if (!category) {
       return new Error("Categoria não encontrada!");
@@ -126,6 +133,7 @@ class FoodService {
 
     const foodUpdated = await foodRepository.update({ id }, {
       name,
+      restaurant_id: enterpriseId,
       image: imageLink ? imageLink.url : food.image,
       image_id: imageLink ? imageLink.public_id : food.image_id,
       price,
@@ -136,18 +144,24 @@ class FoodService {
     return foodUpdated;
   }
 
-  public async removeFood(id: string) {
+  public async removeFood(id: string, enterpriseId: string) {
     const foodsRepository = getCustomRepository(FoodsRepository);
 
     if (!validateUuid(id)) {
       throw new Error("Identificação inválida!");
     }
 
-    const foods = await foodsRepository.findOne(id);
+    const foods = await foodsRepository.findOne({
+      where: {
+        id,
+        enteprise_id: enterpriseId
+      }
+    });
     
     if (!foods) {
       throw new Error("Essa comida não existe!");
     }
+
     try {
       await foodsRepository.remove(foods);
       foods.image_id && await cloudinary.uploader.destroy(foods.image_id);
@@ -159,26 +173,46 @@ class FoodService {
     return foods;
   }
 
-  public async listAllFoods() {
+  public async listAllFoods(enterprise: string) {
     const foodsRepository = getCustomRepository(FoodsRepository);
+
+    const enterpriseRepository = getCustomRepository(UsersRepository);
+
+    const enterpriseFound = await enterpriseRepository.findOne(enterprise);
+
+    if(!enterpriseFound) {
+      return new Error("Restaurante não encontrado!");
+    }
+
     const foods = await foodsRepository.find({
       order: {
         created_at: 'DESC',
+      }, where: {
+        restaurant_id: enterpriseFound.id,
       }
     });
 
     return foods;
   }
 
-  async listByTag(id: string) {
+  async listByTag(id: string, enterprise: string) {
     const foodRepository = getCustomRepository(FoodsRepository);
 
     if (!validateUuid(id)) {
       throw new Error("Identificação inválida!");
     }
 
-    const foods = await foodRepository.find({ where: { tagFood: id } });
+    const enterpriseRepository = getCustomRepository(UsersRepository);
+    
+    const enterpriseFound = await enterpriseRepository.findOne({ where: {
+      enterprise,
+    }});
 
+    if(!enterpriseFound) {
+      return new Error("Restaurante não encontrado!");
+    }
+
+    const foods = await foodRepository.find({ where: { tagFood: id, restaurant_id: enterpriseFound.id } });
     if (!foods.length) {
       return new Error("Esta categoria não possui comidas cadastradas!");
     }
@@ -186,12 +220,23 @@ class FoodService {
     return foods;
   }
 
-  async listTop10Foods() {
+  async listTop10Foods(enterprise: string) {
     const monthSalesRespository = getCustomRepository(MonthSalesRespository);
+
+    const enterpriseRepository = getCustomRepository(UsersRepository);
+
+    const enterpriseFound = await enterpriseRepository.findOne(enterprise);
+
+    if(!enterpriseFound) {
+      return new Error("Restaurante não encontrado!");
+    }
 
     const foods = await monthSalesRespository.find({
       order: {
         frequency: "DESC",
+      },
+      where: {
+        restaurant_id: enterpriseFound.id
       },
       take: 10,
     });

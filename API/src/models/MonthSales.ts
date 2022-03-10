@@ -22,6 +22,9 @@ class MonthSales {
   @Column()
   description: string;
 
+  @Column('uuid')
+  restaurant_id: string;
+
   @Column()
   price: number;
 

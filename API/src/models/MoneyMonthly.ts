@@ -16,6 +16,9 @@ class MoneyMonthly {
   @Column()
   month: string;
 
+  @Column('uuid')
+  restaurant_id: string;
+
   @Column()
   price: number;
 

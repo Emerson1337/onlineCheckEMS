@@ -25,6 +25,9 @@ class Foods {
   @Column()
   price: number;
 
+  @Column('uuid')
+  restaurant_id: string;
+
   @Column()
   description: string;
 
