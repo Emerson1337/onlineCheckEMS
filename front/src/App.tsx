@@ -33,7 +33,7 @@ function App() {
     }
   });
   
-  const restaurantName = "brotherlanches";
+  const restaurantName = "eglanches";
 
   return (
     <>

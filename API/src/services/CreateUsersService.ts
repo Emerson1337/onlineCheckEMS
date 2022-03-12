@@ -48,6 +48,12 @@ class CreateUserService {
       throw new Error("Nome do restaurante curto demais!")
     }
 
+    const enterpriseAlreadyExists = await userRepository.findOne({ enterprise });
+
+    if(enterpriseAlreadyExists) {
+      throw new Error("Nome de restaurante já cadastrado!")
+    }
+
     if (phone_number.length <= 0) {
       throw new Error("Número de telefone curto demais!")
     }
