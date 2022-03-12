@@ -36,6 +36,8 @@ class MonthSales {
 
   @UpdateDateColumn()
   updated_at: Date;
+  
+  image: string | undefined;
 
   constructor() {
     if (!this.id) {

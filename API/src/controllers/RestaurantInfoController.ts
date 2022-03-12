@@ -23,9 +23,9 @@ class RestaurantInfoController {
     try {
       const restaurantInfoService = new RestaurantInfoService();
 
-      var enterpriseId = response.locals.decodedToken.id;
+      var { enterprise } = request.params;
 
-      const restauranteInfo = await restaurantInfoService.listInfo(enterpriseId);
+      const restauranteInfo = await restaurantInfoService.listInfo(enterprise);
 
       return response.status(200).json(restauranteInfo);
     } catch (err: any) {

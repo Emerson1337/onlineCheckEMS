@@ -23,7 +23,6 @@ class CreateUsersController {
       const token = await createUser.login(email, password);
       return response.json(token);
     } catch (err: any) {
-      console.log(err.message);
       return response.status(403).json(err.message);
     }
   }

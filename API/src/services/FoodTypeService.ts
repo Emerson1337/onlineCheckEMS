@@ -50,12 +50,20 @@ class FoodTypeService {
     return foodType;
   }
 
-  public async listAllTags(enterprise: string) {
+  public async listAllTags(enterprise: string) { 
+    if(!enterprise || enterprise == "undefined") {
+      throw new Error("Restaurante não informado!");
+    }
+
     const foodTypesRepository = getCustomRepository(FoodTypesRepository);
 
     const enterpriseRepository = getCustomRepository(UsersRepository);
 
-    const enterpriseFound = await enterpriseRepository.findOne(enterprise);
+    const enterpriseFound = await enterpriseRepository.findOne({
+      where: {
+        enterprise
+      }
+    });
 
     if(!enterpriseFound) {
       return new Error("Restaurante não encontrado!");

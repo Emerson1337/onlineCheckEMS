@@ -4,9 +4,15 @@ import * as yup from 'yup';
 import UsersRepository from "../repositories/UsersRepository";
 
 interface InfoRestaurant {
+  id?: string,
+  name?: string,
+  password?: string,
+  email?: string,
   enterprise: string,
   phone_number: string,
-  delivery_fee: number
+  delivery_fee: number,
+  created_at?: Date,
+  updated_at?: Date
 }
 
 class RestaurantInfoService {
@@ -54,11 +60,26 @@ class RestaurantInfoService {
     }
   }
 
-  public async listInfo(enterpriseId: string) {
+  public async listInfo(enterprise: string) {
     const restaurantInfoRepository = getCustomRepository(UsersRepository);
 
-    const restaurantInfo = await restaurantInfoRepository.findOne(enterpriseId);
-    return restaurantInfo;
+    const restaurantInfo = await restaurantInfoRepository.findOne({ where: {
+      enterprise,
+    }});
+
+    if(restaurantInfo) {
+      const restaurantInfoFiltered: InfoRestaurant = restaurantInfo;
+      delete restaurantInfoFiltered.id;
+      delete restaurantInfoFiltered.name;
+      delete restaurantInfoFiltered.email;
+      delete restaurantInfoFiltered.password;
+      delete restaurantInfoFiltered.created_at;
+      delete restaurantInfoFiltered.updated_at;
+
+      return restaurantInfoFiltered;
+    } else {
+      throw new Error("Nenhuma informação encontrada!"); 
+    }
   }
 }
 

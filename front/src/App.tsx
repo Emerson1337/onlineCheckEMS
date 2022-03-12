@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import 'dotenv/config'
-import React, { useEffect, useState } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 import './App.css';
@@ -7,6 +8,8 @@ import Footer from './components/Footer/Footer';
 import Navbar from './components/Navbar/Navbar';
 import Routes from './routes/routes';
 import FadeIn from 'react-fade-in';
+
+export const RestaurantNameContext = createContext("");
 
 function App() {
   const [blackHeader, setBlackHeader] = useState(false);
@@ -29,9 +32,12 @@ function App() {
       window.removeEventListener('scroll', scrollListener);
     }
   });
+  
+  const restaurantName = "brotherlanches";
 
   return (
     <>
+    <RestaurantNameContext.Provider value={restaurantName}>
       <ToastContainer />
       {
         !spin &&
@@ -52,6 +58,7 @@ function App() {
           }
         </>
       }
+      </RestaurantNameContext.Provider>
     </>
   );
 }

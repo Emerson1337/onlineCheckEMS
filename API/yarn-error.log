@@ -1,8 +1,8 @@
 Arguments: 
-  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js add @types/cloudinary
+  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js add dotenv
 
 PATH: 
-  C:\Program Files\PowerShell\7;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\ProgramData\chocolatey\bin;C:\Program Files (x86)\Yarn\bin\;C:\Program Files\PowerShell\7\;C:\php;C:\composer;C:\Users\emers\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Python 3.10;;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin;C:\Users\emers\AppData\Local\Microsoft\WindowsApps;;C:\Users\emers\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\emers\AppData\Roaming\npm;C:\Users\emers\AppData\Local\Yarn\bin;C:\Users\emers\AppData\Roaming\Composer\vendor\bin
+  C:\Program Files\PowerShell\7;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\ProgramData\chocolatey\bin;C:\Program Files (x86)\Yarn\bin\;C:\php;C:\composer;C:\Users\emers\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Python 3.10;;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin;C:\Program Files\PowerShell\7\;C:\Users\emers\AppData\Local\Microsoft\WindowsApps;;C:\Users\emers\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\emers\AppData\Roaming\npm;C:\Users\emers\AppData\Local\Yarn\bin;C:\Users\emers\AppData\Roaming\Composer\vendor\bin
 
 Yarn version: 
   1.22.15
@@ -14,17 +14,7 @@ Platform:
   win32 x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/@types%2fcloudinary: Not found
-      at Request.params.callback [as _callback] (C:\Program Files (x86)\Yarn\lib\cli.js:66140:18)
-      at Request.self.callback (C:\Program Files (x86)\Yarn\lib\cli.js:140885:22)
-      at Request.emit (node:events:390:28)
-      at Request.<anonymous> (C:\Program Files (x86)\Yarn\lib\cli.js:141857:10)
-      at Request.emit (node:events:390:28)
-      at IncomingMessage.<anonymous> (C:\Program Files (x86)\Yarn\lib\cli.js:141779:12)
-      at Object.onceWrapper (node:events:509:28)
-      at IncomingMessage.emit (node:events:402:35)
-      at endReadableNT (node:internal/streams/readable:1343:12)
-      at processTicksAndRejections (node:internal/process/task_queues:83:21)
+  Error: EPERM: operation not permitted, unlink 'C:\Users\emers\Desktop\PROGRAMMING\onlineCheckEMS\API\node_modules\bcrypt\lib\binding\napi-v3\bcrypt_lib.node'
 
 npm manifest: 
   {
@@ -40,7 +30,6 @@ npm manifest:
         "cloudinary": "^1.28.1",
         "cors": "^2.8.5",
         "cron": "^1.8.2",
-        "dotenv": "^10.0.0",
         "express": "^4.17.1",
         "express-async-errors": "^3.1.1",
         "express-validator": "^6.12.0",

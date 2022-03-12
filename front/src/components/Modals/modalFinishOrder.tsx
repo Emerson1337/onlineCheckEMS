@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable array-callback-return */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { IoMdClose, IoMdRemove } from 'react-icons/io';
 import styled from 'styled-components';
 import { Switch } from 'antd';
@@ -12,10 +12,12 @@ import { FiTrash } from 'react-icons/fi';
 import api from '../../services/api';
 import { toast } from 'react-toastify';
 import ThankYouModal from '../Modals/ThankYou';
+import { RestaurantNameContext } from '../../App';
 
 
 export default function FinishOrderModal({ onClose = () => { }, children }: any) {
-
+  const RestaurantName = useContext(RestaurantNameContext);
+  
   const [toDelivery, setToDelivery] = useState(false);
   const [rest, setRest] = useState(false);
   const [itemsToBuy, setItemsToBuy] = useState([]);
@@ -45,7 +47,7 @@ export default function FinishOrderModal({ onClose = () => { }, children }: any)
     setAddress(staticAddress);
     setComplement(staticComplement);
 
-    api.get('/api/restaurant-info').then((response) => {
+    api.get(`/api/restaurant-info/${RestaurantName}`).then((response) => {
       setPhoneNumber(response.data.phone_number);
       setDeliveryFee(response.data.delivery_fee);
     }).catch((error) => {

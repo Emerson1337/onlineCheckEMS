@@ -174,11 +174,19 @@ class FoodService {
   }
 
   public async listAllFoods(enterprise: string) {
+    if(!enterprise || enterprise == "undefined") {
+      throw new Error("Restaurante não informado!");
+    }
+
     const foodsRepository = getCustomRepository(FoodsRepository);
 
     const enterpriseRepository = getCustomRepository(UsersRepository);
 
-    const enterpriseFound = await enterpriseRepository.findOne(enterprise);
+    const enterpriseFound = await enterpriseRepository.findOne({
+      where: {
+        enterprise
+      }
+    });
 
     if(!enterpriseFound) {
       return new Error("Restaurante não encontrado!");
@@ -225,7 +233,11 @@ class FoodService {
 
     const enterpriseRepository = getCustomRepository(UsersRepository);
 
-    const enterpriseFound = await enterpriseRepository.findOne(enterprise);
+    const enterpriseFound = await enterpriseRepository.findOne({
+      where: {
+        enterprise
+      }
+    });
 
     if(!enterpriseFound) {
       return new Error("Restaurante não encontrado!");
@@ -245,6 +257,11 @@ class FoodService {
       return new Error("Esta categoria não possui comidas cadastradas!");
     }
 
+    for (var food of foods) {
+      const image = await monthSalesRespository.getImageByFoodName(food.name);
+      food.image = image;
+    };
+    
     return foods;
   }
 }

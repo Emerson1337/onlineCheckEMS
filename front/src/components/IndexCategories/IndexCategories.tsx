@@ -1,16 +1,18 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from 'react';
+import React, { useContext } from 'react';
 import { List, Avatar, Drawer } from 'antd';
 import { useEffect, useState } from 'react';
 import api from '../../services/api';
-
+import { RestaurantNameContext } from '../../App';
 import image from '../../assets/image-category.png';
 import { toast } from 'react-toastify';
 import EditCategory from '../CreateCategory/EditCategory';
 import { TextField } from '@material-ui/core';
 
 export default function IndexCategories() {
-
+  const RestaurantName = useContext(RestaurantNameContext);
+  
   const [allCategories, setAllCategories] = useState([]);
 
   const [editModal, setEditModal] = useState(false);
@@ -22,7 +24,7 @@ export default function IndexCategories() {
   const [filteredFood, setFilteredFood] = useState([]);
 
   function getTags() {
-    api.get('/api/list-tags').then((response) => {
+    api.get(`/api/list-tags/${RestaurantName}`).then((response) => {
       setAllCategories(response.data);
       setFilteredFood(response.data);
     }).catch((error) => {
@@ -31,7 +33,7 @@ export default function IndexCategories() {
   }
 
   useEffect(() => {
-    getTags()
+    getTags();
   }, [reload]);
 
   function deleteTag(tagId: string) {

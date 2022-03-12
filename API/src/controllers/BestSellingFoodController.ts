@@ -18,8 +18,8 @@ class BestSellingFoodController {
   public async bestSoldFoods(request: Request, response: Response) {
     try {
       const bestSellingFoodService = new BestSellingFoodService();
-
-      const foods = await bestSellingFoodService.bestSoldFoods();
+      var enterpriseId = response.locals.decodedToken.id;
+      const foods = await bestSellingFoodService.bestSoldFoods(enterpriseId);
 
       return response.status(200).json(foods);
     } catch (err: any) {

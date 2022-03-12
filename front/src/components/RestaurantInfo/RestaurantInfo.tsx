@@ -1,6 +1,6 @@
 /* eslint-disable no-template-curly-in-string */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useLayoutEffect } from 'react';
+import React, { useContext, useLayoutEffect } from 'react';
 import MaskedInput from 'react-text-mask';
 import createNumberMask from 'text-mask-addons/dist/createNumberMask';
 import InputMask from "react-input-mask";
@@ -9,6 +9,7 @@ import { useState } from 'react';
 import api from '../../services/api';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
+import { RestaurantNameContext } from '../../App';
 const layout = {
     labelCol: { span: 8 },
     wrapperCol: { span: 16 },
@@ -19,7 +20,8 @@ const validateMessages = {
 };
 
 export default function RestaurantInfo() {
-
+    const RestaurantName = useContext(RestaurantNameContext);
+    
     const [enterprise, setEnterprise] = useState('');
     const [phone_number, setPhone_number] = useState(0);
     const [delivery_fee, setDelivery_fee] = useState(0);
@@ -29,7 +31,7 @@ export default function RestaurantInfo() {
 
     const getInfo = () => {
         setLoaded(false);
-        api.get('/api/restaurant-info').then((response) => {
+        api.get(`/api/restaurant-info/${RestaurantName}`).then((response) => {
             setEnterprise(response.data.enterprise); //always return just one object
             setPhone_number(response.data.phone_number); //always return just one object
             setDelivery_fee(response.data.delivery_fee); //always return just one object

@@ -34,25 +34,25 @@ router.post('/api/authenticated', auth.authMiddleware, authController.auth);
 
 //CRUD COMIDAS
 router.post('/api/create-food', auth.authMiddleware, createFoodController.handleCreateFood);
-router.get('/api/list-foods', createFoodController.handleListAllFoods);
+router.get('/api/list-foods/:enterprise', createFoodController.handleListAllFoods);
 router.delete('/api/remove-food/:id', auth.authMiddleware, createFoodController.handleRemoveFood);
 router.put('/api/update-food/:id', auth.authMiddleware, createFoodController.handleEditFood);
 router.get('/api/list-by-tag/:id/:enterprise', createFoodController.listByTag);
 router.get('/api/list-top-foods/:enterprise', createFoodController.listBestMonthSellingFoods);
-router.get('/api/best-sold-foods', bestSellingFoodController.bestSoldFoods);
+router.get('/api/best-sold-foods', auth.authMiddleware, bestSellingFoodController.bestSoldFoods);
 
 //ROTAS DE ANALISES GRAFICAS
-router.get('/api/dashboard/money-monthly', moneyMonthlyController.getMoneyMonthly);
+router.get('/api/dashboard/money-monthly', auth.authMiddleware, moneyMonthlyController.getMoneyMonthly);
 
 //CRIACAO E LISTAGEM DE TAGS DE COMIDAS
 router.post('/api/create-tag-food', auth.authMiddleware, createFoodTypeController.handleCreate);
-router.get('/api/list-tags', createFoodTypeController.handleListAllTags);
+router.get('/api/list-tags/:enterprise', createFoodTypeController.handleListAllTags);
 router.delete('/api/remove-tag/:id', auth.authMiddleware, createFoodTypeController.handleRemoveTag);
 router.put('/api/update-tag/:id', auth.authMiddleware, createFoodTypeController.handleEditTag);
 
 // INFORMACOES DO RESTAURANTE
 router.post('/api/restaurant-info', auth.authMiddleware, restaurantInfoController.create);
-router.get('/api/restaurant-info', auth.authMiddleware, restaurantInfoController.listInfo);
+router.get('/api/restaurant-info/:enterprise', restaurantInfoController.listInfo);
 
 
 //REGISTOR DE NOVA VENDA

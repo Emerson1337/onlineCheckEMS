@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React from 'react';
+import React, { useContext } from 'react';
 import ReactLoading from "react-loading";
 import MaskedInput from 'react-text-mask';
 import createNumberMask from 'text-mask-addons/dist/createNumberMask';
@@ -10,6 +10,7 @@ import {
 import { useEffect, useState } from 'react';
 import api from '../../services/api';
 import { toast } from 'react-toastify';
+import { RestaurantNameContext } from '../../App';
 const layout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 16 },
@@ -22,6 +23,7 @@ const validateMessages = {
 /* eslint-enable no-template-curly-in-string */
 
 export default function CreateFood() {
+  const RestaurantName = useContext(RestaurantNameContext);
 
   const [allCategories, setAllCategories] = useState([]);
   const [requestSent, setRequestSent] = useState(false);
@@ -29,7 +31,7 @@ export default function CreateFood() {
   const [form] = Form.useForm();
 
   useEffect(() => {
-    api.get('/api/list-tags').then((response) => {
+    api.get(`/api/list-tags/${RestaurantName}`).then((response) => {
       setAllCategories(response.data);
     }).catch((error) => {
       toast.error(error.response.data);

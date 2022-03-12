@@ -1,11 +1,13 @@
 /* eslint-disable array-callback-return */
 import { Pie } from '@ant-design/charts';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import { RestaurantNameContext } from '../../App';
 import months from '../../assets/months.json';
 import api from '../../services/api';
 
 export default function GraphPieDashboard() {
+  const RestaurantName = useContext(RestaurantNameContext);
 
   const [date, setdate] = useState([{}])
 
@@ -16,7 +18,7 @@ export default function GraphPieDashboard() {
 
   //resgatando as informacoes
   useEffect(() => {
-    api.get('/api/list-top-foods').then((response) => {
+    api.get(`/api/list-top-foods/${RestaurantName}`).then((response) => {
       if (response.data.length) {
         response.data.map((food: any) => {
           setdate(date => [...date, {

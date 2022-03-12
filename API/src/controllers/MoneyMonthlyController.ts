@@ -17,7 +17,8 @@ class MoneyMonthlyController {
   async getMoneyMonthly(request: Request, response: Response) {
     try {
       const moneyMonthlyService = new MoneyMonthlyService();
-      const moneyMonthly = await moneyMonthlyService.getMoneyMonthly();
+      var enterpriseId = response.locals.decodedToken.id;
+      const moneyMonthly = await moneyMonthlyService.getMoneyMonthly(enterpriseId);
 
       return response.status(200).json({ "moneyMonthly": moneyMonthly });
     } catch (err: any) {

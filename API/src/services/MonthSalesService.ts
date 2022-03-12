@@ -48,14 +48,18 @@ class MonthSalesService {
     }
 
     const foodTypeExists = await foodTypeRepository.findOne({ where: { id: tagFood } });
-
+    const restaurantId = foodTypeExists?.restaurant_id;
+    
     if (!foodTypeExists) {
       throw new Error("Essa categoria não existe!");
     }
 
     const monthSalesRepository = getCustomRepository(MonthSalesRespository);
 
-    const foodAlreadyExists = await monthSalesRepository.findOne({ name });
+    const foodAlreadyExists = await monthSalesRepository.findOne({ where: {
+      name,
+      restaurant_id: restaurantId,
+    } });
 
     if (foodAlreadyExists) {
       foodAlreadyExists.frequency += qtd;
@@ -69,6 +73,7 @@ class MonthSalesService {
     } else {
       const newSale = monthSalesRepository.create({
         name,
+        restaurant_id: restaurantId,
         tagFood,
         description,
         price,
@@ -101,17 +106,16 @@ class MonthSalesService {
   async deleteAllData() {
     const monthSalesRepository = getCustomRepository(MonthSalesRespository);
     const allSales = await monthSalesRepository.find();
-
-    const deleted = allSales.forEach(async sale => {
-      await monthSalesRepository.delete(sale.id);
-    });
-
-    if (deleted!) {
-      return { Success: "Tabela limpa com sucesso!" };
-    } else {
+    try {
+      for (var sale of allSales) {
+        await monthSalesRepository.delete(sale.id);
+      };
+    } catch (error) {
       return { error: "Algo deu errado!" };
     }
-  }
+  
+      return { Success: "Tabela limpa com sucesso!" };
+    }
 }
 
 export default MonthSalesService;

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React from "react";
+import React, { useContext } from "react";
 import { useEffect, useState } from 'react';
 import ReactLoading from "react-loading";
 import api from '../../services/api';
@@ -11,9 +11,11 @@ import { Form, Button, Upload, Space } from 'antd';
 import {
   UploadOutlined,
 } from '@ant-design/icons';
+import { RestaurantNameContext } from "../../App";
 
 export default function EditFood({ props, close, food }: any) {
-
+  const RestaurantName = useContext(RestaurantNameContext);
+  
   const [allCategories, setAllCategories] = useState([]);
   const [nameFood, setName] = useState('');
   const [categoryFood, setCategory] = useState('');
@@ -33,7 +35,7 @@ export default function EditFood({ props, close, food }: any) {
   }, []);
 
   useEffect(() => {
-    api.get('/api/list-tags').then((response) => {
+    api.get(`/api/list-tags/${RestaurantName}`).then((response) => {
       toast.success(response.data);
       setAllCategories(response.data)
       response.data.map((category: any) => (

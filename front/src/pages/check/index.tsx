@@ -1,11 +1,10 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable react/style-prop-object */
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import styled from 'styled-components';
 import CardFood from '../../components/CardFood/CardFood';
 import Carousel from 'react-elastic-carousel';
 
-import notfound from '../../assets/notfound.png';
 import ReactLoading from "react-loading";
 
 import { FiShoppingCart } from 'react-icons/fi';
@@ -15,32 +14,40 @@ import BtnCategory from '../../components/BtnCategory/BtnCategory';
 import FadeIn from 'react-fade-in/lib/FadeIn';
 import GetNameUser from '../../components/Modals/GetNameUser';
 import { toast } from 'react-toastify';
+import { RestaurantNameContext } from '../../App';
 
 export default function Check() {
+  const RestaurantName = useContext(RestaurantNameContext);
 
   //LISTING CATEGORIES
   const [allCategories, SetAllCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingPage, setLoadingPage] = useState(true);
+  const [hasTopFood, setHasTopFood] = useState(true);
 
   useEffect(() => {
-    api.get('/api/list-tags').then((categories: any) => {
+    api.get(`/api/list-tags/${RestaurantName}`).then((categories: any) => {
       SetAllCategories(categories.data);
     }).catch((error) => {
       console.log("Ops! " + error);
     })
 
-  }, [])
+  }, [RestaurantName])
 
   //LISTING FOODS
   const [allFoods, SetAllFoods] = useState([]);
 
   useEffect(() => {
-    api.get(`/api/list-top-foods/${process.env.RESTAURANT_NAMES}`).then((foods: any) => {
+    api.get(`/api/list-top-foods/${RestaurantName}`).then((foods: any) => {
       SetAllFoods([]);
 
       setLoading(false);
       SetAllFoods(foods.data);
+
+      if(!foods.data.length) {
+        setHasTopFood(false);
+      }
+
     }).catch((error) => {
       SetAllFoods([]);
 
@@ -54,7 +61,7 @@ export default function Check() {
     if (tagId.length) {
       setLoading(true);
 
-      api.get(`/api/list-by-tag/${tagId}/brotherlanches`).then((foods: any) => {
+      api.get(`/api/list-by-tag/${tagId}/${RestaurantName}`).then((foods: any) => {
         SetAllFoods([]);
 
         setLoading(false);
@@ -67,11 +74,18 @@ export default function Check() {
       })
     } else {
       setLoading(true);
-      api.get(`/api/list-top-foods/brotherlanches`).then((foods: any) => {
+      api.get(`/api/list-top-foods/${RestaurantName}`).then((foods: any) => {
         SetAllFoods([]);
 
         setLoading(false);
+
+        if(!foods.data.length) {
+          return setHasTopFood(false);
+        }
+
         SetAllFoods(foods.data);
+
+
       }).catch((error) => {
         SetAllFoods([]);
 
@@ -167,9 +181,12 @@ export default function Check() {
                 </BannerCategory>
                 <SelectCategory className="container">
                   <Carousel outerSpacing={0} pagination={false} showArrows={false} isRTL={false} breakPoints={breakPoints}>
+                  {
+                  hasTopFood &&
                     <div onClick={() => (getFoodsByTag([]))}>
                       <BtnCategory key={0} category={'Top do mês'} />
                     </div>
+                  }
                     {
                       allCategories &&
                       allCategories.map((category, key) => {
@@ -189,16 +206,15 @@ export default function Check() {
                   {
                     !loading ?
                       (
-                        allFoods.length ?
+                        (allFoods.length ?
                           allFoods.map((food, key) => {
                             return <FadeIn key={key}>
                               <CardFood key={food['id']} image={food['image']} shopping={shopping} name={food['name'] || food['nameFood']} price={food['price'] || food['priceFood']} description={food['description']} category={food['tagFood']} />
                             </FadeIn>
                           })
                           :
-                          <h2>
-                            <img src={notfound} alt="Nada encontrado." />
-                          </h2>
+                          <TipMessage className="explain">Selecione uma categoria acima 😊</TipMessage>
+                          )
                       ) : null
                   }
                 </Products>
@@ -294,4 +310,8 @@ const FinishOrder = styled.div`
 
 const LinkFinishOrder = styled.a`
 
+`;
+
+const TipMessage = styled.h4`
+  color: #737373;
 `;

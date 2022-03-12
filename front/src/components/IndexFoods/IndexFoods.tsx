@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from 'react';
+import React, { useContext } from 'react';
 import { List, Avatar, Drawer } from 'antd';
 import { useEffect, useState } from 'react';
 import api from '../../services/api';
@@ -9,6 +9,7 @@ import image from '../../assets/image-category.png';
 import EditFood from '../CreateFood/EditFood';
 import { toast } from 'react-toastify';
 import { TextField } from '@material-ui/core';
+import { RestaurantNameContext } from '../../App';
 
 export default function IndexFoods() {
 
@@ -21,6 +22,8 @@ export default function IndexFoods() {
   const [reload, setReload] = useState(false);
 
   const [filteredFood, setFilteredFood] = useState([]);
+
+  const RestaurantName = useContext(RestaurantNameContext);
 
   //Funcao que recarrega o componente de edicao, possibilitando 
   //que ele seja recarregado e tenha os inputs preenchidos com novos valores
@@ -37,7 +40,7 @@ export default function IndexFoods() {
   }
 
   function getFoods() {
-    api.get('/api/list-foods').then((response) => {
+    api.get(`/api/list-foods/${RestaurantName}`).then((response) => {
       setAllFoods(response.data);
       setFilteredFood(response.data);
     }).catch((error) => {

@@ -3,43 +3,81 @@ import MonthSalesRespository from '../repositories/MonthSalesRepository';
 import { getCustomRepository } from 'typeorm';
 import * as months from '../assets/months.json';
 
+interface MonthSaleInterface {
+  id: string,
+  name: string,
+  tagFood: string,
+  price: number,
+  frequency: number,
+  description: string,
+  restaurant_id: string,
+  created_at: Date,
+  updated_at: Date
+}
+
 class MoneyMonthlyService {
 
   async storeMoneyMonthly() {
     const moneyMonthlyRepository = getCustomRepository(MoneyMonthlyRepository);
     const monthSalesRepository = getCustomRepository(MonthSalesRespository);
 
-    const allSales = await monthSalesRepository.find();
+    const sales = await monthSalesRepository.find();
+    
+    // @ts-ignore
+    const allSales: MonthSaleInterface = sales;
 
-    var totalCash = 0;
+    if(allSales){
+      const salesPerRestaurant = await this.groupBy(allSales, 'restaurant_id');
 
-    allSales.forEach(sale => {
-      totalCash += (sale.price * sale.frequency);
-    });
+      for (var salesFromRestaurant of salesPerRestaurant) {
+        
+        var totalCash = 0;
 
-    var date = new Date();
-    var month = date.getMonth().toString();
+        Object.values(salesFromRestaurant).forEach((sale: any) => {
+          totalCash += (sale.price * sale.frequency);
+        });
 
-    const monthlyCash = moneyMonthlyRepository.create({
-      // @ts-ignore
-      month: months[month],
-      price: totalCash,
-    });
+        var date = new Date();
+        var month = date.getMonth().toString();
 
-    try {
-      await moneyMonthlyRepository.save(monthlyCash);
-    } catch (err: any) {
-      const error = new Error(err);
-      return new Error(error.message);
+        const monthlyCash = moneyMonthlyRepository.create({
+          // @ts-ignore
+          month: months[month],
+          price: totalCash,
+        });
+
+        try {
+          await moneyMonthlyRepository.save(monthlyCash);
+        } catch (err: any) {
+          const error = new Error(err);
+          return new Error(error.message);
+        }
+      };
+      
+      return ({ 'Success': 'sucesso!' });
+
+    } else {
+      return ({ 'Success': 'Sem vendas registradas nesse mês!' });
     }
-
-    return ({ 'Success': 'sucesso!' });
   }
 
-  async getMoneyMonthly() {
+  async groupBy(collection: MonthSaleInterface, property: string) {
+    var group: any = [];
+
+    Object.values(collection).forEach((item) => {
+      group[item.restaurant_id] ? group[item.restaurant_id].push(item) : group[item.restaurant_id] = [item];
+    });
+
+    return group;
+  }
+
+  async getMoneyMonthly(enterpriseId: string) {
     try {
       const moneyMonthlyRepository = getCustomRepository(MoneyMonthlyRepository);
       const moneyMonthly = await moneyMonthlyRepository.find({
+        where: {
+          restaurant_id: enterpriseId,
+        },
         order: {
           created_at: "ASC",
         },
