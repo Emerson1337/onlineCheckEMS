@@ -1,9 +1,13 @@
 import { v2 as cloudinary } from 'cloudinary';
 
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
+
 cloudinary.config({
-    cloud_name: 'dwh1lucmr',
-    api_key: '848659481928229',
-    api_secret: 'itamebQl-6GWNopHQw1jZIvBhdA',
+    cloud_name: String(process.env.CLOUD_NAME),
+    api_key: String(process.env.API_KEY),
+    api_secret: String(process.env.API_SECRET),
 });
 
 export default cloudinary;

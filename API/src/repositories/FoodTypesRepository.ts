@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from "typeorm";
 
-import FoodTypes from '../models/FoodTypes';
+import FoodTypes from '../entities/FoodTypes';
 
 @EntityRepository(FoodTypes)
 class FoodTypesRepository extends Repository<FoodTypes>{

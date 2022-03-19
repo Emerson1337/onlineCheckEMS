@@ -1,21 +1,21 @@
 import { Router } from 'express';
-import AuthController from '../controllers/AuthController';
-import BestSellingCategoryController from '../controllers/BestSellingCategoryController';
-import BestSellingFoodController from '../controllers/BestSellingFoodController';
-import CreateFoodController from '../controllers/CreateFoodController';
-import { CreateFoodTypeController } from '../controllers/CreateFoodTypeController';
-import CreateUsersController from '../controllers/CreateUsersController';
-import MoneyMonthlyController from '../controllers/MoneyMonthlyController';
-import MonthSalesController from '../controllers/MonthSalesController';
-import RestaurantInfoController from '../controllers/RestaurantInfoController';
+import AuthController from '../useCases/Restaurants/AuthController';
+import BestSellingCategoryController from '../useCases/Categories/BestSellingCategoryController';
+import BestSellingFoodController from '../useCases/Foods/BestSellingFoodController';
+import FoodController from '../useCases/Foods/FoodController';
+import FoodTypeController from '../useCases/Categories/FoodTypeController';
+import UserController from '../useCases/Restaurants/UsersController';
+import MoneyMonthlyController from '../useCases/MonthSales/MoneyMonthlyController';
+import MonthSalesController from '../useCases/MonthSales/MonthSalesController';
+import RestaurantInfoController from '../useCases/Restaurants/RestaurantInfoController';
 import { Auth } from '../middlewares/auth';
 import verifyCreateUserValidator from '../middlewares/verifyCreateUserValidator';
 
 
 const bestSellingCategoryController = new BestSellingCategoryController();
-const createUsersController = new CreateUsersController();
-const createFoodController = new CreateFoodController();
-const createFoodTypeController = new CreateFoodTypeController();
+const userController = new UserController();
+const foodController = new FoodController();
+const foodTypeController = new FoodTypeController();
 const monthSalesController = new MonthSalesController();
 const moneyMonthlyController = new MoneyMonthlyController();
 const bestSellingFoodController = new BestSellingFoodController();
@@ -28,27 +28,27 @@ const router = Router();
 
 //ROTAS DA API
 //TRATATIVAS DE USUARIO
-router.post('/api/signup', verifyCreateUserValidator, createUsersController.createUser);
-router.post('/api/login', createUsersController.login);
+router.post('/api/signup', verifyCreateUserValidator, userController.createUser);
+router.post('/api/login', userController.login);
 router.post('/api/authenticated', auth.authMiddleware, authController.auth);
 
 //CRUD COMIDAS
-router.post('/api/create-food', auth.authMiddleware, createFoodController.handleCreateFood);
-router.get('/api/list-foods/:enterprise', createFoodController.handleListAllFoods);
-router.delete('/api/remove-food/:id', auth.authMiddleware, createFoodController.handleRemoveFood);
-router.put('/api/update-food/:id', auth.authMiddleware, createFoodController.handleEditFood);
-router.get('/api/list-by-tag/:id/:enterprise', createFoodController.listByTag);
-router.get('/api/list-top-foods/:enterprise', createFoodController.listBestMonthSellingFoods);
+router.post('/api/create-food', auth.authMiddleware, foodController.handleCreateFood);
+router.get('/api/list-foods/:enterprise', foodController.handleListAllFoods);
+router.delete('/api/remove-food/:id', auth.authMiddleware, foodController.handleRemoveFood);
+router.put('/api/update-food/:id', auth.authMiddleware, foodController.handleEditFood);
+router.get('/api/list-by-tag/:id/:enterprise', foodController.listByTag);
+router.get('/api/list-top-foods/:enterprise', foodController.listBestMonthSellingFoods);
 router.get('/api/best-sold-foods', auth.authMiddleware, bestSellingFoodController.bestSoldFoods);
 
 //ROTAS DE ANALISES GRAFICAS
 router.get('/api/dashboard/money-monthly', auth.authMiddleware, moneyMonthlyController.getMoneyMonthly);
 
 //CRIACAO E LISTAGEM DE TAGS DE COMIDAS
-router.post('/api/create-tag-food', auth.authMiddleware, createFoodTypeController.handleCreate);
-router.get('/api/list-tags/:enterprise', createFoodTypeController.handleListAllTags);
-router.delete('/api/remove-tag/:id', auth.authMiddleware, createFoodTypeController.handleRemoveTag);
-router.put('/api/update-tag/:id', auth.authMiddleware, createFoodTypeController.handleEditTag);
+router.post('/api/create-tag-food', auth.authMiddleware, foodTypeController.handleCreate);
+router.get('/api/list-tags/:enterprise', foodTypeController.handleListAllTags);
+router.delete('/api/remove-tag/:id', auth.authMiddleware, foodTypeController.handleRemoveTag);
+router.put('/api/update-tag/:id', auth.authMiddleware, foodTypeController.handleEditTag);
 
 // INFORMACOES DO RESTAURANTE
 router.post('/api/restaurant-info', auth.authMiddleware, restaurantInfoController.create);

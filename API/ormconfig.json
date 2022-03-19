@@ -6,7 +6,7 @@
    "password": "root",
    "database": "pizzariacheckems",
    "entities": [
-      "./src/models/*.ts"
+      "./src/entities/*.ts"
    ],
    "migrations": [
       "./src/database/migrations/*.ts"

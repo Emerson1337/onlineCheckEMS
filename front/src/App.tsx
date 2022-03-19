@@ -8,6 +8,7 @@ import Footer from './components/Footer/Footer';
 import Navbar from './components/Navbar/Navbar';
 import Routes from './routes/routes';
 import FadeIn from 'react-fade-in';
+import restaurantJSON from './env/restaurantName.json';
 
 export const RestaurantNameContext = createContext("");
 
@@ -33,7 +34,7 @@ function App() {
     }
   });
   
-  const restaurantName = "eglanches";
+  const restaurantName = restaurantJSON.name;
 
   return (
     <>

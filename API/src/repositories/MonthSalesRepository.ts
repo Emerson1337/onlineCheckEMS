@@ -1,6 +1,6 @@
 import { EntityRepository, getCustomRepository, Repository } from "typeorm";
 
-import MonthSales from '../models/MonthSales';
+import MonthSales from '../entities/MonthSales';
 import FoodsRepository from "./FoodsRepository";
 
 @EntityRepository(MonthSales)

@@ -1,9 +1,9 @@
 import { CronJob } from 'cron';
-import MonthSalesController from '../controllers/MonthSalesController';
+import MonthSalesController from '../useCases/MonthSales/MonthSalesController';
 
-import BestSellingCategoryService from '../services/BestSellingCategoryService';
-import BestSellingFoodService from '../services/BestSellingFoodService';
-import MoneyMonthlyService from '../services/MoneyMonthlyService';
+import BestSellingCategoryService from '../useCases/Categories/services/BestSellingCategoryService';
+import BestSellingFoodService from '../useCases/Foods/services/BestSellingFoodService';
+import MoneyMonthlyService from '../useCases/MonthSales/services/MoneyMonthlyService';
 
 const bestSellingCategoryService = new BestSellingCategoryService();
 const bestSellingFoodService = new BestSellingFoodService();

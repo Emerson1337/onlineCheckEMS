@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from "typeorm";
 
-import BestSellingCategory from '../models/BestSellingCategory';
+import BestSellingCategory from '../entities/BestSellingCategory';
 
 @EntityRepository(BestSellingCategory)
 class BestSellingCategoryRepository extends Repository<BestSellingCategory>{

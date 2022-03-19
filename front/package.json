@@ -42,10 +42,10 @@
   },
   "homepage": ".",
   "scripts": {
-    "start": "react-dotenv && react-scripts start",
-    "build": "react-dotenv && react-scripts build",
-    "test": "react-dotenv && react-scripts test",
-    "eject": "react-dotenv && react-scripts eject"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
@@ -70,10 +70,5 @@
     "@types/react-router-dom": "^5.1.8",
     "@types/react-transition-group": "^4.4.2",
     "@types/styled-components": "^5.1.13"
-  },
-  "react-dotenv": {
-    "whitelist": [
-      "RESTAURANT_NAME"
-    ]
   }
 }
