@@ -10,7 +10,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 //starting cron-job
-job.start();
+// job.start();
 
 const app = express();
 app.use(cors())
