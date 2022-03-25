@@ -1,7 +1,31 @@
 import { Request, Response } from "express";
+import CategoryRepositoryInMemory from "../../repositories/in-memory/CategoryRepositoryInMemory";
 import FoodTypeService from "./services/FoodTypeService";
 
 class FoodTypeController {
+  public async handleCreateTest(request: Request, response: Response) {
+    try {
+      const { name } = request.body;
+
+      //Repository in memory to test
+      const categoryRepositoryInMemory = new CategoryRepositoryInMemory();
+      
+      const foodTypeService = new FoodTypeService(categoryRepositoryInMemory);
+      return response.status(200).json("Categoria criada com sucesso!");
+      var enterpriseId = response.locals.decodedToken.id;
+
+      const food = await foodTypeService.create(name, enterpriseId);
+
+      if (food) {
+        return response.status(200).json("Categoria criada com sucesso!");
+      } else {
+        throw new Error("Erro inesperado.");
+      }
+    } catch (err: any) {
+      return response.status(500).json(err.message);
+    }
+  }
+
   async handleCreate(request: Request, response: Response) {
     try {
       const { name } = request.body;

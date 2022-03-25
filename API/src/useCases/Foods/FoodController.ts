@@ -1,7 +1,27 @@
 import { Request, Response } from 'express';
+import FoodsRepositoryInMemory from '../../repositories/in-memory/FoodsRepositoryInMemory';
 import FoodService from './services/FoodService';
 
 class FoodController {
+  public async handleCreateFoodTest(request: Request, response: Response) {
+    try {
+      const { name, image, price, tagFood, description } = request.body;
+      
+      const foodsRepositoryInMemory = new FoodsRepositoryInMemory();
+      const foodService = new FoodService(foodsRepositoryInMemory);
+      var enterpriseId = response.locals.decodedToken.id;
+
+      const food = await foodService.create({ name, image, price, tagFood, description }, enterpriseId);
+      if (food) {
+        return response.status(200).json("Comida criada com sucesso!");
+      } else {
+        throw new Error("Erro inesperado.");
+      }
+    } catch (err: any) {
+      return response.status(500).json(err.message);
+    }
+  }
+
   public async handleCreateFood(request: Request, response: Response) {
     try {
       const { name, image, price, tagFood, description } = request.body;

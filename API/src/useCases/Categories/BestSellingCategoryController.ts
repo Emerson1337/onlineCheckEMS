@@ -3,6 +3,10 @@ import BestSellingCategoryService from './services/BestSellingCategoryService';
 
 class BestSellingCategoryController {
 
+  async test(request: Request, response: Response){
+    return response.status(200).send(true);
+  }
+
   async calculateBestSellingCategory(request: Request, response: Response) {
     try {
       const bestSellingCategoryService = new BestSellingCategoryService();

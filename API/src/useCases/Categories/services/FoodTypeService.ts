@@ -5,9 +5,15 @@ import * as yup from 'yup';
 import UsersRepository from "../../../repositories/UsersRepository";
 
 class FoodTypeService {
-  public async create(name: string, enterpriseId: string) {
-    const foodTypesRepository = getCustomRepository(FoodTypesRepository);
 
+  //default repositories
+  constructor(
+    private foodsTypeRepository: any = getCustomRepository(FoodTypesRepository),
+    ) {
+      foodsTypeRepository ? this.foodsTypeRepository = foodsTypeRepository : this.foodsTypeRepository = getCustomRepository(FoodTypesRepository);
+    }
+
+  public async create(name: string, enterpriseId: string) {
     let schema = yup.object().shape({
       name: yup.string().required('O campo nome é obrigatório'),
     });
@@ -28,7 +34,7 @@ class FoodTypeService {
       }
     }
 
-    const foodAlreadyExists = await foodTypesRepository.findOne({
+    const foodAlreadyExists = await this.foodsTypeRepository.findOne({
       where: {
         name,
         restaurant_id: enterpriseId,
@@ -39,20 +45,18 @@ class FoodTypeService {
       throw new Error("Essa categoria já existe!");
     }
 
-    const foodType = foodTypesRepository.create({ name, restaurant_id: enterpriseId });
-    await foodTypesRepository.save(foodType);
+    const foodType = this.foodsTypeRepository.create({ name, restaurant_id: enterpriseId });
+    await this.foodsTypeRepository.save(foodType);
 
     return foodType;
   }
 
-  public async listAllTags(enterprise: string) { 
+  public async listAllTags(enterprise: string) {
+    const enterpriseRepository = getCustomRepository(UsersRepository);
+
     if(!enterprise || enterprise == "undefined") {
       throw new Error("Restaurante não informado!");
     }
-
-    const foodTypesRepository = getCustomRepository(FoodTypesRepository);
-
-    const enterpriseRepository = getCustomRepository(UsersRepository);
 
     const enterpriseFound = await enterpriseRepository.findOne({
       where: {
@@ -64,7 +68,7 @@ class FoodTypeService {
       return new Error("Restaurante não encontrado!");
     }
 
-    const foodsTypes = await foodTypesRepository.find({
+    const foodsTypes = await this.foodsTypeRepository.find({
       order: {
         created_at: 'DESC',
       },
@@ -77,8 +81,7 @@ class FoodTypeService {
   }
 
   public async removeTag(id: string, enterpriseId: string) {
-    const foodTypeRepository = getCustomRepository(FoodTypesRepository);
-    const tag = await foodTypeRepository.findOne({
+    const tag = await this.foodsTypeRepository.findOne({
       where: {
         id,
         restaurant_id: enterpriseId,
@@ -89,7 +92,7 @@ class FoodTypeService {
       throw new Error("Essa categoria não existe!");
     }
 
-    const success = await foodTypeRepository.remove(tag);
+    const success = await this.foodsTypeRepository.remove(tag);
 
     if (success) {
       return tag
@@ -100,8 +103,6 @@ class FoodTypeService {
   }
 
   public async editTag({ id, name }: IRequest, enterpriseId: string) {
-    const foodTypesRepository = getCustomRepository(FoodTypesRepository);
-
     let schema = yup.object().shape({
       name: yup.string().required('O campo nome é obrigatório'),
     });
@@ -122,13 +123,13 @@ class FoodTypeService {
       }
     }
 
-    let tag = await foodTypesRepository.findOne({ where: { id, restaurant_id: enterpriseId } });
+    let tag = await this.foodsTypeRepository.findOne({ where: { id, restaurant_id: enterpriseId } });
 
     if (!tag) {
       return new Error("Essa categoria não existe!");
     }
 
-    const tagUpdated = await foodTypesRepository.update(
+    const tagUpdated = await this.foodsTypeRepository.update(
       { id },
       { name }
     );

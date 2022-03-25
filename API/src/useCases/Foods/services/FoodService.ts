@@ -9,10 +9,22 @@ import cloudinary from '../../../utils/cloudinary';
 import UsersRepository from '../../../repositories/UsersRepository';
 
 class FoodService {
+
+  //default repositories
+  constructor(
+    private foodsRepository: any = getCustomRepository(FoodsRepository),
+    private foodsTypeRepository: any = getCustomRepository(FoodTypesRepository),
+    private enterpriseRepository: any = getCustomRepository(UsersRepository),
+    private monthSalesRespository: any = getCustomRepository(MonthSalesRespository),
+    ) {
+      foodsRepository ? foodsRepository = this.foodsRepository : '';
+      foodsTypeRepository ? foodsTypeRepository = this.foodsTypeRepository : '';
+      enterpriseRepository ? enterpriseRepository = this.enterpriseRepository : '';
+      monthSalesRespository ? monthSalesRespository = this.monthSalesRespository : '';
+    }
+
+
   public async create({ name, image, price, tagFood, description }: IRequestFood, enterpriseId: string) {
-    const foodsRepository = getCustomRepository(FoodsRepository)
-    const foodsTypeRepository = getCustomRepository(FoodTypesRepository)
-    
     let schema = yup.object().shape({
       name: yup.string().required('O campo nome é obrigatório'),
       price: yup.number().required('O campo preço é obrigatório'),
@@ -42,7 +54,7 @@ class FoodService {
       throw new Error("Preço inválido!");
     }
 
-    const foodTypeExists = foodsTypeRepository.findOne({
+    const foodTypeExists = this.foodsTypeRepository.findOne({
       where: {
         id: tagFood,
         restaurant_id: enterpriseId
@@ -59,7 +71,7 @@ class FoodService {
       }
     );
 
-    const food = foodsRepository.create({
+    const food = this.foodsRepository.create({
       name,
       restaurant_id: enterpriseId,
       image: imageLink.url,
@@ -70,7 +82,7 @@ class FoodService {
     });
 
     try {
-      await foodsRepository.save(food);
+      await this.foodsRepository.save(food);
     } catch (err: any) {
       const error = new Error(err);
       throw new Error(error.message);
@@ -80,9 +92,6 @@ class FoodService {
   }
 
   public async editFood(id: string, { name, image, price, tagFood, description }: IRequestFood, enterpriseId: string) {
-    const foodRepository = getCustomRepository(FoodsRepository);
-    const foodTypesRepository = getCustomRepository(FoodTypesRepository);
-
     let schema = yup.object().shape({
       name: yup.string().required('O campo nome é obrigatório'),
       price: yup.number().required('O campo preço é obrigatório'),
@@ -97,13 +106,13 @@ class FoodService {
       throw new Error("Selecione uma categoria!");
     }
 
-    let food = await foodRepository.findOne({ where: { id, restaurant_id: enterpriseId } });
+    let food = await this.foodsRepository.findOne({ where: { id, restaurant_id: enterpriseId } });
 
     if (!food) {
       return new Error("Comida não encontrada!");
     }
 
-    let category = await foodTypesRepository.findOne({ where: { id: tagFood, enteprise_id: enterpriseId } });
+    let category = await this.foodsTypeRepository.findOne({ where: { id: tagFood, enteprise_id: enterpriseId } });
 
     if (!category) {
       return new Error("Categoria não encontrada!");
@@ -120,7 +129,7 @@ class FoodService {
       );
     }
 
-    const foodUpdated = await foodRepository.update({ id }, {
+    const foodUpdated = await this.foodsRepository.update({ id }, {
       name,
       restaurant_id: enterpriseId,
       image: imageLink ? imageLink.url : food.image,
@@ -134,13 +143,11 @@ class FoodService {
   }
 
   public async removeFood(id: string, enterpriseId: string) {
-    const foodsRepository = getCustomRepository(FoodsRepository);
-
     if (!validateUuid(id)) {
       throw new Error("Identificação inválida!");
     }
 
-    const foods = await foodsRepository.findOne({
+    const foods = await this.foodsRepository.findOne({
       where: {
         id,
         enteprise_id: enterpriseId
@@ -152,7 +159,7 @@ class FoodService {
     }
 
     try {
-      await foodsRepository.remove(foods);
+      await this.foodsRepository.remove(foods);
       foods.image_id && await cloudinary.uploader.destroy(foods.image_id);
     } catch (err: any) {
       const error = new Error(err);
@@ -167,11 +174,7 @@ class FoodService {
       throw new Error("Restaurante não informado!");
     }
 
-    const foodsRepository = getCustomRepository(FoodsRepository);
-
-    const enterpriseRepository = getCustomRepository(UsersRepository);
-
-    const enterpriseFound = await enterpriseRepository.findOne({
+    const enterpriseFound = await this.enterpriseRepository.findOne({
       where: {
         enterprise
       }
@@ -181,7 +184,7 @@ class FoodService {
       return new Error("Restaurante não encontrado!");
     }
 
-    const foods = await foodsRepository.find({
+    const foods = await this.foodsRepository.find({
       order: {
         created_at: 'DESC',
       }, where: {
@@ -193,15 +196,11 @@ class FoodService {
   }
 
   async listByTag(id: string, enterprise: string) {
-    const foodRepository = getCustomRepository(FoodsRepository);
-
     if (!validateUuid(id)) {
       throw new Error("Identificação inválida!");
     }
 
-    const enterpriseRepository = getCustomRepository(UsersRepository);
-    
-    const enterpriseFound = await enterpriseRepository.findOne({ where: {
+    const enterpriseFound = await this.enterpriseRepository.findOne({ where: {
       enterprise,
     }});
 
@@ -209,7 +208,7 @@ class FoodService {
       return new Error("Restaurante não encontrado!");
     }
 
-    const foods = await foodRepository.find({ where: { tagFood: id, restaurant_id: enterpriseFound.id } });
+    const foods = await this.foodsRepository.find({ where: { tagFood: id, restaurant_id: enterpriseFound.id } });
     if (!foods.length) {
       return new Error("Esta categoria não possui comidas cadastradas!");
     }
@@ -218,11 +217,7 @@ class FoodService {
   }
 
   async listTop10Foods(enterprise: string) {
-    const monthSalesRespository = getCustomRepository(MonthSalesRespository);
-
-    const enterpriseRepository = getCustomRepository(UsersRepository);
-
-    const enterpriseFound = await enterpriseRepository.findOne({
+    const enterpriseFound = await this.enterpriseRepository.findOne({
       where: {
         enterprise
       }
@@ -232,7 +227,7 @@ class FoodService {
       return new Error("Restaurante não encontrado!");
     }
 
-    const foods = await monthSalesRespository.find({
+    const foods = await this.monthSalesRespository.find({
       order: {
         frequency: "DESC",
       },
@@ -247,7 +242,7 @@ class FoodService {
     }
 
     for (var food of foods) {
-      const image = await monthSalesRespository.getImageByFoodName(food.name);
+      const image = await this.monthSalesRespository.getImageByFoodName(food.name);
       food.image = image;
     };
     

@@ -35,7 +35,7 @@
     "dev": "ts-node-dev --inspect --transpile-only --ignore-watch node_modules src/server.ts",
     "start": "ts-node src/server.ts",
     "typeorm": "ts-node-dev -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
-    "test": "set NODE_ENV=test && jest --verbose --reporters default --detectOpenHandles --runInBand --testTimeout=60000"
+    "test": "jest --verbose --reporters default --detectOpenHandles --runInBand --testTimeout=60000"
   },
   "devDependencies": {
     "@types/jest": "^27.4.1",
