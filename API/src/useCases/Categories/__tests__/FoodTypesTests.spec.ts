@@ -10,7 +10,6 @@ describe('Category controller', () => {
             "name": "Combo de arroz com feijão",
             "enterpriseId": "13cba0a8-9c07-4955-af1a-3a4ad5ec3c17",
         });
-        console.log(response.text);
         expect(response.statusCode).toBe(200);
     })
 })
