@@ -10,7 +10,7 @@ Cool, right there we have the abstract about the connections used:
 
 Well, we are going to start with Node.
 
-**NODE:** Node is a technology widely used in nowadays, because he is oriented to events and input process no-blocking, and for these things he are very fast with very much data, light and efficient with communication in real time. But the real reason to use node is because i want to learn how to use this tech 😌.
+**NODE:** Node is a technology widely used in nowadays, because he is oriented to events and input process no-blocking, and for these things he is very fast with very much data, light and efficient with communication in real time. But the real reason to use node is because i want to learn how to use this tech 😌.
 
 ## **And... why React?**
 
