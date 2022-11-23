@@ -14,7 +14,7 @@ Well, we are going to start with Node.
 
 ## **And... why React?**
 
-Despite the same reason above (because i want to learn Node and React), React its a framework widely used on website with fluid flux and they implements a feature called Single Page Application (SPA), and it's a good one to have in our website when the client add a new food, for example, on your car market.
+Despite the same reason above (because i want to learn Node and React), React its a framework widely used on website with fluid flux and they implements a feature called Single Page Application (SPA), and it's a good one to have in our website when the client add a new food, for example, on his car market.
 
 # **Cool, cool, but how the database will be organized 🧐?**
 
